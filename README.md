@@ -26,9 +26,9 @@
 
 ## Настройки (`js/config.js`)
 
-- `siteUrl` — адрес сайта, например `https://username.github.io/`. Нужен для ссылок и QR-кодов.
-- `orgFormUrl` — ссылка на Google Форму для организаторов клубов.
-- `reportEmail` — почта, куда приходят сообщения «Информация устарела?».
+- `siteUrl` — https://youths-astana/github.io
+- `orgFormUrl` — https://docs.google.com/forms/d/e/1FAIpQLScnKtvkrywK8OuuV9vo8aiCC52z8sEUxgat7C_osh99-NFmeQ/viewform
+- `reportEmail` — wwhenlix@gmail.com
 
 ## Проверка на компьютере
 
