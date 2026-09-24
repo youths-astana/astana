@@ -24,20 +24,17 @@
   <!-- Background ornament: three fixed, fading patches along the right edge -->
   <svg width="0" height="0" aria-hidden="true" style="position:absolute">
     <defs>
-      <pattern id="ornBg" width="56" height="56" patternUnits="userSpaceOnUse" viewBox="0 0 32 32">
-        <path d="M16 4 L28 16 L16 28 L4 16 Z" stroke="#2F6BFF" stroke-opacity="0.4" stroke-width="1.3" fill="none"/>
-        <path d="M10 16 C10 12 13 10.5 16 13 C19 10.5 22 12 22 16 C22 19.5 19 21.5 16 24 C13 21.5 10 19.5 10 16 Z" stroke="#2F6BFF" stroke-opacity="0.5" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+      <pattern id="ornBg" width="104" height="104" patternUnits="userSpaceOnUse" viewBox="0 0 32 32">
+        <path d="M16 4 L28 16 L16 28 L4 16 Z" stroke="#2F6BFF" stroke-opacity="0.3" stroke-width="1" fill="none"/>
+        <path d="M10 16 C10 12 13 10.5 16 13 C19 10.5 22 12 22 16 C22 19.5 19 21.5 16 24 C13 21.5 10 19.5 10 16 Z" stroke="#2F6BFF" stroke-opacity="0.38" stroke-width="1.2" stroke-linejoin="round" fill="none"/>
       </pattern>
       <radialGradient id="ornFadeTop" cx="78%" cy="20%" r="78%"><stop offset="0%" stop-color="#fff"/><stop offset="55%" stop-color="#fff" stop-opacity="0.45"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></radialGradient>
-      <radialGradient id="ornFadeMid" cx="82%" cy="50%" r="72%"><stop offset="0%" stop-color="#fff"/><stop offset="52%" stop-color="#fff" stop-opacity="0.42"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></radialGradient>
       <radialGradient id="ornFadeBot" cx="78%" cy="80%" r="78%"><stop offset="0%" stop-color="#fff"/><stop offset="55%" stop-color="#fff" stop-opacity="0.45"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></radialGradient>
       <mask id="ornMaskTop"><rect width="440" height="440" fill="url(#ornFadeTop)"/></mask>
-      <mask id="ornMaskMid"><rect width="440" height="440" fill="url(#ornFadeMid)"/></mask>
       <mask id="ornMaskBot"><rect width="440" height="440" fill="url(#ornFadeBot)"/></mask>
     </defs>
   </svg>
   <svg class="bg-orn bg-orn-top" viewBox="0 0 440 440" fill="none" aria-hidden="true"><rect width="440" height="440" fill="url(#ornBg)" mask="url(#ornMaskTop)"/></svg>
-  <svg class="bg-orn bg-orn-mid" viewBox="0 0 440 440" fill="none" aria-hidden="true"><rect width="440" height="440" fill="url(#ornBg)" mask="url(#ornMaskMid)"/></svg>
   <svg class="bg-orn bg-orn-bot" viewBox="0 0 440 440" fill="none" aria-hidden="true"><rect width="440" height="440" fill="url(#ornBg)" mask="url(#ornMaskBot)"/></svg>
 
   <header class="top">

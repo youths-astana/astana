@@ -23,7 +23,7 @@
 
 * { box-sizing: border-box }
 html, body { margin: 0; padding: 0 }
-body { background: #fff; background-image: radial-gradient(120% 90% at 100% 100%, #C2D8FF 0%, #DCE8FF 34%, rgba(255,255,255,0) 70%), radial-gradient(100% 70% at 100% 0%, #C2D8FF 0%, #DCE8FF 32%, rgba(255,255,255,0) 68%), radial-gradient(80% 60% at 100% 50%, #CBDDFF 0%, #E2ECFF 34%, rgba(255,255,255,0) 70%), linear-gradient(to left, #DEE9FF 0%, rgba(255,255,255,0) 56%); background-attachment: fixed; color: var(--ink); font-family: "Golos Text", system-ui, sans-serif; -webkit-font-smoothing: antialiased }
+body { background: #fff; background-image: radial-gradient(120% 90% at 100% 100%, #D4E3FF 0%, #E9F0FF 36%, rgba(255,255,255,0) 72%), radial-gradient(100% 70% at 100% 0%, #D4E3FF 0%, #E9F0FF 34%, rgba(255,255,255,0) 70%), linear-gradient(to left, #E8EFFF 0%, rgba(255,255,255,0) 58%); background-attachment: fixed; color: var(--ink); font-family: "Golos Text", system-ui, sans-serif; -webkit-font-smoothing: antialiased }
 a { color: var(--accent); text-decoration: none }
 a:hover { color: var(--accent-dk) }
 input, button, textarea { font-family: inherit }
@@ -40,9 +40,8 @@ button { cursor: pointer; color: inherit }
 
 .shell { min-height: 100vh; display: flex; flex-direction: column; position: relative }
 .bg-orn { position: fixed; z-index: 0; pointer-events: none; height: auto }
-.bg-orn-top { right: -70px; top: -90px; opacity: .85; width: clamp(200px, 34vw, 440px) }
-.bg-orn-mid { right: -140px; top: 50%; transform: translateY(-50%); opacity: .8; width: clamp(180px, 30vw, 400px) }
-.bg-orn-bot { right: -70px; bottom: -90px; opacity: .85; width: clamp(200px, 34vw, 440px) }
+.bg-orn-top { right: -60px; top: -80px; opacity: .55; width: clamp(220px, 30vw, 420px) }
+.bg-orn-bot { right: -60px; bottom: -80px; opacity: .55; width: clamp(220px, 30vw, 420px) }
 .wrap { max-width: 780px; margin: 0 auto; padding-left: 18px; padding-right: 18px; width: 100% }
 .main { flex: 1; outline: none; position: relative; z-index: 1 }
 .screen { padding: 26px 0 8px }
