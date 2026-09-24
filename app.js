@@ -63,6 +63,8 @@
       '<circle cx="16" cy="8.5" r="1.9" fill="#2F6BFF"/><circle cx="23.5" cy="16" r="1.9" fill="#2F6BFF"/><circle cx="8.5" cy="16" r="1.9" fill="#2F6BFF"/></svg>';
   };
 
+  var STAR = '<svg class="star" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6 14.9 9l6.6.7-4.9 4.5 1.4 6.5L12 17.4 6 20.7l1.4-6.5L2.5 9.7 9.1 9z"/></svg>';
+
   var ORNAMENT = '<svg class="hero-orn" width="190" height="190" viewBox="0 0 176 176" fill="none" aria-hidden="true"><defs>' +
     '<pattern id="ornPat" width="44" height="44" patternUnits="userSpaceOnUse" viewBox="0 0 32 32">' +
     '<path d="M16 4 L28 16 L16 28 L4 16 Z" stroke="#2F6BFF" stroke-width="1.4" fill="none"/>' +
@@ -81,7 +83,7 @@
     return 'ru';
   }
   function blankForm() {
-    return { name: '', tag: '', about: '', cat: '', age: '', cost: '', sched: '', addr: '', langs: '', tel: '', ig: '', tg: '', photo: '', kw: '', checked: '', lat: '', lng: '', beginner: true, verified: false };
+    return { name: '', tag: '', about: '', cat: '', age: '', cost: '', sched: '', addr: '', langs: '', tel: '', ig: '', tg: '', photo: '', kw: '', checked: '', lat: '', lng: '', beginner: true, verified: false, featured: false };
   }
 
   var state = {
@@ -100,7 +102,7 @@
 
   function normalizeUser(u) {
     return {
-      id: u.id, cat: u.cat, slug: u.slug || u.id, verified: !!u.verified, beginner: !!u.beginner,
+      id: u.id, cat: u.cat, slug: u.slug || u.id, verified: !!u.verified, beginner: !!u.beginner, featured: !!u.featured,
       checked: u.checked || '', mine: true, photo: u.photo || '',
       name: tri(u.name), tag: tri(u.tag || ''), about: tri(u.about || u.tag || ''),
       age: u.age || '—', cost: tri(u.cost || '—'), sched: tri(u.sched || '—'),
@@ -126,7 +128,9 @@
         return words.every(function (w) { return hay.indexOf(w) !== -1; });
       });
     }
-    return list;
+    // Paid "featured" entries sit at the top; everything else keeps its order.
+    var top = list.filter(function (c) { return c.featured; });
+    return top.concat(list.filter(function (c) { return !c.featured; }));
   }
   function lastUpdated() {
     return CLUBS.map(function (c) { return c.checked; }).sort().pop();
@@ -149,7 +153,8 @@
   // ---------- views ----------
   function rowHTML(c, L, T) {
     var showCheck = c.verified;
-    return '<a class="row" href="#/club/' + esc(encodeURIComponent(c.slug)) + '">' +
+    return '<a class="row' + (c.featured ? ' featured' : '') + '" href="#/club/' + esc(encodeURIComponent(c.slug)) + '">' +
+      (c.featured ? '<span class="top-badge">' + STAR + esc(T.featured) + '</span>' : '') +
       '<span class="row-head"><span class="row-name">' + esc(c.name[L]) + '</span><span class="cat-tag">' + esc(catLabel(c.cat, L)) + '</span></span>' +
       '<span class="row-tag">' + esc(c.tag[L]) + '</span>' +
       '<span class="meta"><span>' + esc(c.age) + '</span><span class="sep">·</span><span>' + esc(c.cost[L]) + '</span>' +
@@ -224,6 +229,7 @@
       '<p class="eyebrow">' + esc(catLabel(c.cat, L)) + '</p>' +
       '<h1 class="title">' + esc(c.name[L]) + '</h1>' +
       '<div class="badges"><span class="badge">' + esc(c.age) + '</span>' +
+      (c.featured ? '<span class="badge top">' + STAR + esc(T.featured) + '</span>' : '') +
       (c.beginner ? '<span class="badge beg">' + esc(T.beginner) + '</span>' : '') +
       (c.verified ? '<span class="badge ok">' + esc(T.verified) + '</span>' : '') + '</div>' +
       (photo
@@ -360,7 +366,7 @@
 
   function exportEntry(m) {
     return {
-      id: m.id, cat: m.cat, slug: m.slug, verified: !!m.verified, beginner: !!m.beginner, checked: m.checked,
+      id: m.id, cat: m.cat, slug: m.slug, verified: !!m.verified, beginner: !!m.beginner, featured: !!m.featured, checked: m.checked,
       name: tri(m.name), tag: tri(m.tag || ''), about: tri(m.about || m.tag || ''),
       age: m.age || '—', cost: tri(m.cost || '—'), sched: tri(m.sched || '—'),
       addr: tri(m.addr || '—'), langs: tri(m.langs || '—'),
@@ -392,7 +398,7 @@
       }).join('') + '</div>' +
       '<label class="field" style="margin-bottom:18px"><span>Описание</span>' +
       '<textarea data-field="about" rows="4" placeholder="Кто ходит, как проходит первое занятие, можно ли прийти одному">' + esc(f.about) + '</textarea></label>' +
-      '<div class="toggles">' + [['beginner', 'Подходит новичкам'], ['verified', 'Я связался с клубом']].map(function (tg) {
+      '<div class="toggles">' + [['beginner', 'Подходит новичкам'], ['verified', 'Я связался с сообществом'], ['featured', '★ Лучшее — размещение оплачено']].map(function (tg) {
         return '<button class="toggle" data-action="toggle" data-id="' + tg[0] + '" aria-pressed="' + !!f[tg[0]] + '"><i></i>' + tg[1] + '</button>';
       }).join('') + '</div>' +
       '<p class="label">Координаты — нажми на карту</p>' +
