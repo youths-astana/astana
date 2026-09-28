@@ -386,9 +386,12 @@
           ? '<img class="photo-prev" src="' + ph.dataUrl + '" alt="">' +
             '<p class="hint">Сжато до ' + ph.kb + ' КБ. Дальше выбери, как положить фото на сайт:</p>' +
             '<div class="photo-actions">' +
-              '<button class="btn-small" data-action="photo-download">1. Скачать файл и положить в папку photos</button>' +
-              '<button class="btn-small ghost" data-action="photo-embed">2. Встроить фото прямо в код</button>' +
-            '</div>'
+              '<button class="btn-small' + (ph.kb > 150 ? '' : ' ghost') + '" data-action="photo-download">1. Скачать файл и положить в папку photos</button>' +
+              '<button class="btn-small' + (ph.kb > 150 ? ' ghost' : '') + '" data-action="photo-embed">2. Встроить фото прямо в код</button>' +
+            '</div>' +
+            (ph.kb > 150
+              ? '<p class="warn">Фото тяжёлое (' + ph.kb + ' КБ). Лучше вариант 1: если встроить его в код, файл data.js вырастет примерно на ' + Math.round(ph.kb * 1.35) + ' КБ.</p>'
+              : '')
           : '<p class="hint">Файл уменьшается до 1400 px и сжимается сам. Ссылки на Google Диск, Instagram и Pinterest не работают: это ссылки на страницу, а не на картинку.</p>') +
         (current
           ? '<p class="photo-now">В карточке сейчас: <code>' + esc(f.photo.slice(0, 60) + (f.photo.length > 60 ? '…' : '')) + '</code> ' +

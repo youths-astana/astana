@@ -240,6 +240,7 @@ h1.map-title { margin: 0 0 14px; font-size: clamp(22px, 4.6vw, 28px); font-weigh
 .btn-small:hover { background: var(--accent-dk) }
 .btn-small.ghost { background: #fff; color: var(--accent-dk); border: 1px solid var(--field) }
 .btn-small.ghost:hover { background: var(--chip) }
+.photo-box .warn { margin: 0; font-size: 13px; line-height: 1.5; color: #8A5B12; background: var(--gold-lt); border: 1px solid var(--gold); border-radius: 9px; padding: 9px 11px }
 .photo-now { margin: 0; font-size: 13px; color: var(--soft); word-break: break-all }
 .photo-now code { font-family: var(--mono); font-size: 12px; color: var(--ink) }
 .photo-box .field { width: 100% }
