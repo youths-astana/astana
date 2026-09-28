@@ -8,5 +8,8 @@ window.YOUTHS_CONFIG = {
   reportEmail: 'wwhenlix@gmail.com',
   // GoatCounter code for anonymous visit statistics (no cookies, no personal data), e.g. 'youths-astana'
   // from https://youths-astana.goatcounter.com. Empty = statistics are off.
-  goatcounter: 'youths-astana'
+  goatcounter: 'youths-astana',
+  // Show the "+ Панель создателя" link in the footer to every visitor.
+  // false = the link is hidden; the panel still opens at <site>#/add
+  creatorLink: false
 };

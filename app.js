@@ -618,6 +618,8 @@
     document.getElementById('foot-about').textContent = T.nav_about;
     document.getElementById('foot-map').textContent = T.nav_map;
     document.getElementById('foot-priv').textContent = T.foot_priv;
+    // The creator panel is for the site owner, so its link is hidden unless config says otherwise.
+    document.getElementById('foot-add').hidden = !CFG.creatorLink;
   }
 
   function pageTitle(r) {
