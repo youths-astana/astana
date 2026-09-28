@@ -230,6 +230,20 @@ h1.map-title { margin: 0 0 14px; font-size: clamp(22px, 4.6vw, 28px); font-weigh
 .toggle i { width: 16px; height: 16px; border-radius: 5px; border: 1px solid oklch(0.9 0.008 260); display: block; background: #fff }
 .toggle[aria-pressed="true"] { color: var(--accent-dk); border-color: var(--accent) }
 .toggle[aria-pressed="true"] i { background: var(--accent); border-color: var(--accent) }
+.photo-box { display: grid; gap: 10px; justify-items: start; padding: 14px; border: 1px solid var(--line-2); border-radius: 12px; background: #fff; margin-bottom: 22px }
+.file-btn { display: inline-flex; align-items: center; min-height: 46px; padding: 0 16px; border-radius: 10px; border: 1px dashed var(--accent); color: var(--accent-dk); background: var(--accent-bg); font-size: 14.5px; font-weight: 600; cursor: pointer }
+.file-btn:hover { background: #E2EBFF }
+.photo-prev { width: 100%; max-height: 220px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line-2) }
+.photo-box .hint { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted) }
+.photo-actions { display: flex; flex-wrap: wrap; gap: 8px }
+.btn-small { min-height: 44px; padding: 0 14px; border: 0; border-radius: 10px; background: var(--accent); color: #fff; font-size: 13.5px; font-weight: 600 }
+.btn-small:hover { background: var(--accent-dk) }
+.btn-small.ghost { background: #fff; color: var(--accent-dk); border: 1px solid var(--field) }
+.btn-small.ghost:hover { background: var(--chip) }
+.photo-now { margin: 0; font-size: 13px; color: var(--soft); word-break: break-all }
+.photo-now code { font-family: var(--mono); font-size: 12px; color: var(--ink) }
+.photo-box .field { width: 100% }
+
 .pick-box { border: 1px solid oklch(0.9 0.008 260); border-radius: 12px; overflow: hidden; margin-bottom: 22px }
 .pick { height: 230px; width: 100%; background: oklch(0.96 0.004 250) }
 .coords { padding: 10px 13px; border-top: 1px solid var(--line-2); font-family: var(--mono); font-size: 11.5px; color: oklch(0.5 0.02 260) }

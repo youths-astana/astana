@@ -55,6 +55,15 @@
   }
   function digits(s) { return String(s || '').replace(/[^0-9]/g, ''); }
   function safeUrl(u) { return /^https?:\/\//i.test(u || '') ? u : ''; }
+  // A photo can be a direct link, a file published next to the site (photos/name.jpg)
+  // or an image embedded straight into the data file.
+  function photoSrc(u) {
+    u = String(u || '').trim();
+    if (/^https?:\/\//i.test(u)) return u;
+    if (/^data:image\/(png|jpeg|webp|gif);base64,/i.test(u)) return u;
+    if (/^[\w][\w\-/]*\.(jpe?g|png|webp|avif|gif)$/i.test(u)) return u;
+    return '';
+  }
 
   var LOGO = function (size) {
     return '<svg class="logo" width="' + size + '" height="' + size + '" viewBox="0 0 32 32" fill="none" aria-hidden="true">' +
@@ -97,7 +106,8 @@
     justSaved: null,
     pin: null,
     copied: false,
-    linkCopied: false
+    linkCopied: false,
+    photo: null // выбранный и сжатый файл: { dataUrl, blob, kb }
   };
 
   function normalizeUser(u) {
@@ -213,7 +223,7 @@
         '<a class="btn-outline" href="#/">' + esc(T.empty_cta) + '</a></div></section>';
     }
     var reported = state.reported.indexOf(c.id) !== -1;
-    var photo = safeUrl(c.photo);
+    var photo = photoSrc(c.photo);
     var tel = digits(c.tel);
     var geo = !isNaN(c.lat) && !isNaN(c.lng);
     var url = shareUrl(c);
@@ -308,7 +318,7 @@
 
   // ---------- creator panel (Russian only — it is for the site admin) ----------
   var FORM_FIELDS = [
-    { key: 'name', label: 'Название клуба', ph: 'Робокод', wide: true },
+    { key: 'name', label: 'Название сообщества', ph: 'Например: Дебатный клуб «Сөз»', wide: true },
     { key: 'tag', label: 'Одна строка для каталога', ph: 'Собираем роботов и учим их ездить по линии', wide: true },
     { key: 'age', label: 'Возраст', ph: '12–17' },
     { key: 'cost', label: 'Стоимость', ph: 'Бесплатно' },
@@ -318,7 +328,6 @@
     { key: 'tel', label: 'Телефон / WhatsApp', ph: '+7 701 234 56 78', type: 'tel' },
     { key: 'ig', label: 'Instagram без @', ph: 'robocode.ast' },
     { key: 'tg', label: 'Telegram без @', ph: 'robocode_ast' },
-    { key: 'photo', label: 'Ссылка на фото', ph: 'https://…', type: 'url' },
     { key: 'checked', label: 'Дата проверки', ph: today(), type: 'date' },
     { key: 'kw', label: 'Ключевые слова для поиска', ph: 'робот arduino инженер', wide: true }
   ];
@@ -359,6 +368,68 @@
     if (cats) cats.innerHTML = formCatsHTML();
   }
 
+  // Кириллические названия дают пустой slug, поэтому добавляем метку времени,
+  // иначе файлы разных сообществ перезапишут друг друга.
+  function photoName() {
+    var base = slugify(state.form.name);
+    return (base || 'photo-' + Date.now().toString(36)) + '.jpg';
+  }
+
+  function photoBlockHTML() {
+    var f = state.form, ph = state.photo;
+    var current = photoSrc(f.photo);
+    return '<p class="label">Фото сообщества</p>' +
+      '<div class="photo-box" id="photo-box">' +
+        '<label class="file-btn">' + (ph ? 'Выбрать другое фото' : 'Выбрать фото с компьютера') +
+          '<input type="file" accept="image/*" data-photo hidden></label>' +
+        (ph
+          ? '<img class="photo-prev" src="' + ph.dataUrl + '" alt="">' +
+            '<p class="hint">Сжато до ' + ph.kb + ' КБ. Дальше выбери, как положить фото на сайт:</p>' +
+            '<div class="photo-actions">' +
+              '<button class="btn-small" data-action="photo-download">1. Скачать файл и положить в папку photos</button>' +
+              '<button class="btn-small ghost" data-action="photo-embed">2. Встроить фото прямо в код</button>' +
+            '</div>'
+          : '<p class="hint">Файл уменьшается до 1400 px и сжимается сам. Ссылки на Google Диск, Instagram и Pinterest не работают: это ссылки на страницу, а не на картинку.</p>') +
+        (current
+          ? '<p class="photo-now">В карточке сейчас: <code>' + esc(f.photo.slice(0, 60) + (f.photo.length > 60 ? '…' : '')) + '</code> ' +
+            '<button class="linkish" data-action="photo-clear">убрать</button></p>'
+          : '') +
+        '<label class="field"><span>Или прямая ссылка на картинку</span>' +
+        '<input data-field="photo" type="url" value="' + esc(/^data:/.test(f.photo) ? '' : f.photo || '') + '" placeholder="https://…/foto.jpg"></label>' +
+      '</div>';
+  }
+
+  function updatePhotoBlock() {
+    var box = document.getElementById('photo-box');
+    if (box) box.outerHTML = photoBlockHTML().replace('<p class="label">Фото сообщества</p>', '');
+  }
+
+  // Большие снимки с телефона ужимаются, иначе файл сайта распухает.
+  function handlePhotoFile(file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var max = 1400, w = img.width, h = img.height;
+        if (w > max || h > max) { var k = max / Math.max(w, h); w = Math.round(w * k); h = Math.round(h * k); }
+        var cv = document.createElement('canvas');
+        cv.width = w; cv.height = h;
+        cv.getContext('2d').drawImage(img, 0, 0, w, h);
+        cv.toBlob(function (blob) {
+          var fr = new FileReader();
+          fr.onload = function () {
+            state.photo = { dataUrl: fr.result, blob: blob, kb: Math.round(blob.size / 1024) };
+            updatePhotoBlock();
+          };
+          fr.readAsDataURL(blob);
+        }, 'image/jpeg', 0.75);
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
   function coordText() {
     var f = state.form;
     return (f.lat && f.lng) ? ('широта ' + f.lat + ' · долгота ' + f.lng) : 'координаты не выбраны';
@@ -385,10 +456,10 @@
     return '<section class="screen tight creator">' +
       '<a class="back" href="#/">← Каталог</a>' +
       '<p class="eyebrow" style="font-size:10.5px">панель создателя</p>' +
-      '<h1 class="title">Добавить клуб</h1>' +
-      '<p class="intro">Клуб заполняет Google Форму, ты переносишь ответы сюда. Клуб сразу появляется в каталоге и пином на карте — но только в этом браузере. Чтобы клуб увидели все, скопируй готовый код внизу в массив CLUBS файла js/data.js и опубликуй сайт.</p>' +
-      (saved ? '<div class="saved" role="status"><span>Клуб добавлен — он уже в каталоге и на карте.</span>' +
-        '<a class="a1" href="#/club/' + esc(encodeURIComponent(saved.slug)) + '">Страница клуба</a><a class="a2" href="#/map">На карте</a></div>' : '') +
+      '<h1 class="title">Добавить сообщество</h1>' +
+      '<p class="intro">Сообщество заполняет Google Форму, ты переносишь ответы сюда. Оно сразу появляется в каталоге и пином на карте — но только в этом браузере. Чтобы его увидели все, скопируй код внизу в массив CLUBS файла data.js и опубликуй сайт.</p>' +
+      (saved ? '<div class="saved" role="status"><span>Сообщество добавлено — оно уже в каталоге и на карте.</span>' +
+        '<a class="a1" href="#/club/' + esc(encodeURIComponent(saved.slug)) + '">Страница сообщества</a><a class="a2" href="#/map">На карте</a></div>' : '') +
       '<p class="label">Секция</p>' +
       '<div id="guess">' + guessHTML() + '</div>' +
       '<div class="chips" id="form-cats" style="margin:0 0 22px">' + formCatsHTML() + '</div>' +
@@ -398,7 +469,8 @@
       }).join('') + '</div>' +
       '<label class="field" style="margin-bottom:18px"><span>Описание</span>' +
       '<textarea data-field="about" rows="4" placeholder="Кто ходит, как проходит первое занятие, можно ли прийти одному">' + esc(f.about) + '</textarea></label>' +
-      '<div class="toggles">' + [['beginner', 'Подходит новичкам'], ['verified', 'Я связался с сообществом'], ['featured', '★ Лучшее — размещение оплачено']].map(function (tg) {
+      photoBlockHTML() +
+      '<div class="toggles">' + [['beginner', 'Подходит новичкам'], ['verified', 'Я связался с организатором'], ['featured', '★ Лучшее — размещение оплачено']].map(function (tg) {
         return '<button class="toggle" data-action="toggle" data-id="' + tg[0] + '" aria-pressed="' + !!f[tg[0]] + '"><i></i>' + tg[1] + '</button>';
       }).join('') + '</div>' +
       '<p class="label">Координаты — нажми на карту</p>' +
@@ -410,7 +482,7 @@
           return '<div class="mine-item"><span class="txt"><b>' + esc(m.name) + '</b><span>' + esc(catLabel(m.cat, 'ru') + ' · ' + (m.age || '—') + ' · ' + (m.cost || '—')) + '</span></span>' +
             '<a href="#/club/' + esc(encodeURIComponent(m.slug)) + '">Открыть</a><button data-action="delete" data-id="' + esc(m.id) + '">Удалить</button></div>';
         }).join('') + '</div></div>' +
-        '<div class="block" style="margin-bottom:0"><div class="json-head"><p>Код для js/data.js</p><button data-action="copy-json">' + (state.copied ? 'Скопировано' : 'Скопировать') + '</button></div>' +
+        '<div class="block" style="margin-bottom:0"><div class="json-head"><p>Код для data.js</p><button data-action="copy-json">' + (state.copied ? 'Скопировано' : 'Скопировать') + '</button></div>' +
         '<textarea class="json" readonly rows="10">' + esc(jsonOut()) + '</textarea></div>' : '') +
       '</section>';
   }
@@ -643,16 +715,42 @@
         saveClub();
         break;
       case 'delete':
-        if (!window.confirm('Удалить этот клуб из каталога в этом браузере?')) return;
+        if (!window.confirm('Удалить это сообщество из каталога в этом браузере?')) return;
         state.mine = state.mine.filter(function (c) { return c.id !== id; });
         save(STORE_KEY, state.mine);
         state.justSaved = null;
         render({ keepScroll: true });
         break;
+      case 'photo-download': {
+        if (!state.photo) return;
+        var name = photoName();
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(state.photo.blob);
+        a.download = name;
+        a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+        state.form.photo = 'photos/' + name;
+        updatePhotoBlock();
+        break;
+      }
+      case 'photo-embed':
+        if (!state.photo) return;
+        state.form.photo = state.photo.dataUrl;
+        updatePhotoBlock();
+        break;
+      case 'photo-clear':
+        state.form.photo = '';
+        state.photo = null;
+        updatePhotoBlock();
+        break;
       case 'copy-json':
         copyText(jsonOut()).then(function () { state.copied = true; el.textContent = 'Скопировано'; });
         break;
     }
+  });
+
+  document.addEventListener('change', function (e) {
+    if (e.target.hasAttribute && e.target.hasAttribute('data-photo')) handlePhotoFile(e.target.files[0]);
   });
 
   document.addEventListener('input', function (e) {
@@ -679,10 +777,10 @@
 
   function saveClub() {
     var f = state.form;
-    var err = !f.name.trim() ? 'Впиши название клуба.'
+    var err = !f.name.trim() ? 'Впиши название сообщества.'
       : !f.cat ? 'Выбери секцию.'
       : (!f.lat || !f.lng || isNaN(Number(f.lat)) || isNaN(Number(f.lng))) ? 'Поставь точку на карте — без координат клуб не появится на карте.'
-      : (f.photo && !safeUrl(f.photo)) ? 'Ссылка на фото должна начинаться с https://'
+      : (f.photo && !photoSrc(f.photo)) ? 'Фото не распознано: выбери файл с компьютера или дай прямую ссылку на картинку (адрес должен заканчиваться на .jpg или .png).'
       : '';
     if (err) { state.formErr = err; showFormErr(); return; }
     var id = 'u' + Date.now().toString(36);
@@ -695,6 +793,7 @@
     state.mine = state.mine.concat([rec]);
     save(STORE_KEY, state.mine);
     state.form = blankForm();
+    state.photo = null;
     state.formErr = '';
     state.justSaved = id;
     state.copied = false;
