@@ -124,6 +124,9 @@ h1.hero { margin: 0 0 10px; font-size: clamp(27px, 5.6vw, 38px); line-height: 1.
 .badge.top { font-size: 12.5px; padding: 6px 11px }
 .star { fill: currentColor; flex: none }
 
+.more { display: block; width: 100%; min-height: 50px; margin: 14px 0 0; border: 1px solid var(--field); border-radius: 12px; background: #fff; font-size: 15px; font-weight: 600; color: var(--accent-dk) }
+.more:hover { border-color: var(--accent); color: var(--accent) }
+
 .empty { border: 1px dashed oklch(0.85 0.01 260); border-radius: 12px; padding: 34px 20px; text-align: center }
 .empty h2 { margin: 0 0 4px; font-size: 16px; font-weight: 600 }
 .empty p { margin: 0 0 16px; font-size: 14px; color: oklch(0.5 0.02 260) }

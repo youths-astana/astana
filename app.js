@@ -2,7 +2,8 @@
   'use strict';
 
   var CATS = window.YOUTHS_DATA.CATS;
-  var CLUBS = window.YOUTHS_DATA.CLUBS;
+  var CLUBS = (window.YOUTHS_DATA.CLUBS || []).slice(); // заполняется из communities.json
+  var PAGE = 30; // сколько карточек показываем за раз
   var CAT_HINTS = window.YOUTHS_DATA.CAT_HINTS || {};
   var STR = window.YOUTHS_STR;
   var CFG = window.YOUTHS_CONFIG || {};
@@ -107,6 +108,7 @@
     pin: null,
     copied: false,
     linkCopied: false,
+    shown: PAGE, // сколько карточек списка показано
     photo: null // выбранный и сжатый файл: { dataUrl, blob, kb }
   };
 
@@ -126,15 +128,23 @@
   function findClub(key) {
     return allClubs().filter(function (c) { return c.slug === key || c.id === key; })[0];
   }
+  function hayOf(c) {
+    if (!c.__hay) {
+      c.__hay = [c.name.ru, c.name.kz, c.name.en, c.kw,
+        catLabel(c.cat, 'ru'), catLabel(c.cat, 'kz'), catLabel(c.cat, 'en'),
+        c.tag.ru, c.tag.kz, c.tag.en].join(' ').toLowerCase();
+    }
+    return c.__hay;
+  }
+
   function filtered() {
-    var L = state.lang, q = state.q.trim().toLowerCase();
+    var q = state.q.trim().toLowerCase();
     var list = allClubs();
     if (state.cat !== 'all') list = list.filter(function (c) { return c.cat === state.cat; });
     if (q) {
       var words = q.split(/\s+/);
       list = list.filter(function (c) {
-        var hay = [c.name.ru, c.name.kz, c.name.en, c.kw,
-          catLabel(c.cat, 'ru'), catLabel(c.cat, 'kz'), catLabel(c.cat, 'en'), c.tag[L]].join(' ').toLowerCase();
+        var hay = hayOf(c);
         return words.every(function (w) { return hay.indexOf(w) !== -1; });
       });
     }
@@ -181,7 +191,10 @@
       return head + '<div class="empty"><h2>' + esc(T.empty_h) + '</h2><p>' + esc(T.empty_p) + '</p>' +
         '<button class="btn-outline" data-action="reset">' + esc(T.empty_cta) + '</button></div>';
     }
-    return head + '<div class="list">' + list.map(function (c) { return rowHTML(c, L, T); }).join('') + '</div>';
+    var shown = list.slice(0, state.shown);
+    var rest = list.length - shown.length;
+    return head + '<div class="list">' + shown.map(function (c) { return rowHTML(c, L, T); }).join('') + '</div>' +
+      (rest > 0 ? '<button class="more" data-action="more">' + esc(T.more) + ' (' + rest + ')</button>' : '');
   }
 
   function chipsHTML() {
@@ -291,11 +304,14 @@
   }
 
   function mapListHTML() {
-    var L = state.lang;
-    return allClubs().map(function (c) {
+    var L = state.lang, T = STR[L];
+    var all = allClubs();
+    var rest = all.length - state.shown;
+    return all.slice(0, state.shown).map(function (c) {
       return '<a class="map-item" href="#/club/' + esc(encodeURIComponent(c.slug)) + '"><span class="dot' + (c.mine ? ' mine' : '') + '" style="width:8px;height:8px"></span>' +
         '<b>' + esc(c.name[L]) + '</b><span>' + esc(c.addr[L]) + '</span></a>';
-    }).join('');
+    }).join('') +
+    (rest > 0 ? '<button class="more" data-action="more-map">' + esc(T.more) + ' (' + rest + ')</button>' : '');
   }
 
   function pinHTML() {
@@ -312,7 +328,7 @@
       '<a class="back" href="#/">' + esc(T.back) + '</a>' +
       '<h1 class="map-title">' + esc(T.map_h1) + '</h1>' +
       '<div class="map-box"><div class="map" id="map"></div><div id="pin">' + pinHTML() + '</div></div>' +
-      '<div class="map-list">' + mapListHTML() + '</div>' +
+      '<div class="map-list" id="map-list">' + mapListHTML() + '</div>' +
       '</section>';
   }
 
@@ -452,6 +468,20 @@
     return state.mine.map(function (m) { return JSON.stringify(exportEntry(m), null, 2); }).join(',\n');
   }
 
+  // Полный каталог: то, что уже на сайте, плюс добавленное в этом браузере.
+  function catalogueFile() {
+    return JSON.stringify(CLUBS.concat(state.mine.map(exportEntry)), null, 1);
+  }
+
+  function downloadCatalogue() {
+    var blob = new Blob([catalogueFile()], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'communities.json';
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+  }
+
   function addView() {
     var f = state.form;
     var mine = state.mine;
@@ -485,8 +515,13 @@
           return '<div class="mine-item"><span class="txt"><b>' + esc(m.name) + '</b><span>' + esc(catLabel(m.cat, 'ru') + ' · ' + (m.age || '—') + ' · ' + (m.cost || '—')) + '</span></span>' +
             '<a href="#/club/' + esc(encodeURIComponent(m.slug)) + '">Открыть</a><button data-action="delete" data-id="' + esc(m.id) + '">Удалить</button></div>';
         }).join('') + '</div></div>' +
-        '<div class="block" style="margin-bottom:0"><div class="json-head"><p>Код для data.js</p><button data-action="copy-json">' + (state.copied ? 'Скопировано' : 'Скопировать') + '</button></div>' +
-        '<textarea class="json" readonly rows="10">' + esc(jsonOut()) + '</textarea></div>' : '') +
+        '<div class="block" style="margin-bottom:0">' +
+        '<p class="block-h">Перенести на сайт</p>' +
+        '<p class="intro" style="margin-bottom:14px">Скачай файл каталога и загрузи его на GitHub вместо старого <code>communities.json</code>. ' +
+        'В файле уже всё: и то, что на сайте, и добавленное здесь (' + mine.length + ').</p>' +
+        '<button class="btn-small" data-action="download-catalogue">Скачать communities.json</button>' +
+        '<div class="json-head" style="margin-top:22px"><p>Или скопировать код вручную</p><button data-action="copy-json">' + (state.copied ? 'Скопировано' : 'Скопировать') + '</button></div>' +
+        '<textarea class="json" readonly rows="8">' + esc(jsonOut()) + '</textarea></div>' : '') +
       '</section>';
   }
 
@@ -638,7 +673,7 @@
     var key = r.screen + '/' + (r.id || '');
     var changedPage = key !== lastKey;
     lastKey = key;
-    if (changedPage) { state.pin = null; state.linkCopied = false; if (r.screen !== 'add') state.justSaved = null; }
+    if (changedPage) { state.pin = null; state.linkCopied = false; state.shown = PAGE; if (r.screen !== 'add') state.justSaved = null; }
 
     destroyMaps();
     renderChrome(r);
@@ -680,11 +715,12 @@
         break;
       case 'cat':
         state.cat = id;
+        state.shown = PAGE;
         document.getElementById('chips').innerHTML = chipsHTML();
         document.getElementById('results').innerHTML = resultsHTML();
         break;
       case 'reset':
-        state.q = ''; state.cat = 'all';
+        state.q = ''; state.cat = 'all'; state.shown = PAGE;
         render({ keepScroll: true });
         break;
       case 'report': {
@@ -698,6 +734,14 @@
         render({ keepScroll: true });
         break;
       }
+      case 'more':
+        state.shown += PAGE;
+        document.getElementById('results').innerHTML = resultsHTML();
+        break;
+      case 'more-map':
+        state.shown += PAGE;
+        document.getElementById('map-list').innerHTML = mapListHTML();
+        break;
       case 'copy-link':
         copyText(el.getAttribute('data-url')).then(function () {
           state.linkCopied = true;
@@ -748,6 +792,9 @@
         state.photo = null;
         updatePhotoBlock();
         break;
+      case 'download-catalogue':
+        downloadCatalogue();
+        break;
       case 'copy-json':
         copyText(jsonOut()).then(function () { state.copied = true; el.textContent = 'Скопировано'; });
         break;
@@ -762,6 +809,7 @@
     var t = e.target;
     if (t.id === 'q') {
       state.q = t.value;
+      state.shown = PAGE;
       document.getElementById('results').innerHTML = resultsHTML();
       return;
     }
@@ -837,6 +885,15 @@
     statsSend({ path: path, title: document.title });
   }
 
+  // Каталог лежит в communities.json: так размер страницы не зависит от числа сообществ.
+  function loadCatalogue() {
+    return fetch('communities.json', { cache: 'no-cache' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (list) { if (Array.isArray(list)) CLUBS = list; })
+      .catch(function () { /* файла нет или сайт открыт через file:// — каталог остаётся пустым */ });
+  }
+
   loadStats();
   render();
+  loadCatalogue().then(function () { render({ keepScroll: true }); });
 })();
