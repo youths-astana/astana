@@ -124,7 +124,16 @@
       kw: [u.name, u.kw, u.tag].join(' ')
     };
   }
-  function allClubs() { return CLUBS.concat(state.mine.map(normalizeUser)); }
+  function allClubs() {
+    var seen = {}, out = [];
+    CLUBS.concat(state.mine.map(normalizeUser)).forEach(function (c) {
+      var key = (c.id || '') + '|' + (c.slug || '');
+      if (seen[key]) return;
+      seen[key] = true;
+      out.push(c);
+    });
+    return out;
+  }
   function findClub(key) {
     return allClubs().filter(function (c) { return c.slug === key || c.id === key; })[0];
   }
@@ -469,8 +478,16 @@
   }
 
   // Полный каталог: то, что уже на сайте, плюс добавленное в этом браузере.
+  // Повторы убираем: одно и то же сообщество может быть и там, и там.
   function catalogueFile() {
-    return JSON.stringify(CLUBS.concat(state.mine.map(exportEntry)), null, 1);
+    var seen = {}, out = [];
+    CLUBS.concat(state.mine.map(exportEntry)).forEach(function (c) {
+      var key = (c.id || '') + '|' + (c.slug || '');
+      if (seen[key]) return;
+      seen[key] = true;
+      out.push(c);
+    });
+    return JSON.stringify(out, null, 1);
   }
 
   function downloadCatalogue() {
