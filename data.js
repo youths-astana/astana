@@ -24,58 +24,7 @@ const CAT_HINTS = {
   mun:   'mun модель оон дипломат делегат резолюц комитет debate committee un model мун'
 };
 
-const CLUBS = [{
-  "id": "umulb7kyy",
-  "cat": "vol",
-  "slug": "tumar-global",
-  "verified": true,
-  "beginner": true,
-  "featured": false,
-  "checked": "2026-09-28",
-  "name": {
-    "ru": "Tumar.global",
-    "kz": "Tumar.global",
-    "en": "Tumar.global"
-  },
-  "tag": {
-    "ru": "Являемся волонтерами на больших проектах",
-    "kz": "Являемся волонтерами на больших проектах",
-    "en": "Являемся волонтерами на больших проектах"
-  },
-  "about": {
-    "ru": "Являемся волонтерами на матчах Жеңіс \n500+ Волонтеров",
-    "kz": "Являемся волонтерами на матчах Жеңіс \n500+ Волонтеров",
-    "en": "Являемся волонтерами на матчах Жеңіс \n500+ Волонтеров"
-  },
-  "age": "14+",
-  "cost": {
-    "ru": "Бесплатно",
-    "kz": "Бесплатно",
-    "en": "Бесплатно"
-  },
-  "sched": {
-    "ru": "Проекты будут в WhatsApp",
-    "kz": "Проекты будут в WhatsApp",
-    "en": "Проекты будут в WhatsApp"
-  },
-  "addr": {
-    "ru": "—",
-    "kz": "—",
-    "en": "—"
-  },
-  "langs": {
-    "ru": "Русский, Казахский, Английский",
-    "kz": "Русский, Казахский, Английский",
-    "en": "Русский, Казахский, Английский"
-  },
-  "tel": "‪+7 775 767 0042‬",
-  "ig": "Tumar.global",
-  "tg": "",
-  "photo": "photos/tumar-global.jpg",
-  "lat": 51.10831,
-  "lng": 71.40298,
-  "kw": "Волонтерство друзья Tumar"
-}
+const CLUBS = [
 ];
   return { CATS: CATS, CAT_HINTS: CAT_HINTS, CLUBS: CLUBS };
 })();
