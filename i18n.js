@@ -1,5 +1,5 @@
 // Interface strings for ru / kz / en.
-window.YOUTHS_STR = (function () {
+window.QOSYL_STR = (function () {
 const STR = {
   ru: {
     nav_about: 'О проекте', nav_map: 'Карта', back: '← Все сообщества', open: 'Открыть',
@@ -20,7 +20,7 @@ const STR = {
     share_h: 'Ссылка и QR для афиши', similar_h: 'Похожие сообщества',
     featured: 'Лучшее',
     about_h1: 'Сообщества есть. Найти их — сложно.',
-    about_lead: 'Мы собрали сообщества Астаны в один каталог, чтобы подростку хватило одной ссылки вместо десяти чатов.',
+    about_lead: '«Qosyl» по-казахски значит «присоединяйся». Мы собрали сообщества Астаны в один каталог, чтобы подростку хватило одной ссылки вместо десяти чатов.',
     about_s: [
       { h: 'С чего началось', p: 'Сообщества города живут в Instagram, WhatsApp, Telegram и в разговорах между друзьями. Единого списка нет: чтобы найти секцию, нужно знать человека, который о ней слышал.' },
       { h: 'Что говорят исследования', p: 'Главная польза таких сообществ — не оценки, а друзья и чувство «я здесь свой». Поэтому мы пишем в первую очередь про то, кто туда ходит и как прийти, а не про достижения.' },
@@ -59,7 +59,7 @@ const STR = {
     share_h: 'Афиша үшін сілтеме және QR', similar_h: 'Ұқсас қоғамдастықтар',
     featured: 'Үздік',
     about_h1: 'Қоғамдастықтар бар. Тек оларды табу қиын.',
-    about_lead: 'Он чаттың орнына бір сілтеме жетсін деп, Астана қоғамдастықтарын бір каталогқа жинадық.',
+    about_lead: '«Qosyl» — «қосыл» деген сөз. Он чаттың орнына бір сілтеме жетсін деп, Астана қоғамдастықтарын бір каталогқа жинадық.',
     about_s: [
       { h: 'Неден басталды', p: 'Қаладағы қоғамдастықтар Instagram, WhatsApp, Telegram-да және достардың әңгімесінде тұр. Ортақ тізім жоқ: үйірме табу үшін ол туралы естіген адамды білу керек.' },
       { h: 'Зерттеулер не дейді', p: 'Мұндай қоғамдастықтың басты пайдасы — баға емес, дос және «мен осындамын» деген сезім. Сондықтан біз алдымен онда кім жүретінін және қалай келуге болатынын жазамыз.' },
@@ -98,7 +98,7 @@ const STR = {
     share_h: 'Link and QR for posters', similar_h: 'Similar communities',
     featured: 'Featured',
     about_h1: 'The communities exist. Finding them is the hard part.',
-    about_lead: 'We put Astana’s communities into one catalogue so a teenager needs one link instead of ten group chats.',
+    about_lead: '“Qosyl” means “join” in Kazakh. We put Astana’s communities into one catalogue so a teenager needs one link instead of ten group chats.',
     about_s: [
       { h: 'Where this started', p: 'Communities in the city live on Instagram, WhatsApp, Telegram and in conversations between friends. There is no single list: to find one you have to know someone who has heard of it.' },
       { h: 'What the research says', p: 'The clearest benefit of these communities is not grades but friendships and a sense of belonging. So we lead with who goes there and how to show up, rather than with achievements.' },
@@ -121,8 +121,8 @@ const STR = {
 };
 
 // Strings added for the live site (not in the original mock).
-Object.assign(STR.ru, { more: 'Показать ещё', updated_pre: 'обновлено', copy_link: 'Скопировать ссылку', link_copied: 'Ссылка скопирована', stats_h: 'Какую статистику мы видим', stats_p: 'Только анонимные цифры: сколько раз открывали страницы и нажимали «связаться». Без cookies, без имён и номеров, без слежки между сайтами. Считает сервис GoatCounter — так мы понимаем, какие сообщества ищут чаще.', qr_dl: 'Скачать QR', not_found_h: 'Сообщество не найдено', not_found_p: 'Возможно, его убрали из каталога.', search_label: 'Поиск сообществ', lang_label: 'Язык', site: 'Youths · Астана' });
-Object.assign(STR.kz, { more: 'Тағы көрсету', updated_pre: 'жаңартылды', copy_link: 'Сілтемені көшіру', link_copied: 'Сілтеме көшірілді', stats_h: 'Қандай статистиканы көреміз', stats_p: 'Тек анонимді сандар: беттер қанша рет ашылды және «байланысу» қанша рет басылды. Cookie жоқ, аты-жөн мен нөмір жоқ, басқа сайттар арасында бақылау жоқ. Санауды GoatCounter сервисі жүргізеді — осылайша қай қоғамдастықтарды жиі іздейтінін түсінеміз.', qr_dl: 'QR жүктеу', not_found_h: 'Қоғамдастық табылмады', not_found_p: 'Мүмкін, ол каталогтан алынып тасталған.', search_label: 'Қоғамдастықтарды іздеу', lang_label: 'Тіл', site: 'Youths · Астана' });
-Object.assign(STR.en, { more: 'Show more', updated_pre: 'updated', copy_link: 'Copy link', link_copied: 'Link copied', stats_h: 'What statistics we see', stats_p: 'Only anonymous numbers: how often pages are opened and how often people tap to get in touch. No cookies, no names or phone numbers, no cross-site tracking. Counting is done by GoatCounter, so we can see which communities people look for most.', qr_dl: 'Download QR', not_found_h: 'Community not found', not_found_p: 'It may have been removed from the catalogue.', search_label: 'Search communities', lang_label: 'Language', site: 'Youths · Astana' });
+Object.assign(STR.ru, { more: 'Показать ещё', updated_pre: 'обновлено', copy_link: 'Скопировать ссылку', link_copied: 'Ссылка скопирована', stats_h: 'Какую статистику мы видим', stats_p: 'Только анонимные цифры: сколько раз открывали страницы и нажимали «связаться». Без cookies, без имён и номеров, без слежки между сайтами. Считает сервис GoatCounter — так мы понимаем, какие сообщества ищут чаще.', qr_dl: 'Скачать QR', not_found_h: 'Сообщество не найдено', not_found_p: 'Возможно, его убрали из каталога.', search_label: 'Поиск сообществ', lang_label: 'Язык', site: 'Qosyl · Астана' });
+Object.assign(STR.kz, { more: 'Тағы көрсету', updated_pre: 'жаңартылды', copy_link: 'Сілтемені көшіру', link_copied: 'Сілтеме көшірілді', stats_h: 'Қандай статистиканы көреміз', stats_p: 'Тек анонимді сандар: беттер қанша рет ашылды және «байланысу» қанша рет басылды. Cookie жоқ, аты-жөн мен нөмір жоқ, басқа сайттар арасында бақылау жоқ. Санауды GoatCounter сервисі жүргізеді — осылайша қай қоғамдастықтарды жиі іздейтінін түсінеміз.', qr_dl: 'QR жүктеу', not_found_h: 'Қоғамдастық табылмады', not_found_p: 'Мүмкін, ол каталогтан алынып тасталған.', search_label: 'Қоғамдастықтарды іздеу', lang_label: 'Тіл', site: 'Qosyl · Астана' });
+Object.assign(STR.en, { more: 'Show more', updated_pre: 'updated', copy_link: 'Copy link', link_copied: 'Link copied', stats_h: 'What statistics we see', stats_p: 'Only anonymous numbers: how often pages are opened and how often people tap to get in touch. No cookies, no names or phone numbers, no cross-site tracking. Counting is done by GoatCounter, so we can see which communities people look for most.', qr_dl: 'Download QR', not_found_h: 'Community not found', not_found_p: 'It may have been removed from the catalogue.', search_label: 'Search communities', lang_label: 'Language', site: 'Qosyl · Astana' });
   return STR;
 })();

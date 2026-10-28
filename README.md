@@ -1,4 +1,4 @@
-# Youths · Астана
+# Qosyl · Астана
 
 Каталог клубов для подростков Астаны: https://youths-astana.github.io/astana/
 

@@ -1,5 +1,5 @@
 // Catalogue data. Add new communities to CLUBS (the creator panel exports entries in this exact format).
-window.YOUTHS_DATA = (function () {
+window.QOSYL_DATA = (function () {
 const CATS = [
   { id: 'eng',   ru: 'Инженерия и робототехника', kz: 'Инженерия және робототехника', en: 'Engineering & robotics' },
   { id: 'stem',  ru: 'Наука и STEM',              kz: 'Ғылым және STEM',              en: 'Science & STEM' },

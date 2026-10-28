@@ -1,12 +1,12 @@
 (function () {
   'use strict';
 
-  var CATS = window.YOUTHS_DATA.CATS;
-  var CLUBS = (window.YOUTHS_DATA.CLUBS || []).slice(); // заполняется из communities.json
+  var CATS = window.QOSYL_DATA.CATS;
+  var CLUBS = (window.QOSYL_DATA.CLUBS || []).slice(); // заполняется из communities.json
   var PAGE = 30; // сколько карточек показываем за раз
-  var CAT_HINTS = window.YOUTHS_DATA.CAT_HINTS || {};
-  var STR = window.YOUTHS_STR;
-  var CFG = window.YOUTHS_CONFIG || {};
+  var CAT_HINTS = window.QOSYL_DATA.CAT_HINTS || {};
+  var STR = window.QOSYL_STR;
+  var CFG = window.QOSYL_CONFIG || {};
 
   var STORE_KEY = 'youths.clubs.v1';
   var LANG_KEY = 'youths.lang';
@@ -653,7 +653,7 @@
   function renderChrome(r) {
     var T = STR[state.lang];
     document.documentElement.lang = LANGS.filter(function (l) { return l.id === state.lang; })[0].html;
-    document.querySelector('[data-logo]').innerHTML = LOGO(28) + '<span>Youths<span class="city"> · ' + (state.lang === 'en' ? 'Astana' : 'Астана') + '</span></span>';
+    document.querySelector('[data-logo]').innerHTML = LOGO(28) + '<span>Qosyl<span class="city"> · ' + (state.lang === 'en' ? 'Astana' : 'Астана') + '</span></span>';
     document.querySelector('[data-logo-big]').innerHTML = LOGO(76);
     document.getElementById('foot-mission').textContent = T.foot_mission;
     document.getElementById('foot-creator').textContent = T.creator;
