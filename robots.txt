@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://youths-astana.github.io/astana/sitemap.xml
+Sitemap: https://qosyl.club/sitemap.xml
