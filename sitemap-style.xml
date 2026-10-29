@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Оформление для карты сайта: браузер показывает таблицу, робот видит обычный XML.
+     Расширение .xml намеренно: GitHub Pages отдаёт его с типом application/xml,
+     а Safari принимает таблицу стилей только с XML-типом. -->
+<xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:s="http://www.sitemaps.org/schemas/sitemap/0.9">
+<xsl:output method="html" encoding="UTF-8" indent="yes"/>
+<xsl:template match="/">
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex"/>
+<title>Карта сайта — Qosyl</title>
+<style>
+body { margin:0; background:#fff; color:#1B2440; font-family:"Golos Text",system-ui,-apple-system,sans-serif; -webkit-font-smoothing:antialiased }
+.wrap { max-width:860px; margin:0 auto; padding:34px 20px 70px }
+a { color:#2F6BFF; text-decoration:none }
+a:hover { color:#1B52DA; text-decoration:underline }
+.crumbs { font-size:13px; color:#7A8396; margin:0 0 18px }
+h1 { font-size:30px; margin:0 0 10px; letter-spacing:-0.01em }
+.lead { color:#5A6478; font-size:16px; line-height:1.55; margin:0 0 6px }
+.count { font-size:13px; color:#7A8396; margin:0 0 22px }
+table { width:100%; border-collapse:collapse; font-size:15px }
+th { text-align:left; font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:#7A8396; padding:0 10px 9px; border-bottom:1px solid #E3E8F0 }
+td { padding:11px 10px; border-bottom:1px solid #EFF2F7; vertical-align:top; word-break:break-all }
+tr:hover td { background:#F7F9FF }
+th.n, td.n { text-align:right; white-space:nowrap; width:92px; word-break:normal }
+td.n { color:#7A8396; font-size:13.5px }
+.foot { margin:28px 0 0; font-size:13.5px; color:#7A8396; line-height:1.6 }
+@media (max-width:520px) { th.n, td.n { display:none } h1 { font-size:24px } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<p class="crumbs"><a href="/">Qosyl · сообщества Астаны</a> → Карта сайта</p>
+<h1>Карта сайта</h1>
+<p class="lead">Список всех страниц сайта для поисковых роботов Google и Яндекса.</p>
+<p class="count">Адресов: <xsl:value-of select="count(s:urlset/s:url)"/></p>
+<table>
+<tr><th>Адрес страницы</th><th class="n">Приоритет</th></tr>
+<xsl:for-each select="s:urlset/s:url">
+<tr>
+<td><a href="{s:loc}"><xsl:value-of select="s:loc"/></a></td>
+<td class="n"><xsl:value-of select="s:priority"/></td>
+</tr>
+</xsl:for-each>
+</table>
+<p class="foot">Файл обновляется генератором при каждом пополнении каталога.<br/>
+<a href="/">Открыть каталог</a> · <a href="/catalog.html">Все сообщества</a></p>
+</div>
+</body>
+</html>
+</xsl:template>
+</xsl:stylesheet>
