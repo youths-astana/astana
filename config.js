@@ -1,7 +1,7 @@
 // Site settings — edit these before publishing.
 window.QOSYL_CONFIG = {
   // Public address of the site, used for share links and QR codes. Leave empty to use the current address.
-  siteUrl: 'https://youths-astana.github.io/astana/',
+  siteUrl: 'https://qosyl.club/',
   // Google Form (or any page) where club organisers apply. Empty = the button links to the creator panel.
   orgFormUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSf1_VP5BsigWY_jOi7Mz7zNpZvmknTZddcyMAMnlSIYFeFn8g/viewform',
   // Where "Info out of date?" reports go. Empty = the report is only acknowledged on screen.
