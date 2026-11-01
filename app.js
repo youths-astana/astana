@@ -234,7 +234,19 @@
       '<a class="map-btn" href="#/map" aria-label="' + esc(T.nav_map) + '"><span class="dot"></span><span class="lbl">' + esc(T.nav_map) + '</span></a></div>' +
       '<div class="chips" id="chips">' + chipsHTML() + '</div>' +
       '<div id="results">' + resultsHTML() + '</div>' +
+      ownBlock() +
       '</section>';
+  }
+
+
+  // Призыв для организаторов: виден прямо под каталогом, а не только в «О проекте».
+  function ownBlock() {
+    var T = STR[state.lang], url = safeUrl(CFG.orgFormUrl) || '#/add';
+    var ext = url.indexOf('#') === 0 ? '' : ' target="_blank" rel="noopener"';
+    return '<section class="own"><div class="own-in">' +
+      '<h2>' + esc(T.own_h) + '</h2><p>' + esc(T.own_p) + '</p>' +
+      '<a class="own-btn" href="' + esc(url) + '"' + ext + '>' + esc(T.own_b) + '</a>' +
+      '</div></section>';
   }
 
   function clubView(id) {

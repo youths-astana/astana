@@ -148,5 +148,23 @@ Object.assign(STR.en, {
   greet_copy: 'Copy'
 });
 
+
+// Призыв «добавьте своё сообщество» — на главной, а не только в «О проекте».
+Object.assign(STR.ru, {
+  own_h: 'Ведёте сообщество в Астане?',
+  own_p: 'Добавим бесплатно: карточка с фото, расписанием и контактами, страница в поиске и точка на карте. Заполнение — 5 минут.',
+  own_b: 'Добавить своё сообщество'
+});
+Object.assign(STR.kz, {
+  own_h: 'Астанада қоғамдастық жүргізесіз бе?',
+  own_p: 'Тегін қосамыз: фото, кесте және байланысы бар карточка, іздеуде бет және картада нүкте. Толтыру — 5 минут.',
+  own_b: 'Өз қоғамдастығыңды қос'
+});
+Object.assign(STR.en, {
+  own_h: 'Do you run a community in Astana?',
+  own_p: 'We add it for free: a card with photo, schedule and contacts, a page in search and a pin on the map. Five minutes to fill in.',
+  own_b: 'Add your community'
+});
+
   return STR;
 })();
