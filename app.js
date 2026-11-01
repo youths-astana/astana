@@ -73,7 +73,8 @@
   function kmText(d, L) {
     var T = STR[L];
     if (d < 0.3) return T.km_here;
-    if (d < 1) return Math.round(d * 10) * 100 + ' ' + T.m_away;
+    // 0,95 км округлилось бы до «1000 м» — это уже километр, пишем 900.
+    if (d < 1) return Math.min(9, Math.round(d * 10)) * 100 + ' ' + T.m_away;
     var n = d < 10 ? d.toFixed(1) : String(Math.round(d));
     if (L !== 'en') n = n.replace('.', ',');
     return n + ' ' + T.km_away;

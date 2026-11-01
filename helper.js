@@ -27,6 +27,14 @@ window.QOSYL_HELPER = (function () {
     { id: 'who',   opts: [{ id: 'alone' }, { id: 'friends' }, { id: 'either' }] }
   ];
   var STEP_PAGE = 3; // сколько карточек показываем за раз
+  // Пять вопросов имеют смысл, когда есть из чего выбирать. На каталоге из
+  // пары сообществ помощник на любой ответ показывает одно и то же, и это
+  // выглядит обманом. Ниже этого числа блок просто не появляется на главной
+  // и включится сам, как только каталог дорастёт.
+  var MIN_CLUBS = 8;
+  // С этого веса направление считается «тем самым»: 8 — прямое попадание,
+  // 4–7 — смежное. Ниже — просто другая секция.
+  var ON_TOPIC = 4;
 
   // Состояние живёт в модуле, а не в DOM: app.js перерисовывает главную целиком
   // (смена языка, догрузка каталога), и ответы при этом не теряются.
@@ -102,7 +110,7 @@ window.QOSYL_HELPER = (function () {
 
     var order = ['beg', 'alone', 'free', 'cat', 'age'];
     why.sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); });
-    return { club: c, s: s, km: km, why: why.slice(0, 3) };
+    return { club: c, s: s, w: w, km: km, why: why.slice(0, 3) };
   }
 
   function matches() {
@@ -186,43 +194,72 @@ window.QOSYL_HELPER = (function () {
     return '<p class="helper-geo-note">' + esc(txt) + '</p>';
   }
 
+  function headHTML(T) {
+    return '<div class="helper-top"><span class="helper-step mono">' + esc(T.h_res_step) + '</span>' +
+      '<button class="helper-x" data-h="close">' + esc(T.h_close) + '</button></div>';
+  }
+
+  // Главное правило экрана результатов: сообщество из чужой секции никогда
+  // не стоит под заголовком «вот что тебе подходит». Подросток спросил про
+  // спорт — он должен услышать «спорта пока нет», а не получить волонтёрство
+  // с уверенным видом. Иначе подбор перестаёт чего-либо стоить.
   function resultHTML(T) {
     var L = A().lang(), list = matches();
+    var fit = list.filter(function (h) { return h.w >= ON_TOPIC; });
+    var other = list.filter(function (h) { return h.w < ON_TOPIC; }).slice(0, 2);
+
+    var foot = '<div class="helper-foot">' + geoHTML(T) + '%MORE%' +
+      '<button class="helper-back" data-h="again">' + esc(T.h_again) + '</button></div>' + geoNoteHTML(T);
+
+    // Ничего не подошло совсем — даже по возрасту и цене.
     if (!list.length) {
-      return wrapHTML('open res',
-        '<div class="helper-top"><span class="helper-step mono">' + esc(T.h_res_step) + '</span>' +
-        '<button class="helper-x" data-h="close">' + esc(T.h_close) + '</button></div>' +
-        '<div class="helper-body"><h3 class="helper-q">' + esc(T.h_none_h) + '</h3>' +
+      return wrapHTML('open res', headHTML(T) +
+        '<div class="helper-body"><h3 class="helper-q" id="helper-q" tabindex="-1">' + esc(T.h_none_h) + '</h3>' +
         '<p class="helper-note">' + esc(T.h_none_p) + '</p>' +
         '<div class="helper-foot"><button class="helper-back" data-h="again">' + esc(T.h_again) + '</button></div></div>');
     }
-    var shown = list.slice(0, st.shown), rest = list.length - shown.length;
-    return wrapHTML('open res',
-      '<div class="helper-top"><span class="helper-step mono">' + esc(T.h_res_step) + '</span>' +
-      '<button class="helper-x" data-h="close">' + esc(T.h_close) + '</button></div>' +
+
+    // В выбранном направлении пусто: говорим это прямо и зовём добавить.
+    if (!fit.length) {
+      return wrapHTML('open res', headHTML(T) +
+        '<div class="helper-body"><h3 class="helper-q" id="helper-q" tabindex="-1">' + esc(T.h_off_h) + '</h3>' +
+        '<p class="helper-note">' + esc(T.h_off_p) + '</p>' +
+        (other.length
+          ? '<p class="helper-sub">' + esc(T.h_near_h) + '</p>' +
+            '<div class="helper-hits">' + other.map(function (h) { return hitHTML(h, L, T); }).join('') + '</div>'
+          : '') +
+        foot.replace('%MORE%', '') + '</div>');
+    }
+
+    var shown = fit.slice(0, st.shown), rest = fit.length - shown.length;
+    var more = rest > 0 ? '<button class="helper-more" data-h="more">' + esc(T.h_more) + ' (' + rest + ')</button>' : '';
+    return wrapHTML('open res', headHTML(T) +
       '<div class="helper-body"><h3 class="helper-q" id="helper-q" tabindex="-1">' + esc(T.h_res_h) + '</h3>' +
       '<p class="helper-note">' + esc(T.h_res_p) + '</p>' +
       '<div class="helper-hits">' + shown.map(function (h) { return hitHTML(h, L, T); }).join('') + '</div>' +
-      '<div class="helper-foot">' +
-      geoHTML(T) +
-      (rest > 0 ? '<button class="helper-more" data-h="more">' + esc(T.h_more) + ' (' + rest + ')</button>' : '') +
-      '<button class="helper-back" data-h="again">' + esc(T.h_again) + '</button>' +
-      '</div>' + geoNoteHTML(T) + '</div>');
+      // Чужие секции показываем, только если своих нашлось совсем мало,
+      // и обязательно под отдельной честной подписью.
+      (fit.length < 3 && other.length
+        ? '<p class="helper-sub">' + esc(T.h_near_h) + '</p>' +
+          '<div class="helper-hits">' + other.map(function (h) { return hitHTML(h, L, T); }).join('') + '</div>'
+        : '') +
+      foot.replace('%MORE%', more) + '</div>');
   }
 
   // Вызывается из homeView() в app.js при каждой перерисовке главной.
   function blockHTML() {
     var T = str();
     if (!T || !A().allClubs) return '';
+    if ((A().allClubs() || []).length < MIN_CLUBS) return '';
     if (st.view === 'result') return resultHTML(T);
     if (st.view === 'q') return stepHTML(T);
     return closedHTML(T);
   }
 
   function paint() {
-    var el = document.getElementById('helper');
-    if (!el) return;
-    el.outerHTML = blockHTML();
+    var el = document.getElementById('helper'), html = blockHTML();
+    if (!el || !html) return;
+    el.outerHTML = html;
     if (st.focus) {
       var q = document.getElementById('helper-q');
       if (q) q.focus({ preventScroll: true });
@@ -263,7 +300,11 @@ window.QOSYL_HELPER = (function () {
       st.ans[q] = o;
       if (st.step + 1 >= QUESTIONS.length) {
         st.view = 'result'; st.shown = STEP_PAGE;
-        track('done/' + st.ans.what, 'Помощник — подбор: ' + st.ans.what);
+        // Отдельное событие, когда в выбранном направлении пусто: по нему
+        // в статистике видно, чего в каталоге не хватает больше всего.
+        var fit = matches().filter(function (h) { return h.w >= ON_TOPIC; }).length;
+        track((fit ? 'done/' : 'none/') + st.ans.what,
+          'Помощник — ' + (fit ? 'подбор' : 'нет направления') + ': ' + st.ans.what);
       } else {
         st.step += 1;
       }
