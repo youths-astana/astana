@@ -184,7 +184,7 @@
   function rowHTML(c, L, T) {
     var showCheck = c.verified;
     return '<a class="row' + (c.featured ? ' featured' : '') + '" href="#/club/' + esc(encodeURIComponent(c.slug)) + '">' +
-      (c.featured ? '<span class="top-badge">' + STAR + esc(T.featured) + '</span>' : '') +
+      (c.featured ? '<span class="orn-bg" aria-hidden="true"></span><span class="top-badge">' + STAR + esc(T.featured) + '</span>' : '') +
       '<span class="row-head"><span class="row-name">' + esc(c.name[L]) + '</span><span class="cat-tag">' + esc(catLabel(c.cat, L)) + '</span></span>' +
       '<span class="row-tag">' + esc(c.tag[L]) + '</span>' +
       '<span class="meta"><span>' + esc(c.age) + '</span><span class="sep">·</span><span>' + esc(c.cost[L]) + '</span>' +
