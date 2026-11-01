@@ -327,3 +327,75 @@ h1.map-title { margin: 0 0 14px; font-size: clamp(22px, 4.6vw, 28px); font-weigh
 .own-in p { margin: 0 0 16px; font-size: 15px; line-height: 1.55; color: var(--muted); max-width: 46em }
 .own-btn { display: inline-flex; align-items: center; font-size: 15px; font-weight: 600; padding: 12px 22px; border-radius: 11px; background: var(--accent); color: #fff; transition: background .14s }
 .own-btn:hover { background: var(--accent-dk); color: #fff }
+
+/* Помощник выбора на главной: пять вопросов и подбор (helper.js) */
+.helper { margin: 0 0 20px }
+.helper-call { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; border: 1px solid #DCE5FA; border-radius: 16px; background: #fff; padding: 18px 20px }
+.helper-call-txt { flex: 1; min-width: 200px }
+.helper-call h2 { margin: 0 0 4px; font-size: 16.5px; font-weight: 600; letter-spacing: -0.01em }
+.helper-call p { margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--muted); max-width: 42em }
+.helper-go { flex: none; min-height: 48px; padding: 0 20px; border: 0; border-radius: 12px; background: var(--accent); color: #fff; font-size: 15px; font-weight: 600; transition: background .14s }
+.helper-go:hover { background: var(--accent-dk) }
+.helper.open { border: 1px solid #CFDDFB; border-radius: 16px; background: linear-gradient(170deg, #F7FAFF 0%, #FFFFFF 60%); padding: 14px 18px 18px; box-shadow: 0 2px 14px rgb(47 107 255 / .06) }
+.helper-top { display: flex; align-items: center; justify-content: space-between; gap: 10px }
+.helper-step { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent) }
+.helper-x { min-height: 36px; padding: 0 8px; border: 0; background: none; font-size: 13px; color: var(--faint) }
+.helper-x:hover { color: var(--ink) }
+.helper-bar { height: 3px; margin: 8px 0 0; border-radius: 3px; background: #E3EAF8; overflow: hidden }
+.helper-bar i { display: block; height: 100%; border-radius: 3px; background: var(--accent); transition: width .2s ease }
+@media (prefers-reduced-motion: reduce) { .helper-bar i { transition: none } }
+.helper-body { padding-top: 14px }
+.helper-q { margin: 0 0 14px; font-size: clamp(17px, 3.2vw, 20px); font-weight: 600; letter-spacing: -0.015em; line-height: 1.3; outline: none }
+.helper-opts { display: grid; gap: 8px }
+@media (min-width: 561px) { .helper-opts { grid-template-columns: 1fr 1fr } }
+.helper-opt { text-align: left; min-height: 52px; padding: 13px 16px; border: 1px solid var(--field); border-radius: 12px; background: #fff; font-size: 14.5px; font-weight: 500; line-height: 1.35; color: var(--ink); transition: border-color .14s, background .14s }
+.helper-opt:hover { border-color: var(--accent); background: var(--accent-bg) }
+.helper-back { margin: 14px 0 0; min-height: 44px; padding: 0 14px; border: 1px solid var(--field); border-radius: 10px; background: #fff; font-size: 14px; font-weight: 600; color: var(--muted) }
+.helper-back:hover { border-color: var(--accent); color: var(--accent) }
+.helper-note { margin: 0 0 6px; font-size: 13px; line-height: 1.5; color: var(--muted); max-width: 46em }
+.helper-hits { margin-top: 10px; display: flex; flex-direction: column; gap: 8px }
+.helper-hit { border: 1px solid var(--line); border-radius: 13px; background: #fff; padding: 2px 14px 10px }
+.helper-hit .row { border-bottom: 0; margin: 0; padding: 14px 0 6px }
+.helper-hit .row:hover { background: none }
+.helper-hit .row.featured { margin: 10px 0 4px }
+.helper-why { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 }
+.helper-why span { font-size: 11.5px; font-weight: 600; padding: 4px 9px; border-radius: 7px; background: var(--ok-bg); color: var(--ok) }
+.helper-foot { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 14px }
+.helper-more { min-height: 44px; padding: 0 16px; border: 1px solid var(--field); border-radius: 10px; background: #fff; font-size: 14px; font-weight: 600; color: var(--accent-dk) }
+.helper-more:hover { border-color: var(--accent); color: var(--accent) }
+.helper-foot .helper-back { margin: 0 }
+.helper-why span.d { background: var(--accent-bg); color: var(--accent-dk) }
+.helper-geo { min-height: 44px; padding: 0 16px; border: 1px solid var(--accent); border-radius: 10px; background: var(--accent-bg); font-size: 14px; font-weight: 600; color: var(--accent-dk) }
+.helper-geo:hover { background: #E2ECFF }
+.helper-geo.on { border-color: var(--field); background: #fff; color: var(--muted) }
+.helper-geo.on:hover { border-color: var(--accent); color: var(--accent) }
+.helper-geo.wait { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; font-size: 14px; font-weight: 500; color: var(--accent) }
+.helper-geo-note { margin: 10px 0 0; font-size: 12px; line-height: 1.45; color: var(--faint); max-width: 46em }
+
+/* Фильтр по районам и «рядом со мной» */
+.dist-row { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin: 8px 0 0 }
+.chip.sm { min-height: 38px; padding: 0 13px; font-size: 13px }
+.near-btn { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--accent); background: var(--accent-bg); font-size: 13px; font-weight: 600; color: var(--accent-dk) }
+.near-btn:hover { background: #E2ECFF }
+.near-btn .dot { width: 7px; height: 7px }
+.near-btn.on { border-color: var(--field); background: #fff; color: var(--muted) }
+.near-btn.on:hover { border-color: var(--accent); color: var(--accent) }
+.near-btn.wait { border-style: dashed; background: none; color: var(--accent); font-weight: 500 }
+.near-note { margin: 9px 0 0; font-size: 12px; line-height: 1.45; color: var(--faint); max-width: 46em }
+.meta .near-km { font-weight: 600; color: var(--accent-dk) }
+.label-note { font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--faint) }
+.dist-lbl { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); padding-right: 2px }
+
+/* Фильтры «бесплатно» и «новичкам»: включённый фильтр — зелёный, чтобы
+   не путался с выбранной секцией, которая синяя. */
+.chip.flag { font-weight: 600; border-color: oklch(0.88 0.03 150); color: var(--ok) }
+.chip.flag:hover { border-color: var(--ok) }
+.chip.flag[aria-pressed="true"] { background: var(--ok); border-color: var(--ok); color: #fff }
+
+/* Секция, в которой пока нет сообществ: видна, но не зовёт нажать. */
+.chip.empty { opacity: .42 }
+.chip.empty:hover { opacity: 1 }
+
+/* «Ещё секции»: пустые пока направления открываются по клику. */
+.chip.more-cats { border-style: dashed; color: var(--faint) }
+.chip.more-cats:hover { color: var(--accent); border-color: var(--accent) }

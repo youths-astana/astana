@@ -5,6 +5,8 @@
   var CLUBS = (window.QOSYL_DATA.CLUBS || []).slice(); // заполняется из communities.json
   var PAGE = 30; // сколько карточек показываем за раз
   var CAT_HINTS = window.QOSYL_DATA.CAT_HINTS || {};
+  var DISTRICTS = window.QOSYL_DATA.DISTRICTS || [];
+  var CAT_ALIAS = window.QOSYL_DATA.CAT_ALIAS || {};
   var STR = window.QOSYL_STR;
   var CFG = window.QOSYL_CONFIG || {};
 
@@ -54,6 +56,36 @@
     for (var i = 0; i < CATS.length; i++) if (CATS[i].id === id) return CATS[i][L];
     return id;
   }
+  function distLabel(id, L) {
+    for (var i = 0; i < DISTRICTS.length; i++) if (DISTRICTS[i].id === id) return DISTRICTS[i][L];
+    return id;
+  }
+  // Расстояние по прямой, в километрах (формула гаверсинуса).
+  function distKm(aLat, aLng, bLat, bLng) {
+    var R = 6371, p = Math.PI / 180;
+    var dLa = (bLat - aLat) * p, dLo = (bLng - aLng) * p;
+    var x = Math.sin(dLa / 2) * Math.sin(dLa / 2) +
+      Math.cos(aLat * p) * Math.cos(bLat * p) * Math.sin(dLo / 2) * Math.sin(dLo / 2);
+    return 2 * R * Math.asin(Math.sqrt(x));
+  }
+  // Близкие расстояния в метрах: «800 м» понятнее, чем «0,8 км».
+  // Точность GPS — десятки метров, поэтому ближе 300 м цифру не выдумываем.
+  function kmText(d, L) {
+    var T = STR[L];
+    if (d < 0.3) return T.km_here;
+    if (d < 1) return Math.round(d * 10) * 100 + ' ' + T.m_away;
+    var n = d < 10 ? d.toFixed(1) : String(Math.round(d));
+    if (L !== 'en') n = n.replace('.', ',');
+    return n + ' ' + T.km_away;
+  }
+  function hasCoords(c) {
+    return !isNaN(c.lat) && !isNaN(c.lng) && (c.lat || c.lng);
+  }
+  // Расстояние от подростка до сообщества — только когда он сам включил «рядом со мной».
+  function kmTo(c) {
+    if (!state.near || !hasCoords(c)) return null;
+    return distKm(state.near.lat, state.near.lng, c.lat, c.lng);
+  }
   function digits(s) { return String(s || '').replace(/[^0-9]/g, ''); }
   function safeUrl(u) { return /^https?:\/\//i.test(u || '') ? u : ''; }
   // A photo can be a direct link, a file published next to the site (photos/name.jpg)
@@ -94,13 +126,19 @@
     return 'ru';
   }
   function blankForm() {
-    return { name: '', tag: '', about: '', cat: '', age: '', cost: '', sched: '', addr: '', langs: '', tel: '', ig: '', tg: '', photo: '', kw: '', checked: '', lat: '', lng: '', beginner: true, verified: false, featured: false };
+    return { name: '', tag: '', about: '', cat: '', dist: '', age: '', cost: '', sched: '', addr: '', langs: '', tel: '', ig: '', tg: '', photo: '', kw: '', checked: '', lat: '', lng: '', beginner: true, verified: false, featured: false };
   }
 
   var state = {
     lang: initialLang(),
     q: '',
     cat: 'all',
+    dist: 'all',
+    allCats: false,      // показаны ли пустые пока секции
+    free: false,         // только бесплатные
+    beg: false,          // только те, что ждут новичков          // выбранный район, 'all' — все
+    near: null,           // координаты подростка, пока он не ушёл со страницы
+    nearState: null,      // null | 'asking' | 'denied'
     mine: load(STORE_KEY, []),
     reported: load(REPORT_KEY, []),
     form: blankForm(),
@@ -115,7 +153,7 @@
 
   function normalizeUser(u) {
     return {
-      id: u.id, cat: u.cat, slug: u.slug || u.id, verified: !!u.verified, beginner: !!u.beginner, featured: !!u.featured,
+      id: u.id, cat: u.cat, dist: u.dist || '', slug: u.slug || u.id, verified: !!u.verified, beginner: !!u.beginner, featured: !!u.featured,
       checked: u.checked || '', mine: true, photo: u.photo || '',
       name: tri(u.name), tag: tri(u.tag || ''), about: tri(u.about || u.tag || ''),
       age: u.age || '—', cost: tri(u.cost || '—'), sched: tri(u.sched || '—'),
@@ -125,12 +163,31 @@
       kw: [u.name, u.kw, u.tag].join(' ')
     };
   }
+  // ---------- цена ----------
+  // «Бесплатно» написано словами и на трёх языках, поэтому разбираем текст.
+  // Единственное место на сайте, где это решается: помощник берёт отсюда же.
+  function costText(c) {
+    var v = c.cost || {};
+    return [v.ru, v.kz, v.en].join(' ').toLowerCase();
+  }
+  function isFree(c) {
+    if (typeof c.free === 'boolean') return c.free;
+    var t = costText(c);
+    return /беспла|тегін|тегин|free|no cost/.test(t) || /^[\s0\-—–.,]*$/.test(t) || /\bнет\b|\bжоқ\b/.test(t);
+  }
+  function isPaid(c) {
+    var t = costText(c);
+    if (isFree(c)) return false;
+    return /\d\s*(₸|тг|тенге|теңге|kzt|тыс)|плат|ақылы|paid|в месяц|per month|ай сайын/.test(t);
+  }
+
   function allClubs() {
     var seen = {}, out = [];
     CLUBS.concat(state.mine.map(normalizeUser)).forEach(function (c) {
       var key = (c.id || '') + '|' + (c.slug || '');
       if (seen[key]) return;
       seen[key] = true;
+      if (CAT_ALIAS[c.cat]) c.cat = CAT_ALIAS[c.cat];
       out.push(c);
     });
     return out;
@@ -142,20 +199,112 @@
     if (!c.__hay) {
       c.__hay = [c.name.ru, c.name.kz, c.name.en, c.kw,
         catLabel(c.cat, 'ru'), catLabel(c.cat, 'kz'), catLabel(c.cat, 'en'),
+        CAT_HINTS[c.cat] || '',
+        c.dist ? distLabel(c.dist, 'ru') + ' ' + distLabel(c.dist, 'kz') + ' ' + distLabel(c.dist, 'en') : '',
+        c.addr ? [c.addr.ru, c.addr.kz, c.addr.en].join(' ') : '',
+        c.about ? [c.about.ru, c.about.kz, c.about.en].join(' ') : '',
         c.tag.ru, c.tag.kz, c.tag.en].join(' ').toLowerCase();
     }
     return c.__hay;
   }
 
+  // ---------- поиск, который прощает ошибки ----------
+  // Кириллицу, казахские буквы и латиницу сводим к одной латинской записи.
+  // Из-за этого «дебаты», «debate» и «debat» становятся почти одним словом,
+  // а «қ» и «к» перестают быть разными буквами.
+  var TRANSLIT = {
+    'а': 'a', 'ә': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'ғ': 'g', 'д': 'd', 'е': 'e', 'ё': 'e',
+    'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'i', 'і': 'i', 'к': 'k', 'қ': 'k', 'л': 'l', 'м': 'm',
+    'н': 'n', 'ң': 'n', 'о': 'o', 'ө': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+    'ұ': 'u', 'ү': 'u', 'ф': 'f', 'х': 'h', 'һ': 'h', 'ц': 'c', 'ч': 'ch', 'ш': 'sh', 'щ': 'sh',
+    'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+  };
+
+  function norm(s) {
+    s = String(s == null ? '' : s).toLowerCase();
+    var out = '', i, ch;
+    for (i = 0; i < s.length; i++) {
+      ch = s.charAt(i);
+      if (TRANSLIT.hasOwnProperty(ch)) out += TRANSLIT[ch];
+      else if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9')) out += ch;
+      else out += ' ';
+    }
+    return out;
+  }
+
+  function toks(s) {
+    return norm(s).split(/\s+/).filter(function (w) { return w.length > 1; });
+  }
+
+  function tokOf(c) {
+    if (!c.__tok) c.__tok = toks(hayOf(c));
+    return c.__tok;
+  }
+
+  // Расстояние Левенштейна с ранним выходом: считать больше max незачем.
+  function lev(a, b, max) {
+    if (a === b) return 0;
+    if (Math.abs(a.length - b.length) > max) return max + 1;
+    var prev = [], cur = [], i, j, best, cost;
+    for (j = 0; j <= b.length; j++) prev[j] = j;
+    for (i = 1; i <= a.length; i++) {
+      cur[0] = i;
+      best = i;
+      for (j = 1; j <= b.length; j++) {
+        cost = a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1;
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+        if (cur[j] < best) best = cur[j];
+      }
+      if (best > max) return max + 1;
+      for (j = 0; j <= b.length; j++) prev[j] = cur[j];
+    }
+    return prev[b.length];
+  }
+
+  // Сколько опечаток прощаем. В коротком слове — ни одной: иначе «бег»
+  // начинает совпадать с «бокс» и поиск превращается в лотерею.
+  function slack(w) { return w.length >= 7 ? 2 : w.length >= 4 ? 1 : 0; }
+
+  function hitsWord(w, tokens) {
+    var max = slack(w), i, t;
+    for (i = 0; i < tokens.length; i++) {
+      t = tokens[i];
+      if (t.indexOf(w) !== -1) return true;
+      if (!max) continue;
+      // Опечатка в начале слова: сравниваем с куском такой же длины.
+      if (t.length > w.length &&
+        (lev(w, t.slice(0, w.length), max) <= max || lev(w, t.slice(0, w.length + 1), max) <= max)) return true;
+      if (Math.abs(t.length - w.length) <= max && lev(w, t, max) <= max) return true;
+      // Запрос длиннее слова в карточке: «благотворительность» против
+      // ключевого «благотвор». Сравниваем по началу запроса.
+      if (w.length > t.length && t.length >= 4 &&
+        (w.indexOf(t) === 0 || lev(t, w.slice(0, t.length), slack(t)) <= slack(t))) return true;
+    }
+    return false;
+  }
+
   function filtered() {
-    var q = state.q.trim().toLowerCase();
     var list = allClubs();
     if (state.cat !== 'all') list = list.filter(function (c) { return c.cat === state.cat; });
-    if (q) {
-      var words = q.split(/\s+/);
+    if (state.dist !== 'all') list = list.filter(function (c) { return c.dist === state.dist; });
+    if (state.free) list = list.filter(isFree);
+    if (state.beg) list = list.filter(function (c) { return !!c.beginner; });
+    var words = toks(state.q);
+    if (words.length) {
       list = list.filter(function (c) {
-        var hay = hayOf(c);
-        return words.every(function (w) { return hay.indexOf(w) !== -1; });
+        var tokens = tokOf(c);
+        return words.every(function (w) { return hitsWord(w, tokens); });
+      });
+    }
+    // «Рядом со мной» меняет только порядок, ничего не пряча: сообщество
+    // без координат не исчезает, а уходит в конец списка.
+    if (state.near) {
+      list = list.slice().sort(function (a, b) {
+        var da = kmTo(a), db = kmTo(b);
+        if (da == null && db == null) return 0;
+        if (da == null) return 1;
+        if (db == null) return -1;
+        return da - db;
       });
     }
     // Paid "featured" entries sit at the top; everything else keeps its order.
@@ -187,7 +336,9 @@
       (c.featured ? '<span class="orn-bg" aria-hidden="true"></span><span class="top-badge">' + STAR + esc(T.featured) + '</span>' : '') +
       '<span class="row-head"><span class="row-name">' + esc(c.name[L]) + '</span><span class="cat-tag">' + esc(catLabel(c.cat, L)) + '</span></span>' +
       '<span class="row-tag">' + esc(c.tag[L]) + '</span>' +
-      '<span class="meta"><span>' + esc(c.age) + '</span><span class="sep">·</span><span>' + esc(c.cost[L]) + '</span>' +
+      '<span class="meta">' +
+      (function () { var d = kmTo(c); return d == null ? '' : '<span class="near-km">' + esc(kmText(d, L)) + '</span><span class="sep">·</span>'; })() +
+      '<span>' + esc(c.age) + '</span><span class="sep">·</span><span>' + esc(c.cost[L]) + '</span>' +
       (c.beginner ? '<span class="sep">·</span><span class="beg">' + esc(T.beginner) + '</span>' : '') +
       (showCheck ? '<span class="sep">·</span><span>' + esc(T.verified) + '</span>' : '') +
       '</span></a>';
@@ -207,12 +358,65 @@
       (rest > 0 ? '<button class="more" data-action="more">' + esc(T.more) + ' (' + rest + ')</button>' : '');
   }
 
+  // Секции, в которых пока никого нет, прячем за кнопкой «ещё»: иначе
+  // пустой каталог выглядит как десяток серых кнопок, то есть как заброшенный
+  // сайт. Ничего не исчезает — разворачивается в один клик.
   function chipsHTML() {
-    var L = state.lang, T = STR[L];
-    return [{ id: 'all', label: T.all }].concat(CATS.map(function (c) { return { id: c.id, label: c[L] }; }))
+    var L = state.lang, T = STR[L], cnt = {};
+    allClubs().forEach(function (c) { cnt[c.cat] = (cnt[c.cat] || 0) + 1; });
+    var full = [], empty = [];
+    CATS.forEach(function (c) { (cnt[c.id] ? full : empty).push(c); });
+    var shown = full.concat(state.allCats ? empty : []);
+    var hidden = state.allCats ? 0 : empty.length;
+    return [{ id: 'all', label: T.all, n: 1 }]
+      .concat(shown.map(function (c) { return { id: c.id, label: c[L], n: cnt[c.id] || 0 }; }))
       .map(function (c) {
-        return '<button class="chip" data-action="cat" data-id="' + c.id + '" aria-pressed="' + (state.cat === c.id) + '">' + esc(c.label) + '</button>';
-      }).join('');
+        return '<button class="chip' + (c.n ? '' : ' empty') + '" data-action="cat" data-id="' + c.id +
+          '" aria-pressed="' + (state.cat === c.id) + '">' + esc(c.label) + '</button>';
+      }).join('') +
+      (hidden ? '<button class="chip more-cats" data-action="cats-more">' + esc(T.cats_more) + ' (' + hidden + ')</button>' : '');
+  }
+
+  // «Бесплатно» и «Новичкам» — два самых частых вопроса подростка,
+  // поэтому они всегда на виду, а не спрятаны в меню фильтров.
+  function flagsHTML() {
+    var T = STR[state.lang];
+    return [['free', T.f_free], ['beg', T.f_beg]].map(function (f) {
+      return '<button class="chip sm flag" data-action="flag" data-id="' + f[0] +
+        '" aria-pressed="' + !!state[f[0]] + '">' + esc(f[1]) + '</button>';
+    }).join('');
+  }
+
+  // Районы показываем только те, что реально есть в каталоге: пустой фильтр
+  // раздражает сильнее, чем его отсутствие.
+  function districtsInUse() {
+    var seen = {};
+    allClubs().forEach(function (c) { if (c.dist) seen[c.dist] = true; });
+    return DISTRICTS.filter(function (d) { return seen[d.id]; });
+  }
+
+  function nearBtnHTML() {
+    var T = STR[state.lang];
+    if (!navigator.geolocation || !allClubs().some(hasCoords)) return '';
+    if (state.nearState === 'asking') return '<span class="near-btn wait">' + esc(T.near_wait) + '</span>';
+    if (state.near) return '<button class="near-btn on" data-action="near-off"><span class="dot"></span>' + esc(T.near_off) + '</button>';
+    return '<button class="near-btn" data-action="near"><span class="dot"></span>' + esc(T.near) + '</button>';
+  }
+
+  function distRowHTML() {
+    var L = state.lang, T = STR[L], ds = districtsInUse(), near = nearBtnHTML();
+    // Фильтр из одного района ничего не фильтрует — показываем от двух.
+    if (ds.length < 2) ds = [];
+    var chips = ds.length
+      ? '<span class="dist-lbl">' + esc(T.f_dist) + '</span>' +
+        [{ id: 'all', label: T.dist_all }].concat(ds.map(function (d) { return { id: d.id, label: d[L] }; }))
+        .map(function (d) {
+          return '<button class="chip sm" data-action="dist" data-id="' + d.id + '" aria-pressed="' + (state.dist === d.id) + '">' + esc(d.label) + '</button>';
+        }).join('')
+      : '';
+    return '<div class="dist-row" id="dist-row">' + flagsHTML() + chips + near + '</div>' +
+      (state.nearState === 'denied' ? '<p class="near-note">' + esc(T.near_no) + '</p>'
+        : state.near ? '<p class="near-note">' + esc(T.near_on) + '</p>' : '');
   }
 
   function homeView() {
@@ -229,10 +433,12 @@
       '<p class="lead">' + esc(T.lead) + '</p>' +
       '<ul class="stats">' + stats.map(function (st) { return '<li><b>' + st[0] + '</b><span>' + esc(st[1]) + '</span></li>'; }).join('') + '</ul>' +
       '</div></div>' +
+      (window.QOSYL_HELPER ? window.QOSYL_HELPER.blockHTML() : '') +
       '<div class="search-row"><label class="search"><span class="sr-only">' + esc(T.search_label) + '</span>' +
       '<input id="q" type="search" autocomplete="off" value="' + esc(state.q) + '" placeholder="' + esc(T.search_ph) + '"></label>' +
       '<a class="map-btn" href="#/map" aria-label="' + esc(T.nav_map) + '"><span class="dot"></span><span class="lbl">' + esc(T.nav_map) + '</span></a></div>' +
       '<div class="chips" id="chips">' + chipsHTML() + '</div>' +
+      '<div id="dist-wrap">' + distRowHTML() + '</div>' +
       '<div id="results">' + resultsHTML() + '</div>' +
       ownBlock() +
       '</section>';
@@ -267,7 +473,9 @@
       .concat(ALL.filter(function (s) { return s.cat !== c.cat && s.beginner && s.id !== c.id; }))
       .slice(0, 2);
 
-    var facts = [[T.f_sched, c.sched[L]], [T.f_addr, c.addr[L]], [T.f_cost, c.cost[L]], [T.f_langs, c.langs[L]]];
+    var facts = [[T.f_sched, c.sched[L]], [T.f_addr, c.addr[L]]];
+    if (c.dist) facts.push([T.f_dist, distLabel(c.dist, L)]);
+    facts = facts.concat([[T.f_cost, c.cost[L]], [T.f_langs, c.langs[L]]]);
 
     return '<article class="screen tight">' +
       '<a class="back" href="#/">' + esc(T.back) + '</a>' +
@@ -398,6 +606,27 @@
       '</span>' + (f.cat !== g ? '<button data-action="form-cat" data-id="' + g + '">Поставить</button>' : '') + '</div>';
   }
 
+  // Ближайший центр района к поставленной точке. Это ПОДСКАЗКА: район
+  // сохраняется только тем, что выбрано руками. Далёкую точку не угадываем.
+  function guessDist(f) {
+    var la = Number(f.lat), ln = Number(f.lng);
+    if (isNaN(la) || isNaN(ln) || (!la && !ln)) return null;
+    var best = null, bestKm = 25;
+    DISTRICTS.forEach(function (d) {
+      var km = distKm(la, ln, d.lat, d.lng);
+      if (km < bestKm) { bestKm = km; best = d.id; }
+    });
+    return best;
+  }
+
+  function formDistsHTML() {
+    var f = state.form, g = guessDist(f);
+    return DISTRICTS.map(function (d) {
+      var on = f.dist === d.id;
+      return '<button class="chip' + (!on && d.id === g ? ' hint' : '') + '" data-action="form-dist" data-id="' + d.id + '" aria-pressed="' + on + '">' + esc(d.ru) + '</button>';
+    }).join('');
+  }
+
   function formCatsHTML() {
     var f = state.form, g = guessCat(f);
     return CATS.map(function (c) {
@@ -410,6 +639,11 @@
     var box = document.getElementById('guess'), cats = document.getElementById('form-cats');
     if (box) box.innerHTML = guessHTML();
     if (cats) cats.innerHTML = formCatsHTML();
+    updateDists();
+  }
+  function updateDists() {
+    var el = document.getElementById('form-dists');
+    if (el) el.innerHTML = formDistsHTML();
   }
 
   // Кириллические названия дают пустой slug, поэтому добавляем метку времени,
@@ -484,7 +718,7 @@
 
   function exportEntry(m) {
     return {
-      id: m.id, cat: m.cat, slug: m.slug, verified: !!m.verified, beginner: !!m.beginner, featured: !!m.featured, checked: m.checked,
+      id: m.id, cat: m.cat, dist: m.dist || '', slug: m.slug, verified: !!m.verified, beginner: !!m.beginner, featured: !!m.featured, checked: m.checked,
       name: tri(m.name), tag: tri(m.tag || ''), about: tri(m.about || m.tag || ''),
       age: m.age || '—', cost: tri(m.cost || '—'), sched: tri(m.sched || '—'),
       addr: tri(m.addr || '—'), langs: tri(m.langs || '—'),
@@ -532,6 +766,8 @@
       '<p class="label">Секция</p>' +
       '<div id="guess">' + guessHTML() + '</div>' +
       '<div class="chips" id="form-cats" style="margin:0 0 22px">' + formCatsHTML() + '</div>' +
+      '<p class="label">Район <span class="label-note">необязательно — нужен для фильтра «рядом с домом»</span></p>' +
+      '<div class="chips" id="form-dists" style="margin:0 0 22px">' + formDistsHTML() + '</div>' +
       '<div class="fields">' + FORM_FIELDS.map(function (fd) {
         return '<label class="field' + (fd.wide ? ' wide' : '') + '"><span>' + esc(fd.label) + '</span>' +
           '<input data-field="' + fd.key + '" type="' + (fd.type || 'text') + '" value="' + esc(f[fd.key] || '') + '" placeholder="' + esc(fd.ph) + '"></label>';
@@ -620,6 +856,7 @@
       state.form.lng = e.latlng.lng.toFixed(5);
       document.getElementById('coords').textContent = coordText();
       setPickMarker();
+      updateDists();
     });
     setPickMarker();
   }
@@ -689,6 +926,33 @@
     el.classList.add('on');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { el.classList.remove('on'); }, 3200);
+  }
+
+  // Координаты берём у браузера и держим только в памяти вкладки: ни на сервер,
+  // ни в localStorage, ни в статистику они не уходят — туда идёт лишь сам факт нажатия.
+  function askNear() {
+    if (!navigator.geolocation) return;
+    state.nearState = 'asking';
+    repaintList();
+    navigator.geolocation.getCurrentPosition(function (p) {
+      state.near = { lat: p.coords.latitude, lng: p.coords.longitude };
+      state.nearState = null;
+      state.shown = PAGE;
+      statsSend({ path: 'near/on', title: 'Каталог — рядом со мной', event: true });
+      repaintList();
+    }, function () {
+      state.near = null;
+      state.nearState = 'denied';
+      statsSend({ path: 'near/denied', title: 'Каталог — геолокация отклонена', event: true });
+      repaintList();
+    }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 });
+  }
+
+  // Перерисовываем только список и фильтры, чтобы страница не прыгала.
+  function repaintList() {
+    var wrap = document.getElementById('dist-wrap'), res = document.getElementById('results');
+    if (wrap) wrap.innerHTML = distRowHTML();
+    if (res) res.innerHTML = resultsHTML();
   }
 
   // ---------- chrome (header/footer) ----------
@@ -784,8 +1048,33 @@
         document.getElementById('chips').innerHTML = chipsHTML();
         document.getElementById('results').innerHTML = resultsHTML();
         break;
+      case 'form-dist':
+        state.form.dist = state.form.dist === id ? '' : id;
+        updateGuess();
+        break;
+      case 'dist':
+        state.dist = id;
+        state.shown = PAGE;
+        repaintList();
+        break;
+      case 'cats-more':
+        state.allCats = true;
+        document.getElementById('chips').innerHTML = chipsHTML();
+        break;
+      case 'flag':
+        state[id] = !state[id];
+        state.shown = PAGE;
+        repaintList();
+        break;
+      case 'near':
+        askNear();
+        break;
+      case 'near-off':
+        state.near = null; state.nearState = null; state.shown = PAGE;
+        repaintList();
+        break;
       case 'reset':
-        state.q = ''; state.cat = 'all'; state.shown = PAGE;
+        state.q = ''; state.cat = 'all'; state.dist = 'all'; state.free = false; state.beg = false; state.shown = PAGE;
         render({ keepScroll: true });
         break;
       case 'report': {
@@ -968,6 +1257,22 @@
       .then(function (list) { if (Array.isArray(list)) CLUBS = list; })
       .catch(function () { /* файла нет или сайт открыт через file:// — каталог остаётся пустым */ });
   }
+
+  // Мост для helper.js (помощник выбора на главной): он не держит своих данных
+  // и каждый раз берёт каталог, язык и разметку карточки отсюда.
+  window.QOSYL_APP = {
+    allClubs: allClubs,
+    rowHTML: rowHTML,
+    catLabel: catLabel,
+    esc: esc,
+    lang: function () { return state.lang; },
+    distKm: distKm,
+    isFree: isFree,
+    isPaid: isPaid,
+    kmText: kmText,
+    track: statsSend,
+    toast: toast
+  };
 
   loadStats();
   render();

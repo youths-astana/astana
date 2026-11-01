@@ -1,30 +1,51 @@
 // Catalogue data. Add new communities to CLUBS (the creator panel exports entries in this exact format).
 window.QOSYL_DATA = (function () {
 const CATS = [
-  { id: 'eng',   ru: 'Инженерия и робототехника', kz: 'Инженерия және робототехника', en: 'Engineering & robotics' },
-  { id: 'stem',  ru: 'Наука и STEM',              kz: 'Ғылым және STEM',              en: 'Science & STEM' },
-  { id: 'lang',  ru: 'Языки и ораторство',        kz: 'Тілдер және шешендік',          en: 'Languages & speaking' },
-  { id: 'sport', ru: 'Спорт',                     kz: 'Спорт',                        en: 'Sports' },
-  { id: 'art',   ru: 'Искусство',                 kz: 'Өнер',                         en: 'Arts' },
-  { id: 'vol',   ru: 'Волонтёрство',              kz: 'Еріктілер',                    en: 'Volunteering' },
-  { id: 'biz',   ru: 'Бизнес',                    kz: 'Бизнес',                       en: 'Business' },
-  { id: 'comm',  ru: 'Общение и настолки',        kz: 'Әңгіме және үстел ойындары',    en: 'Hangouts & board games' },
-  { id: 'mun',   ru: 'MUN',                       kz: 'MUN',                          en: 'MUN' }
+  { id: 'it',     ru: 'IT и программирование',   kz: 'IT және программалау',    en: 'IT & coding' },
+  { id: 'eng',    ru: 'Робототехника',           kz: 'Робототехника',           en: 'Robotics' },
+  { id: 'stem',   ru: 'Наука и олимпиады',       kz: 'Ғылым және олимпиада',    en: 'Science & olympiads' },
+  { id: 'debate', ru: 'Дебаты и MUN',            kz: 'Дебат және MUN',          en: 'Debate & MUN' },
+  { id: 'lang',   ru: 'Языки',                   kz: 'Тілдер',                  en: 'Languages' },
+  { id: 'sport',  ru: 'Спорт',                   kz: 'Спорт',                   en: 'Sports' },
+  { id: 'art',    ru: 'Искусство и музыка',      kz: 'Өнер және музыка',        en: 'Arts & music' },
+  { id: 'media',  ru: 'Медиа и журналистика',    kz: 'Медиа және журналистика', en: 'Media & journalism' },
+  { id: 'vol',    ru: 'Волонтёрство и экология', kz: 'Еріктілер және экология', en: 'Volunteering & ecology' },
+  { id: 'biz',    ru: 'Бизнес и стартапы',       kz: 'Бизнес және стартаптар',  en: 'Business & startups' }
 ];
 
+// Старые названия секций: сохранились в черновиках и в заявках, поданных раньше.
+const CAT_ALIAS = { mun: 'debate', comm: 'art' };
+
+// Ключевые слова секции. Работают в двух местах: панель создателя по ним
+// ПОДСКАЗЫВАЕТ секцию, а поиск по каталогу считает их частью карточки —
+// поэтому «пікірсайыс» и «debate» находят одни и те же дебаты.
+// Слова короче трёх букв не ставим: они попадают внутрь чужих слов.
+
 const CAT_HINTS = {
-  eng:   'робот робототехника arduino ардуино лего lego дрон паяль электроник инженер 3d принтер robot engineering',
-  stem:  'физика математик химия биолог олимпиад stem наука астроном телескоп космос science',
-  lang:  'английск казахск язык ielts дебат ораторск speaking speech spelling полиглот language',
-  sport: 'спорт бег кросс марафон плавани борьб дзюдо бокс тренаж фитнес лыж коньк running sport баскетбол стритбол basketball кольц дриблинг nba 3x3 футбол мини-футбол мяч ворот football soccer футзал волейбол пляжн подач volleyball сетк волей',
-  art:   'рисован живопис акварел керамик танц музык гитар фото театр вокал дизайн art',
-  vol:   'волонт помощ приют благотвор экологи субботник эко charity volunteer',
-  biz:   'стартап бизнес предприним финанс инвест маркетинг проект питч startup business',
-  comm:  'настолк игр сообществ общени друз кино аниме квиз board games community',
-  mun:   'mun модель оон дипломат делегат резолюц комитет debate committee un model мун'
+  it:     'програм код кодинг python питон java javascript веб сайт frontend backend геймдев unity разработ айти кибер информатик нейросет данн algorithm coding developer software компьютер бағдарламалау кодтау',
+  eng:    'робот робототехника arduino ардуино лего lego дрон паяльник электроник инженер станок конструктор механик фрезер robotics engineering',
+  stem:   'физика математик химия биолог олимпиад stem наука астроном телескоп космос геометр исследован лаборатор science olympiad ғылым математика олимпиада',
+  debate: 'дебат debate mun модель оон дипломат делегат резолюц комитет ораторск риторик дискусс парламентск пікірсайыс шешендік speaking united nations',
+  lang:   'английск казахск русск язык ielts toefl разговорн english language turkish немецк французск китайск корейск испанск тіл ағылшын полиглот грамматик',
+  sport:  'спорт бег кросс марафон плавани борьб дзюдо бокс самбо тренаж фитнес лыж коньк running баскетбол стритбол basketball футбол мини-футбол мяч ворот football soccer футзал волейбол volleyball шахмат chess теннис бадминтон воркаут скейт велосипед единоборств',
+  art:    'рисован живопис акварел керамик танц музык гитар фортепиан домбыр вокал хор театр актёр фото дизайн граффити скульптур art dance music өнер сурет театр',
+  media:  'медиа журналист блог подкаст видео монтаж смм smm редакц газет радио телевиден youtube tiktok контент копирайт сценар интервью media journalism',
+  vol:    'волонт помощ приют благотвор эколог субботник charity volunteer еріктілер көмек жануарлар донор акция социальн добро приют',
+  biz:    'стартап бизнес предприним финанс инвест маркетинг питч startup business экономик кәсіпкер акселератор продаж проект юрид'
 };
+
+// Районы Астаны. lat/lng — примерный центр района: по нему панель создателя
+// ПОДСКАЗЫВАЕТ район по точке на карте, но в каталог попадает только то,
+// что человек подтвердил руками. Автоматически район не проставляется никогда.
+const DISTRICTS = [
+  { id: 'esil',     lat: 51.115, lng: 71.420, ru: 'Есильский',    kz: 'Есіл',      en: 'Esil' },
+  { id: 'saryarka', lat: 51.180, lng: 71.440, ru: 'Сарыарка',     kz: 'Сарыарқа',  en: 'Saryarka' },
+  { id: 'almaty',   lat: 51.170, lng: 71.520, ru: 'Алматинский',  kz: 'Алматы',    en: 'Almaty' },
+  { id: 'baikonur', lat: 51.190, lng: 71.370, ru: 'Байконурский', kz: 'Байқоңыр',  en: 'Baikonyr' },
+  { id: 'nura',     lat: 51.070, lng: 71.530, ru: 'Нура',         kz: 'Нұра',      en: 'Nura' }
+];
 
 const CLUBS = [
 ];
-  return { CATS: CATS, CAT_HINTS: CAT_HINTS, CLUBS: CLUBS };
+  return { CATS: CATS, CAT_ALIAS: CAT_ALIAS, CAT_HINTS: CAT_HINTS, DISTRICTS: DISTRICTS, CLUBS: CLUBS };
 })();
