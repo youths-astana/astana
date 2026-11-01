@@ -371,14 +371,17 @@
     // непонятно, почему список пуст и что вообще выбрано.
     var keep = state.allCats ? empty : empty.filter(function (c) { return c.id === state.cat; });
     var hidden = state.allCats ? 0 : empty.length - keep.length;
-    return [{ id: 'all', label: T.all, n: 1 }]
-      .concat(full.concat(keep).map(function (c) { return { id: c.id, label: c[L], n: cnt[c.id] || 0 }; }))
-      .map(function (c) {
-        return '<button class="chip' + (c.n ? '' : ' empty') + '" data-action="cat" data-id="' + c.id +
-          '" aria-pressed="' + (state.cat === c.id) + '">' + esc(c.label) + '</button>';
-      }).join('') +
-      (hidden ? '<button class="chip more-cats" data-action="cats-more">' + esc(T.cats_more) + ' (' + hidden + ')</button>'
-        : empty.length ? '<button class="chip more-cats" data-action="cats-less">' + esc(T.cats_less) + '</button>' : '');
+    function chip(c) {
+      return '<button class="chip' + (cnt[c.id] ? '' : ' empty') + '" data-action="cat" data-id="' + c.id +
+        '" aria-pressed="' + (state.cat === c.id) + '">' + esc(c.label || c[L]) + '</button>';
+    }
+    // Переключатель стоит на одном и том же месте — сразу после занятых
+    // секций, и в свёрнутом, и в развёрнутом виде. Так его не приходится
+    // искать заново каждый раз, когда список меняет высоту.
+    var toggle = hidden
+      ? '<button class="chip more-cats" data-action="cats-more">' + esc(T.cats_more) + ' (' + hidden + ')</button>'
+      : empty.length ? '<button class="chip more-cats" data-action="cats-less">' + esc(T.cats_less) + '</button>' : '';
+    return [{ id: 'all', label: T.all }].concat(full).map(chip).join('') + toggle + keep.map(chip).join('');
   }
 
   // «Бесплатно» и «Новичкам» — два самых частых вопроса подростка,

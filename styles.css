@@ -399,9 +399,10 @@ h1.map-title { margin: 0 0 14px; font-size: clamp(22px, 4.6vw, 28px); font-weigh
 .chip.empty { opacity: .42 }
 .chip.empty:hover { opacity: 1 }
 
-/* «Ещё секции»: пустые пока направления открываются по клику. */
-.chip.more-cats { border-style: dashed; color: var(--faint) }
-.chip.more-cats:hover { color: var(--accent); border-color: var(--accent) }
+/* Переключатель пустых секций. Это не категория, а управление списком,
+   поэтому он залит акцентным фоном: «Свернуть» иначе теряется среди чипов. */
+.chip.more-cats { border-color: var(--accent); background: var(--accent-bg); color: var(--accent-dk); font-weight: 600 }
+.chip.more-cats:hover { background: #E2ECFF }
 
 /* Подпись над блоком «не совсем твоё направление» в помощнике. */
 .helper-sub { margin: 18px 0 8px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint) }
