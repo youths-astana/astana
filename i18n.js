@@ -124,5 +124,29 @@ const STR = {
 Object.assign(STR.ru, { more: 'Показать ещё', updated_pre: 'обновлено', copy_link: 'Скопировать ссылку', link_copied: 'Ссылка скопирована', stats_h: 'Какую статистику мы видим', stats_p: 'Только анонимные цифры: сколько раз открывали страницы и нажимали «связаться». Без cookies, без имён и номеров, без слежки между сайтами. Считает сервис GoatCounter — так мы понимаем, какие сообщества ищут чаще.', qr_dl: 'Скачать QR', not_found_h: 'Сообщество не найдено', not_found_p: 'Возможно, его убрали из каталога.', search_label: 'Поиск сообществ', lang_label: 'Язык', site: 'Qosyl · Астана' });
 Object.assign(STR.kz, { more: 'Тағы көрсету', updated_pre: 'жаңартылды', copy_link: 'Сілтемені көшіру', link_copied: 'Сілтеме көшірілді', stats_h: 'Қандай статистиканы көреміз', stats_p: 'Тек анонимді сандар: беттер қанша рет ашылды және «байланысу» қанша рет басылды. Cookie жоқ, аты-жөн мен нөмір жоқ, басқа сайттар арасында бақылау жоқ. Санауды GoatCounter сервисі жүргізеді — осылайша қай қоғамдастықтарды жиі іздейтінін түсінеміз.', qr_dl: 'QR жүктеу', not_found_h: 'Қоғамдастық табылмады', not_found_p: 'Мүмкін, ол каталогтан алынып тасталған.', search_label: 'Қоғамдастықтарды іздеу', lang_label: 'Тіл', site: 'Qosyl · Астана' });
 Object.assign(STR.en, { more: 'Show more', updated_pre: 'updated', copy_link: 'Copy link', link_copied: 'Link copied', stats_h: 'What statistics we see', stats_p: 'Only anonymous numbers: how often pages are opened and how often people tap to get in touch. No cookies, no names or phone numbers, no cross-site tracking. Counting is done by GoatCounter, so we can see which communities people look for most.', qr_dl: 'Download QR', not_found_h: 'Community not found', not_found_p: 'It may have been removed from the catalogue.', search_label: 'Search communities', lang_label: 'Language', site: 'Qosyl · Astana' });
+
+// Готовое сообщение организатору: подставляется в WhatsApp, копируется для Instagram и Telegram.
+Object.assign(STR.ru, {
+  greet: 'Здравствуйте! Пишу вам из каталога сообществ Qosyl (qosyl.club). Подскажите, пожалуйста, как к вам присоединиться?',
+  greet_copied: 'Текст сообщения скопирован — вставьте его в чат',
+  greet_h: 'Сообщение для первого контакта',
+  greet_p: 'В WhatsApp подставится само. Для Instagram и Telegram — скопируйте и вставьте.',
+  greet_copy: 'Скопировать'
+});
+Object.assign(STR.kz, {
+  greet: 'Сәлеметсіз бе! Сізге Qosyl қоғамдастықтар каталогынан жазып отырмын (qosyl.club). Сіздерге қалай қосылуға болатынын айтып жіберсеңіз.',
+  greet_copied: 'Хабарлама мәтіні көшірілді — чатқа қойыңыз',
+  greet_h: 'Алғашқы хабарламаға дайын мәтін',
+  greet_p: 'WhatsApp-та өзі қойылады. Instagram мен Telegram үшін көшіріп алыңыз.',
+  greet_copy: 'Көшіру'
+});
+Object.assign(STR.en, {
+  greet: 'Hello! I am writing from the Qosyl community directory (qosyl.club). Could you tell me how to join you?',
+  greet_copied: 'Message copied — paste it into the chat',
+  greet_h: 'Message for your first contact',
+  greet_p: 'WhatsApp fills it in for you. For Instagram and Telegram, copy and paste it.',
+  greet_copy: 'Copy'
+});
+
   return STR;
 })();

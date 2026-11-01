@@ -75,11 +75,12 @@
 
   var STAR = '<svg class="star" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6 14.9 9l6.6.7-4.9 4.5 1.4 6.5L12 17.4 6 20.7l1.4-6.5L2.5 9.7 9.1 9z"/></svg>';
 
-  var ORNAMENT = '<svg class="hero-orn" width="190" height="190" viewBox="0 0 176 176" fill="none" aria-hidden="true"><defs>' +
-    '<pattern id="ornPat" width="44" height="44" patternUnits="userSpaceOnUse" viewBox="0 0 32 32">' +
-    '<path d="M16 4 L28 16 L16 28 L4 16 Z" stroke="#2F6BFF" stroke-width="1.4" fill="none"/>' +
-    '<path d="M10 16 C10 12 13 10.5 16 13 C19 10.5 22 12 22 16 C22 19.5 19 21.5 16 24 C13 21.5 10 19.5 10 16 Z" stroke="#2F6BFF" stroke-width="1.7" stroke-linejoin="round" fill="none"/>' +
-    '</pattern></defs><rect width="176" height="176" fill="url(#ornPat)"/></svg>';
+  // Один крупный знак Qosyl вместо повторяющегося узора.
+  var ORNAMENT = '<svg class="hero-orn" width="230" height="230" viewBox="0 0 32 32" fill="none" aria-hidden="true">' +
+    '<path d="M16 4 L28 16 L16 28 L4 16 Z" stroke="#2F6BFF" stroke-opacity=".5" stroke-width=".7"/>' +
+    '<path d="M10 16 C10 12 13 10.5 16 13 C19 10.5 22 12 22 16 C22 19.5 19 21.5 16 24 C13 21.5 10 19.5 10 16 Z" stroke="#2F6BFF" stroke-width=".9" stroke-linejoin="round"/>' +
+    '<circle cx="16" cy="8.5" r="1.15" fill="#2F6BFF"/><circle cx="23.5" cy="16" r="1.15" fill="#2F6BFF"/>' +
+    '<circle cx="8.5" cy="16" r="1.15" fill="#2F6BFF"/></svg>';
 
   // ---------- state ----------
   function initialLang() {
@@ -271,7 +272,7 @@
       '<dl class="facts">' + facts.map(function (f) { return '<div class="fact"><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>'; }).join('') + '</dl>' +
       '<h2 class="sub">' + esc(T.contact_h) + '</h2>' +
       '<div class="contacts">' +
-      (tel ? '<a class="wa" data-track="whatsapp" href="https://wa.me/' + tel + '" target="_blank" rel="noopener">WhatsApp<small>' + esc(T.write) + '</small></a>' : '') +
+      (tel ? '<a class="wa" data-track="whatsapp" href="https://wa.me/' + tel + '?text=' + encodeURIComponent(T.greet) + '" target="_blank" rel="noopener">WhatsApp<small>' + esc(T.write) + '</small></a>' : '') +
       ((c.ig || c.tg) ? '<div class="grid2">' +
         (c.ig ? '<a class="social" data-track="instagram" href="https://instagram.com/' + esc(encodeURIComponent(c.ig)) + '" target="_blank" rel="noopener">Instagram</a>' : '') +
         (c.tg ? '<a class="social" data-track="telegram" href="https://t.me/' + esc(encodeURIComponent(c.tg)) + '" target="_blank" rel="noopener">Telegram</a>' : '') +
@@ -282,6 +283,12 @@
         '<a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=' + c.lat + ',' + c.lng + '" target="_blank" rel="noopener">' + esc(T.gmaps) + '</a>' +
         '<a class="maplink" href="https://2gis.kz/astana/geo/' + c.lng + ',' + c.lat + '" target="_blank" rel="noopener">' + esc(T.twogis) + '</a>' +
         '</div>' : '') +
+      ((tel || c.ig || c.tg)
+        ? '<div class="greet"><h3>' + esc(T.greet_h) + '</h3>' +
+          '<p class="greet-text" id="greet-text">' + esc(T.greet) + '</p>' +
+          '<div class="greet-row"><button class="greet-copy" data-action="copy-greet">' + esc(T.greet_copy) + '</button>' +
+          '<span class="greet-note">' + esc(T.greet_p) + '</span></div></div>'
+        : '') +
       '<div class="checked-row"><span class="date">' + esc(T.checked + ': ' + fmtDate(c.checked, L)) + '</span><div class="grow"></div>' +
       (reported
         ? '<span class="thanks" role="status">' + esc(T.reported) + '</span>'
@@ -640,13 +647,36 @@
   }
 
   function copyText(text) {
-    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
-    var ta = document.createElement('textarea');
-    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); } catch (e) {}
-    document.body.removeChild(ta);
-    return Promise.resolve();
+    // Современный способ иногда отказывает (нет фокуса, старый браузер) — тогда старый.
+    function legacy() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      return ok ? Promise.resolve() : Promise.reject(new Error('copy failed'));
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(legacy);
+    }
+    return legacy();
+  }
+
+  var toastTimer = null;
+  function toast(text) {
+    var el = document.getElementById('toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'toast';
+      el.className = 'toast';
+      el.setAttribute('role', 'status');
+      document.body.appendChild(el);
+    }
+    el.textContent = text;
+    el.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('on'); }, 3200);
   }
 
   // ---------- chrome (header/footer) ----------
@@ -719,8 +749,14 @@
   document.addEventListener('click', function (e) {
     var tr = e.target.closest('[data-track]');
     if (tr) {
+      var how = tr.getAttribute('data-track');
       var r = route(), tc = r.screen === 'club' && findClub(r.id);
-      if (tc) statsSend({ path: 'contact/' + tr.getAttribute('data-track') + '/' + tc.slug, title: tc.name.ru + ' — ' + tr.getAttribute('data-track'), event: true });
+      if (tc) statsSend({ path: 'contact/' + how + '/' + tc.slug, title: tc.name.ru + ' — ' + how, event: true });
+      // Instagram и Telegram не умеют открывать чат с готовым текстом — кладём его в буфер.
+      if (how === 'instagram' || how === 'telegram') {
+        var T2 = STR[state.lang];
+        copyText(T2.greet).then(function () { toast(T2.greet_copied); }, function () {});
+      }
     }
     var el = e.target.closest('[data-action]');
     if (!el) return;
@@ -759,11 +795,22 @@
         state.shown += PAGE;
         document.getElementById('map-list').innerHTML = mapListHTML();
         break;
+      case 'copy-greet':
+        copyText(STR[state.lang].greet).then(function () {
+          toast(STR[state.lang].greet_copied);
+        }, function () {
+          // Буфер недоступен — выделяем текст, чтобы его можно было скопировать вручную.
+          var node = document.getElementById('greet-text');
+          if (!node) return;
+          var sel = window.getSelection(), rng = document.createRange();
+          rng.selectNodeContents(node); sel.removeAllRanges(); sel.addRange(rng);
+        });
+        break;
       case 'copy-link':
         copyText(el.getAttribute('data-url')).then(function () {
           state.linkCopied = true;
           el.textContent = STR[state.lang].link_copied;
-        });
+        }, function () {});
         break;
       case 'qr-dl':
         downloadQR(el.getAttribute('data-slug'));
@@ -813,7 +860,7 @@
         downloadCatalogue();
         break;
       case 'copy-json':
-        copyText(jsonOut()).then(function () { state.copied = true; el.textContent = 'Скопировано'; });
+        copyText(jsonOut()).then(function () { state.copied = true; el.textContent = 'Скопировано'; }, function () {});
         break;
     }
   });

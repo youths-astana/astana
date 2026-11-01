@@ -23,7 +23,7 @@
 
 * { box-sizing: border-box }
 html, body { margin: 0; padding: 0 }
-body { background: #fff; background-image: radial-gradient(120% 90% at 100% 100%, #D4E3FF 0%, #E9F0FF 36%, rgba(255,255,255,0) 72%), radial-gradient(100% 70% at 100% 0%, #D4E3FF 0%, #E9F0FF 34%, rgba(255,255,255,0) 70%), linear-gradient(to left, #E8EFFF 0%, rgba(255,255,255,0) 58%); background-attachment: fixed; color: var(--ink); font-family: "Golos Text", system-ui, sans-serif; -webkit-font-smoothing: antialiased }
+body { background: #fff; background-image: linear-gradient(170deg, #F4F8FF 0%, #FFFFFF 42%, #F7FAFF 100%); background-attachment: fixed; color: var(--ink); font-family: "Golos Text", system-ui, sans-serif; -webkit-font-smoothing: antialiased }
 a { color: var(--accent); text-decoration: none }
 a:hover { color: var(--accent-dk) }
 input, button, textarea { font-family: inherit }
@@ -40,9 +40,18 @@ button { cursor: pointer; color: inherit }
 @media (prefers-reduced-motion: reduce) { .screen { animation: none !important } }
 
 .shell { min-height: 100vh; display: flex; flex-direction: column; position: relative }
-.bg-orn { position: fixed; z-index: 0; pointer-events: none; height: auto }
-.bg-orn-top { right: -60px; top: -80px; opacity: .55; width: clamp(220px, 30vw, 420px) }
-.bg-orn-bot { right: -60px; bottom: -80px; opacity: .55; width: clamp(220px, 30vw, 420px) }
+.bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden }
+.bg-glow { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .5 }
+.bg-glow-a { width: 46vmax; height: 46vmax; right: -14vmax; top: -16vmax; background: radial-gradient(circle, #C5DAFF 0%, rgba(197,218,255,0) 68%); animation: drift-a 34s ease-in-out infinite alternate }
+.bg-glow-b { width: 40vmax; height: 40vmax; left: -16vmax; bottom: -18vmax; background: radial-gradient(circle, #DCE6FF 0%, rgba(220,230,255,0) 68%); animation: drift-b 44s ease-in-out infinite alternate }
+.bg-mark { position: absolute; color: var(--accent); height: auto }
+.bg-mark-1 { width: clamp(300px, 44vw, 640px); right: -9%; top: -7%; opacity: .07; animation: float-a 30s ease-in-out infinite alternate }
+.bg-mark-2 { width: clamp(190px, 26vw, 380px); left: -6%; bottom: -5%; opacity: .05; animation: float-b 38s ease-in-out infinite alternate }
+@keyframes drift-a { from { transform: none } to { transform: translate3d(-4%, 5%, 0) scale(1.08) } }
+@keyframes drift-b { from { transform: none } to { transform: translate3d(5%, -4%, 0) scale(1.1) } }
+@keyframes float-a { from { transform: none } to { transform: translate3d(-2.5%, 3.5%, 0) rotate(7deg) } }
+@keyframes float-b { from { transform: none } to { transform: translate3d(3%, -3%, 0) rotate(-9deg) } }
+@media (prefers-reduced-motion: reduce) { .bg-glow, .bg-mark { animation: none !important } }
 .wrap { max-width: 780px; margin: 0 auto; padding-left: 18px; padding-right: 18px; width: 100% }
 .main { flex: 1; outline: none; position: relative; z-index: 1 }
 .screen { padding: 26px 0 8px }
@@ -72,7 +81,7 @@ button { cursor: pointer; color: inherit }
 
 /* Home */
 .hero-card { position: relative; overflow: hidden; border: 1px solid #DCE5FA; border-radius: 16px; background: linear-gradient(135deg, #F4F7FF 0%, #EAF0FF 100%); padding: 28px 26px 26px; margin-bottom: 26px }
-.hero-orn { position: absolute; top: -26px; right: -26px; opacity: .16; pointer-events: none }
+.hero-orn { position: absolute; top: -52px; right: -58px; opacity: .13; pointer-events: none; transform: rotate(8deg) }
 .hero-body { position: relative; display: grid; gap: 10px; max-width: 34em }
 .hero-card h1.hero { margin: 0 }
 .hero-card .lead { margin: 0; line-height: 1.55; color: oklch(0.38 0.03 262) }
@@ -292,3 +301,17 @@ h1.map-title { margin: 0 0 14px; font-size: clamp(22px, 4.6vw, 28px); font-weigh
 .foot-link.accent { color: var(--accent) }
 .foot-link.accent:hover { color: var(--accent-dk) }
 .foot-priv { font-size: 11px; color: oklch(0.55 0.03 262) }
+
+/* Подсказка про готовый текст и всплывающее уведомление о копировании */
+.toast { position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 14px); z-index: 2000; max-width: min(92vw, 420px); padding: 12px 18px; border-radius: 12px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 500; line-height: 1.35; text-align: center; box-shadow: 0 10px 30px rgba(20, 30, 60, .28); opacity: 0; pointer-events: none; transition: opacity .18s ease, transform .18s ease }
+.toast.on { opacity: 1; transform: translate(-50%, 0) }
+@media (prefers-reduced-motion: reduce) { .toast { transition: none } }
+
+/* Готовое сообщение организатору */
+.greet { margin: 16px 0 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: 13px; background: #fff }
+.greet h3 { margin: 0 0 8px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; color: var(--soft) }
+.greet-text { margin: 0 0 12px; font-size: 14.5px; line-height: 1.5; color: var(--ink) }
+.greet-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap }
+.greet-copy { flex: none; font-size: 14px; font-weight: 600; padding: 9px 16px; border: 1px solid var(--field); border-radius: 10px; background: #fff; color: var(--accent) }
+.greet-copy:hover { border-color: var(--accent); background: var(--accent-bg) }
+.greet-note { flex: 1; min-width: 180px; font-size: 12.5px; line-height: 1.4; color: var(--faint) }
