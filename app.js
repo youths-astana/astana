@@ -367,15 +367,18 @@
     allClubs().forEach(function (c) { cnt[c.cat] = (cnt[c.cat] || 0) + 1; });
     var full = [], empty = [];
     CATS.forEach(function (c) { (cnt[c.id] ? full : empty).push(c); });
-    var shown = full.concat(state.allCats ? empty : []);
-    var hidden = state.allCats ? 0 : empty.length;
+    // Выбранную секцию не прячем, даже если она пустая: иначе при сворачивании
+    // непонятно, почему список пуст и что вообще выбрано.
+    var keep = state.allCats ? empty : empty.filter(function (c) { return c.id === state.cat; });
+    var hidden = state.allCats ? 0 : empty.length - keep.length;
     return [{ id: 'all', label: T.all, n: 1 }]
-      .concat(shown.map(function (c) { return { id: c.id, label: c[L], n: cnt[c.id] || 0 }; }))
+      .concat(full.concat(keep).map(function (c) { return { id: c.id, label: c[L], n: cnt[c.id] || 0 }; }))
       .map(function (c) {
         return '<button class="chip' + (c.n ? '' : ' empty') + '" data-action="cat" data-id="' + c.id +
           '" aria-pressed="' + (state.cat === c.id) + '">' + esc(c.label) + '</button>';
       }).join('') +
-      (hidden ? '<button class="chip more-cats" data-action="cats-more">' + esc(T.cats_more) + ' (' + hidden + ')</button>' : '');
+      (hidden ? '<button class="chip more-cats" data-action="cats-more">' + esc(T.cats_more) + ' (' + hidden + ')</button>'
+        : empty.length ? '<button class="chip more-cats" data-action="cats-less">' + esc(T.cats_less) + '</button>' : '');
   }
 
   // «Бесплатно» и «Новичкам» — два самых частых вопроса подростка,
@@ -1059,7 +1062,8 @@
         repaintList();
         break;
       case 'cats-more':
-        state.allCats = true;
+      case 'cats-less':
+        state.allCats = action === 'cats-more';
         document.getElementById('chips').innerHTML = chipsHTML();
         break;
       case 'flag':

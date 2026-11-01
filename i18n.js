@@ -339,9 +339,9 @@ Object.assign(STR.en, {
 });
 
 // Фильтры «бесплатно» и «новичкам» в каталоге.
-Object.assign(STR.ru, { f_free: 'Бесплатно', f_beg: 'Новичкам', cats_more: 'Ещё секции' });
-Object.assign(STR.kz, { f_free: 'Тегін', f_beg: 'Бастаушыларға', cats_more: 'Тағы секциялар' });
-Object.assign(STR.en, { f_free: 'Free', f_beg: 'For beginners', cats_more: 'More sections' });
+Object.assign(STR.ru, { f_free: 'Бесплатно', f_beg: 'Новичкам', cats_more: 'Ещё секции', cats_less: 'Свернуть' });
+Object.assign(STR.kz, { f_free: 'Тегін', f_beg: 'Бастаушыларға', cats_more: 'Тағы секциялар', cats_less: 'Жию' });
+Object.assign(STR.en, { f_free: 'Free', f_beg: 'For beginners', cats_more: 'More sections', cats_less: 'Collapse' });
 
   return STR;
 })();
