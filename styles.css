@@ -124,9 +124,9 @@ h1.hero { margin: 0 0 10px; font-size: clamp(27px, 5.6vw, 38px); line-height: 1.
 .row.featured:hover { background: linear-gradient(135deg, #FFFDF7 0%, #FFF3D8 100%); border-color: #C08E2E }
 /* Казахский орнамент на карточке «Лучшее»: лента по краям и розетка справа */
 .row.featured::before, .row.featured::after {
-  content: ""; position: absolute; left: 3px; right: 3px; height: 18px; pointer-events: none;
+  content: ""; position: absolute; left: 3px; right: 3px; height: 14px; pointer-events: none;
   background-image: url("orn-band.svg");
-  background-repeat: repeat-x; background-size: 45px 18px; opacity: .6;
+  background-repeat: repeat-x; background-size: 34px 14px; opacity: .35;
 }
 .row.featured::before { top: 3px }
 .row.featured::after { bottom: 3px; transform: scaleY(-1) }
