@@ -13,6 +13,7 @@
   var STORE_KEY = 'youths.clubs.v1';
   var LANG_KEY = 'youths.lang';
   var REPORT_KEY = 'youths.reported';
+  var DRAFT_KEY = 'qosyl.join.v1'; // черновик заявки организатора
   var LANGS = [{ id: 'ru', label: 'РУ', html: 'ru' }, { id: 'kz', label: 'ҚАЗ', html: 'kk' }, { id: 'en', label: 'EN', html: 'en' }];
   var CENTER = [51.128, 71.43];
 
@@ -108,12 +109,62 @@
 
   var STAR = '<svg class="star" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6 14.9 9l6.6.7-4.9 4.5 1.4 6.5L12 17.4 6 20.7l1.4-6.5L2.5 9.7 9.1 9z"/></svg>';
 
-  // Один крупный знак Qosyl вместо повторяющегося узора.
-  var ORNAMENT = '<svg class="hero-orn" width="230" height="230" viewBox="0 0 32 32" fill="none" aria-hidden="true">' +
-    '<path d="M16 4 L28 16 L16 28 L4 16 Z" stroke="#2F6BFF" stroke-opacity=".5" stroke-width=".7"/>' +
-    '<path d="M10 16 C10 12 13 10.5 16 13 C19 10.5 22 12 22 16 C22 19.5 19 21.5 16 24 C13 21.5 10 19.5 10 16 Z" stroke="#2F6BFF" stroke-width=".9" stroke-linejoin="round"/>' +
-    '<circle cx="16" cy="8.5" r="1.15" fill="#2F6BFF"/><circle cx="23.5" cy="16" r="1.15" fill="#2F6BFF"/>' +
-    '<circle cx="8.5" cy="16" r="1.15" fill="#2F6BFF"/></svg>';
+  // ---------- иконки ----------
+  // Свои линейные иконки 24×24 с одной толщиной линии — без внешних библиотек.
+  var DOT = function (x, y) { return '<circle cx="' + x + '" cy="' + y + '" r="1.15" fill="currentColor" stroke="none"/>'; };
+  var ICON = {
+    all: '<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>',
+    it: '<path d="M8.5 8 4.5 12l4 4M15.5 8l4 4-4 4M13.5 5.5l-3 13"/>',
+    eng: '<rect x="5" y="8.5" width="14" height="10.5" rx="3"/><path d="M12 5.2v3.3M9 19v1.5M15 19v1.5"/><circle cx="12" cy="4.2" r="1"/>' + DOT(9.5, 13.4) + DOT(14.5, 13.4),
+    stem: '<path d="M9.5 3.5h5M10.5 3.5V9l-4.9 8.6a2 2 0 0 0 1.8 2.9h9.2a2 2 0 0 0 1.8-2.9L13.5 9V3.5"/><path d="M7.6 14.5h8.8"/>',
+    debate: '<path d="M4 6.5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9.5L6 16.5v-3a2 2 0 0 1-2-2z"/><path d="M16 9h2a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2v2.5L15 18h-3.5a2 2 0 0 1-2-2v-.5"/>',
+    lang: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.4 3.6 5.2 3.6 8.5s-1.2 6.1-3.6 8.5c-2.4-2.4-3.6-5.2-3.6-8.5s1.2-6.1 3.6-8.5z"/>',
+    sport: '<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17M6.2 5.8c2 1.7 3.1 3.8 3.1 6.2s-1.1 4.5-3.1 6.2M17.8 5.8c-2 1.7-3.1 3.8-3.1 6.2s1.1 4.5 3.1 6.2"/>',
+    art: '<path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.1 0 1.8-.8 1.8-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7h2.1a3.9 3.9 0 0 0 3.9-3.9c0-4-3.8-7.3-8.5-7.3z"/>' + DOT(7.6, 11.4) + DOT(10, 7.7) + DOT(14.6, 7.9),
+    media: '<rect x="3" y="6.5" width="13" height="11" rx="2.5"/><path d="m16 10.5 5-3v9l-5-3"/>',
+    vol: '<path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z"/>',
+    biz: '<path d="M4 19.5h16"/><path d="m6 15.5 4-4.5 3 3 5.5-6.5"/><path d="M14.5 7.5h4v4"/>',
+    clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    pin: '<path d="M12 21s-6.5-5.7-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 15.3 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.3"/>',
+    tenge: '<circle cx="12" cy="12" r="8.5"/><path d="M8.5 8h7M8.5 10.7h7M12 10.7V17"/>',
+    talk: '<path d="M4.5 6.5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H10l-4 3.5v-3.5a2 2 0 0 1-1.5-2z"/><path d="M8.5 9.5h7M8.5 12.5h4"/>',
+    user: '<circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/>',
+    users: '<circle cx="9" cy="9" r="3.2"/><path d="M3.5 19.5c.7-3.2 2.9-5 5.5-5s4.8 1.8 5.5 5"/><circle cx="16.5" cy="8" r="2.6"/><path d="M16.5 13.2c2.1 0 3.7 1.4 4.2 4"/>',
+    map: '<path d="M9 4.5 3.5 6.5v13l5.5-2 6 2 5.5-2v-13l-5.5 2-6-2z"/><path d="M9 4.5v13M15 6.5v13"/>',
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/>',
+    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+    down: '<path d="M12 5v14M6 13l6 6 6-6"/>',
+    check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    dice: '<rect x="4" y="4" width="16" height="16" rx="4"/>' + DOT(8.6, 8.6) + DOT(15.4, 8.6) + DOT(12, 12) + DOT(8.6, 15.4) + DOT(15.4, 15.4),
+    shield: '<path d="M12 3.5 5 6v5.5c0 4.4 3 7.7 7 9 4-1.3 7-4.6 7-9V6z"/><path d="m8.8 12 2.3 2.3 4.2-4.6"/>',
+    spark: '<path d="M12 3.5c.6 4.4 2.1 5.9 6.5 6.5-4.4.6-5.9 2.1-6.5 6.5-.6-4.4-2.1-5.9-6.5-6.5 4.4-.6 5.9-2.1 6.5-6.5z"/><path d="M18.5 15.5v4M16.5 17.5h4"/>',
+    door: '<path d="M6 20.5V5a1.5 1.5 0 0 1 1.5-1.5h9A1.5 1.5 0 0 1 18 5v15.5"/><path d="M4 20.5h16"/>' + DOT(14.3, 12.5),
+    trophy: '<path d="M8 4.5h8v5a4 4 0 0 1-8 0z"/><path d="M8 6.5H5.5A2.5 2.5 0 0 0 8 10M16 6.5h2.5A2.5 2.5 0 0 1 16 10M12 13.5v3M9.5 16.5h5V20h-5z"/>',
+    copy: '<rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5V6A1.5 1.5 0 0 0 14 4.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/>',
+    play: '<path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none"/>',
+    wa: '<path d="M12 3.6a8.4 8.4 0 0 0-7.3 12.6L3.6 20.4l4.3-1.1A8.4 8.4 0 1 0 12 3.6z"/><path fill="currentColor" stroke="none" d="M9.3 7.8c.2-.4.4-.4.6-.4h.5c.2 0 .4 0 .5.4l.7 1.6c.1.2 0 .4-.1.6l-.5.6c-.1.1-.1.3 0 .5.7 1.1 1.5 1.9 2.6 2.5.2.1.3.1.5 0l.6-.6c.2-.2.4-.2.6-.1l1.6.7c.3.1.4.3.4.5v.5c0 .3-.1.5-.4.7-.6.4-1.3.5-2 .4-2.6-.6-4.6-2.6-5.2-5.2-.1-.7 0-1.4.4-2z"/>',
+    ig: '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/>',
+    tg: '<path d="M20.5 4.5 3.5 11.2l5.6 2 2 6.3 3.2-3.8 4.4 3.3z"/><path d="m9.1 13.2 11.4-8.7"/>',
+    yt: '<rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.3v5.4l4.8-2.7z" fill="currentColor" stroke="none"/>',
+    tt: '<path d="M14 3.5v11.2a3.6 3.6 0 1 1-3.6-3.6"/><path d="M14 3.5c.5 2.6 2.4 4.4 5.2 4.7"/>',
+    photo: '<rect x="3.5" y="5" width="17" height="14" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="m4 17 5-4.5 3.5 3 2.5-2 5 4"/>'
+  };
+  function icon(name, size) {
+    var s = size || 22;
+    return '<svg class="ic-svg" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICON[name] || ICON.spark) + '</svg>';
+  }
+  // Знак Qosyl для украшений: цвет берёт от родителя.
+  function MARK(cls) {
+    return '<svg class="' + cls + '" viewBox="0 0 32 32" fill="none" aria-hidden="true">' +
+      '<path d="M16 4 L28 16 L16 28 L4 16 Z" stroke="currentColor" stroke-opacity=".6" stroke-width=".7"/>' +
+      '<path d="M10 16 C10 12 13 10.5 16 13 C19 10.5 22 12 22 16 C22 19.5 19 21.5 16 24 C13 21.5 10 19.5 10 16 Z" stroke="currentColor" stroke-width=".9" stroke-linejoin="round"/>' +
+      '<circle cx="16" cy="8.5" r="1.15" fill="currentColor"/><circle cx="23.5" cy="16" r="1.15" fill="currentColor"/><circle cx="8.5" cy="16" r="1.15" fill="currentColor"/></svg>';
+  }
+  // Цвет направления — только оттенок в OKLCH; светлоту и насыщенность задаёт CSS,
+  // поэтому все десять цветов одной «громкости» и не спорят друг с другом.
+  var CAT_HUE = { all: 262, it: 285, eng: 250, stem: 212, debate: 20, lang: 318, sport: 148, art: 352, media: 48, vol: 174, biz: 82 };
+  function hueOf(cat) { return CAT_HUE[cat] != null ? CAT_HUE[cat] : 262; }
 
   // ---------- state ----------
   function initialLang() {
@@ -127,7 +178,7 @@
     return 'ru';
   }
   function blankForm() {
-    return { name: '', tag: '', about: '', cat: '', dist: '', age: '', cost: '', sched: '', addr: '', langs: '', tel: '', ig: '', tg: '', photo: '', kw: '', checked: '', lat: '', lng: '', beginner: true, verified: false, featured: false };
+    return { name: '', tag: '', about: '', cat: '', dist: '', age: '', cost: '', sched: '', addr: '', langs: '', tel: '', ig: '', tg: '', photo: '', media: '', kw: '', checked: '', lat: '', lng: '', beginner: true, verified: false, featured: false };
   }
 
   var state = {
@@ -135,7 +186,6 @@
     q: '',
     cat: 'all',
     dist: 'all',
-    allCats: false,      // показаны ли пустые пока секции
     free: false,         // только бесплатные
     beg: false,          // только те, что ждут новичков          // выбранный район, 'all' — все
     near: null,           // координаты подростка, пока он не ушёл со страницы
@@ -149,13 +199,17 @@
     copied: false,
     linkCopied: false,
     shown: PAGE, // сколько карточек списка показано
-    photo: null // выбранный и сжатый файл: { dataUrl, blob, kb }
+    photo: null, // выбранный и сжатый файл: { dataUrl, blob, kb }
+    join: loadDraft(),   // заявка организатора с сайта (#/join)
+    joinStep: 0,
+    joinErr: {},
+    joinStatus: ''       // '' | 'sending' | 'sent' | 'fail'
   };
 
   function normalizeUser(u) {
     return {
       id: u.id, cat: u.cat, dist: u.dist || '', slug: u.slug || u.id, verified: !!u.verified, beginner: !!u.beginner, featured: !!u.featured,
-      checked: u.checked || '', mine: true, photo: u.photo || '',
+      checked: u.checked || '', mine: true, photo: u.photo || '', media: u.media || '',
       name: tri(u.name), tag: tri(u.tag || ''), about: tri(u.about || u.tag || ''),
       age: u.age || '—', cost: tri(u.cost || '—'), sched: tri(u.sched || '—'),
       addr: tri(u.addr || '—'), langs: tri(u.langs || '—'),
@@ -326,73 +380,138 @@
     var h = window.location.hash.replace(/^#\/?/, '');
     var parts = h.split('/').map(function (p) { try { return decodeURIComponent(p); } catch (e) { return p; } });
     if (parts[0] === 'club' && parts[1]) return { screen: 'club', id: parts[1] };
+    if (parts[0] === 'join') return { screen: 'join', id: parts[1] || '' };
     if (parts[0] === 'about' || parts[0] === 'map' || parts[0] === 'add') return { screen: parts[0] };
     return { screen: 'home' };
   }
 
+  // ---------- фото и видео сообщества ----------
+  // Принимаем ссылки на посты и рилсы Instagram, видео YouTube и TikTok и прямые картинки.
+  // Всё остальное молча пропускаем: лучше не показать ссылку, чем показать сломанную.
+  function parseMedia(u) {
+    u = String(u || '').trim();
+    var m;
+    if ((m = /instagram\.com\/(?:[\w.]+\/)?(p|reels?|tv)\/([\w-]+)/i.exec(u))) {
+      var sub = m[1].toLowerCase() === 'p' ? 'p' : 'reel';
+      return { kind: 'ig', sub: sub, id: m[2], url: 'https://www.instagram.com/' + sub + '/' + m[2] + '/' };
+    }
+    if ((m = /(?:youtube\.com\/(?:watch\?(?:[^#]*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{11})/i.exec(u))) {
+      return { kind: 'yt', id: m[1], short: /shorts\//i.test(u), url: 'https://www.youtube.com/' + (/shorts\//i.test(u) ? 'shorts/' : 'watch?v=') + m[1] };
+    }
+    if ((m = /tiktok\.com\/@[\w.-]+\/video\/(\d+)/i.exec(u))) return { kind: 'tt', id: m[1], url: u.split('?')[0] };
+    if (/^https?:\/\/[^\s]+\.(jpe?g|png|webp|avif|gif)(\?[^\s]*)?$/i.test(u) || /^photos\/[\w\-/]+\.(jpe?g|png|webp|avif|gif)$/i.test(u)) {
+      return { kind: 'img', src: u, url: u };
+    }
+    return null;
+  }
+  // Одна ссылка — одна строка; если в строку вставили несколько ссылок подряд, делим их.
+  function mediaLines(t) {
+    return String(t || '').split(/\n+/).reduce(function (out, line) {
+      line = line.trim();
+      if (!line) return out;
+      var urls = line.match(/https?:\/\/[^\s,]+/g);
+      return out.concat(urls && urls.length > 1 ? urls : [line]);
+    }, []);
+  }
+  function mediaList(v) {
+    var arr = Array.isArray(v) ? v : mediaLines(v);
+    var seen = {};
+    return arr.map(parseMedia).filter(function (x) {
+      if (!x || seen[x.url]) return false;
+      seen[x.url] = true;
+      return true;
+    }).slice(0, 12);
+  }
+  function mediaTileHTML(m, i, T) {
+    if (m.kind === 'img') {
+      return '<button class="m-tile" data-action="lightbox" data-src="' + esc(m.src) + '" aria-label="' + esc(T.media_photo) + '">' +
+        '<img src="' + esc(m.src) + '" alt="" loading="lazy" decoding="async"></button>';
+    }
+    var label = m.kind === 'ig' ? (m.sub === 'reel' ? T.media_reel : T.media_ig) : m.kind === 'yt' ? T.media_yt : T.media_tt;
+    return '<button class="m-tile m-' + m.kind + '" data-action="embed" data-i="' + i + '" aria-label="' + esc(label) + '">' +
+      (m.kind === 'yt' ? '<img src="https://i.ytimg.com/vi/' + esc(m.id) + '/hqdefault.jpg" alt="" loading="lazy" decoding="async">' : '') +
+      '<span class="m-play">' + icon('play', 26) + '</span>' +
+      '<span class="m-cap"><b>' + icon(m.kind, 16) + esc(label) + '</b><span>' + esc(T.media_tap) + '</span></span></button>';
+  }
+  // Встраивание грузится только по нажатию: до этого Instagram, YouTube и TikTok
+  // ничего не знают о посетителе — так сайт держит обещание «без слежки».
+  function embedHTML(m) {
+    if (m.kind === 'ig') return '<iframe class="m-frame" src="https://www.instagram.com/' + m.sub + '/' + encodeURIComponent(m.id) + '/embed/" height="' + (m.sub === 'reel' ? 720 : 580) + '" allowfullscreen title="Instagram"></iframe>';
+    if (m.kind === 'yt') return '<iframe class="m-frame' + (m.short ? '' : ' wide') + '" src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(m.id) + '?autoplay=1&amp;rel=0&amp;playsinline=1"' + (m.short ? ' height="640"' : '') + ' allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="YouTube"></iframe>';
+    if (m.kind === 'tt') return '<iframe class="m-frame" src="https://www.tiktok.com/embed/v2/' + encodeURIComponent(m.id) + '" height="740" allow="encrypted-media" allowfullscreen title="TikTok"></iframe>';
+    return '';
+  }
+
   // ---------- views ----------
-  function rowHTML(c, L, T) {
-    var showCheck = c.verified;
-    return '<a class="row' + (c.featured ? ' featured' : '') + '" href="#/club/' + esc(encodeURIComponent(c.slug)) + '">' +
-      (c.featured ? '<span class="orn-bg" aria-hidden="true"></span><span class="top-badge">' + STAR + esc(T.featured) + '</span>' : '') +
-      '<span class="row-head"><span class="row-name">' + esc(c.name[L]) + '</span><span class="cat-tag">' + esc(catLabel(c.cat, L)) + '</span></span>' +
-      '<span class="row-tag">' + esc(c.tag[L]) + '</span>' +
-      '<span class="meta">' +
-      (function () { var d = kmTo(c); return d == null ? '' : '<span class="near-km">' + esc(kmText(d, L)) + '</span><span class="sep">·</span>'; })() +
-      '<span>' + esc(c.age) + '</span><span class="sep">·</span><span>' + esc(c.cost[L]) + '</span>' +
-      (c.beginner ? '<span class="sep">·</span><span class="beg">' + esc(T.beginner) + '</span>' : '') +
-      (showCheck ? '<span class="sep">·</span><span>' + esc(T.verified) + '</span>' : '') +
+  function coverArt(c) {
+    return '<span class="cover-art">' + icon(c.cat, 64) + MARK('mark') + '</span>';
+  }
+
+  // Карточка сообщества. Одна и та же в каталоге, в помощнике и в «похожих»:
+  // она самодостаточна, поэтому её нельзя «сломать», вложив в другой блок.
+  function cardHTML(c, L, T, extra) {
+    var photo = photoSrc(c.photo);
+    var d = kmTo(c);
+    var cost = c.cost[L];
+    return '<a class="club' + (c.featured ? ' featured' : '') + '" href="#/club/' + esc(encodeURIComponent(c.slug)) + '" style="--h:' + hueOf(c.cat) + '">' +
+      '<span class="club-cover">' +
+      (photo ? '<img src="' + esc(photo) + '" alt="" loading="lazy" decoding="async">' : coverArt(c)) +
+      '<span class="club-cat">' + icon(c.cat, 16) + esc(catLabel(c.cat, L)) + '</span>' +
+      (c.featured ? '<span class="seal" role="img" aria-label="' + esc(T.featured) + '"></span>' : '') +
+      '</span>' +
+      '<span class="club-body">' +
+      '<span class="club-name">' + esc(c.name[L]) + '</span>' +
+      (c.tag[L] ? '<span class="club-tag">' + esc(c.tag[L]) + '</span>' : '') +
+      '<span class="club-meta">' +
+      (c.featured ? '<span class="m top">' + STAR + esc(T.featured) + '</span>' : '') +
+      (d != null ? '<span class="m km">' + esc(kmText(d, L)) + '</span>' : '') +
+      (c.age && c.age !== '—' ? '<span class="m">' + esc(c.age) + '</span>' : '') +
+      (cost && cost !== '—' ? '<span class="m' + (isFree(c) ? ' free' : '') + '">' + esc(cost) + '</span>' : '') +
+      (c.beginner ? '<span class="m beg">' + esc(T.beginner) + '</span>' : '') +
+      (c.verified ? '<span class="m ok">' + icon('check', 13) + esc(T.verified) + '</span>' : '') +
+      '</span>' + (extra || '') +
       '</span></a>';
+  }
+  var rowHTML = cardHTML;
+
+  function emptyHTML() {
+    var T = STR[state.lang];
+    // Выбрана секция, где пока никого нет: говорим это прямо и зовём подсказать.
+    var catEmpty = state.cat !== 'all' && !allClubs().some(function (c) { return c.cat === state.cat; });
+    return '<div class="empty" style="--h:' + hueOf(state.cat) + '"><span class="ic">' + icon(catEmpty ? state.cat : 'search', 28) + '</span>' +
+      '<h2>' + esc(catEmpty ? T.cat_empty_h : T.empty_h) + '</h2><p>' + esc(catEmpty ? T.cat_empty_p : T.empty_p) + '</p>' +
+      '<div class="empty-btns">' + (catEmpty ? '<a class="btn-solid" href="#/join">' + icon('plus', 18) + esc(T.cat_empty_b) + '</a>' : '') +
+      '<button class="btn-outline" data-action="reset">' + esc(T.empty_cta) + '</button></div></div>';
   }
 
   function resultsHTML() {
     var L = state.lang, T = STR[L], list = filtered();
-    var head = '<div class="count-row"><span class="count" aria-live="polite">' + list.length + ' ' + esc(plural(list.length, L)) + ' ' + esc(T.found) + '</span>' +
+    var q = state.q.trim();
+    var head = '<div class="count-row"><span><span class="count" aria-live="polite">' + list.length + ' ' + esc(plural(list.length, L)) + ' ' + esc(T.found) + '</span>' +
+      (q ? '<button class="q-pill" data-action="clear-q" aria-label="' + esc(T.q_clear) + '">«' + esc(q) + '» <i aria-hidden="true">✕</i></button>' : '') + '</span>' +
       (lastUpdated() ? '<span class="updated">' + esc(T.updated_pre + ' ' + fmtDate(lastUpdated(), L)) + '</span>' : '') + '</div>';
-    if (!list.length) {
-      return head + '<div class="empty"><h2>' + esc(T.empty_h) + '</h2><p>' + esc(T.empty_p) + '</p>' +
-        '<button class="btn-outline" data-action="reset">' + esc(T.empty_cta) + '</button></div>';
-    }
+    if (!list.length) return head + emptyHTML();
     var shown = list.slice(0, state.shown);
     var rest = list.length - shown.length;
-    return head + '<div class="list">' + shown.map(function (c) { return rowHTML(c, L, T); }).join('') + '</div>' +
+    return head + '<div class="grid">' + shown.map(function (c) { return cardHTML(c, L, T); }).join('') + '</div>' +
       (rest > 0 ? '<button class="more" data-action="more">' + esc(T.more) + ' (' + rest + ')</button>' : '');
   }
 
-  // Секции, в которых пока никого нет, прячем за кнопкой «ещё»: иначе
-  // пустой каталог выглядит как десяток серых кнопок, то есть как заброшенный
-  // сайт. Ничего не исчезает — разворачивается в один клик.
-  function chipsHTML() {
-    var L = state.lang, T = STR[L], cnt = {};
-    allClubs().forEach(function (c) { cnt[c.cat] = (cnt[c.cat] || 0) + 1; });
+  // Направления — плитки в один ряд, который листается пальцем. Сначала те,
+  // где уже есть сообщества; пустые бледнее и в конце — но на месте.
+  function catsHTML() {
+    var L = state.lang, T = STR[L], cnt = {}, ALL = allClubs();
+    ALL.forEach(function (c) { cnt[c.cat] = (cnt[c.cat] || 0) + 1; });
     var full = [], empty = [];
     CATS.forEach(function (c) { (cnt[c.id] ? full : empty).push(c); });
-    // Выбранную секцию не прячем, даже если она пустая: иначе при сворачивании
-    // непонятно, почему список пуст и что вообще выбрано.
-    var keep = state.allCats ? empty : empty.filter(function (c) { return c.id === state.cat; });
-    var hidden = state.allCats ? 0 : empty.length - keep.length;
-    function chip(c) {
-      return '<button class="chip' + (cnt[c.id] ? '' : ' empty') + '" data-action="cat" data-id="' + c.id +
-        '" aria-pressed="' + (state.cat === c.id) + '">' + esc(c.label || c[L]) + '</button>';
+    function tile(id, label, n) {
+      return '<button class="cat' + (n ? '' : ' is-empty') + '" data-action="cat" data-id="' + id + '" aria-pressed="' + (state.cat === id) + '" style="--h:' + hueOf(id) + '">' +
+        '<span class="ic">' + icon(id, 21) + '</span><span class="cat-txt"><b>' + esc(label) + '</b>' +
+        (n ? '<small>' + n + ' ' + esc(plural(n, L)) + '</small>' : '') + '</span></button>';
     }
-    // Переключатель стоит на одном и том же месте — сразу после занятых
-    // секций, и в свёрнутом, и в развёрнутом виде. Так его не приходится
-    // искать заново каждый раз, когда список меняет высоту.
-    var toggle = hidden
-      ? '<button class="chip more-cats" data-action="cats-more">' + esc(T.cats_more) + ' (' + hidden + ')</button>'
-      : empty.length ? '<button class="chip more-cats" data-action="cats-less">' + esc(T.cats_less) + '</button>' : '';
-    return [{ id: 'all', label: T.all }].concat(full).map(chip).join('') + toggle + keep.map(chip).join('');
+    return tile('all', T.all, ALL.length) + full.concat(empty).map(function (c) { return tile(c.id, c[L], cnt[c.id] || 0); }).join('');
   }
-
-  // «Бесплатно» и «Новичкам» — два самых частых вопроса подростка,
-  // поэтому они всегда на виду, а не спрятаны в меню фильтров.
-  function flagsHTML() {
-    var T = STR[state.lang];
-    return [['free', T.f_free], ['beg', T.f_beg]].map(function (f) {
-      return '<button class="chip sm flag" data-action="flag" data-id="' + f[0] +
-        '" aria-pressed="' + !!state[f[0]] + '">' + esc(f[1]) + '</button>';
-    }).join('');
-  }
+  var chipsHTML = catsHTML;
 
   // Районы показываем только те, что реально есть в каталоге: пустой фильтр
   // раздражает сильнее, чем его отсутствие.
@@ -405,145 +524,529 @@
   function nearBtnHTML() {
     var T = STR[state.lang];
     if (!navigator.geolocation || !allClubs().some(hasCoords)) return '';
-    if (state.nearState === 'asking') return '<span class="near-btn wait">' + esc(T.near_wait) + '</span>';
-    if (state.near) return '<button class="near-btn on" data-action="near-off"><span class="dot"></span>' + esc(T.near_off) + '</button>';
-    return '<button class="near-btn" data-action="near"><span class="dot"></span>' + esc(T.near) + '</button>';
+    if (state.nearState === 'asking') return '<span class="pill wait">' + esc(T.near_wait) + '</span>';
+    if (state.near) return '<button class="pill near on" data-action="near-off">' + icon('pin', 16) + esc(T.near_off) + '</button>';
+    return '<button class="pill near" data-action="near">' + icon('pin', 16) + esc(T.near) + '</button>';
   }
 
+  // «Бесплатно» и «Новичкам» — два самых частых вопроса подростка, поэтому они
+  // всегда на виду. Районы — только если их в каталоге два и больше.
   function distRowHTML() {
-    var L = state.lang, T = STR[L], ds = districtsInUse(), near = nearBtnHTML();
-    // Фильтр из одного района ничего не фильтрует — показываем от двух.
+    var L = state.lang, T = STR[L], ds = districtsInUse();
     if (ds.length < 2) ds = [];
-    var chips = ds.length
-      ? '<span class="dist-lbl">' + esc(T.f_dist) + '</span>' +
-        [{ id: 'all', label: T.dist_all }].concat(ds.map(function (d) { return { id: d.id, label: d[L] }; }))
-        .map(function (d) {
-          return '<button class="chip sm" data-action="dist" data-id="' + d.id + '" aria-pressed="' + (state.dist === d.id) + '">' + esc(d.label) + '</button>';
+    var flags = [['free', T.f_free], ['beg', T.f_beg]].map(function (f) {
+      return '<button class="pill" data-action="flag" data-id="' + f[0] + '" aria-pressed="' + !!state[f[0]] + '">' + esc(f[1]) + '</button>';
+    }).join('');
+    var dist = ds.length
+      ? '<span class="lbl">' + esc(T.f_dist) + '</span>' +
+        [{ id: 'all', label: T.dist_all }].concat(ds.map(function (d) { return { id: d.id, label: d[L] }; })).map(function (d) {
+          return '<button class="pill" data-action="dist" data-id="' + d.id + '" aria-pressed="' + (state.dist === d.id) + '">' + esc(d.label) + '</button>';
         }).join('')
       : '';
-    return '<div class="dist-row" id="dist-row">' + flagsHTML() + chips + near + '</div>' +
+    return '<div class="filters">' + flags + nearBtnHTML() + dist + '</div>' +
       (state.nearState === 'denied' ? '<p class="near-note">' + esc(T.near_no) + '</p>'
         : state.near ? '<p class="near-note">' + esc(T.near_on) + '</p>' : '');
   }
 
-  function homeView() {
+  function heroFoundHTML() {
     var T = STR[state.lang];
-    var ALL = allClubs();
+    if (!state.q.trim()) return '';
+    return '<button class="hero-found" data-action="to-catalog">' + esc(T.hero_found + ' ' + filtered().length + ' — ' + T.hero_look) + icon('down', 16) + '</button>';
+  }
+
+  function homeView() {
+    var L = state.lang, T = STR[L], ALL = allClubs(), cnt = {};
+    ALL.forEach(function (c) { cnt[c.cat] = (cnt[c.cat] || 0) + 1; });
+    // Быстрые кнопки в бренд-блоке: сначала направления, где уже есть сообщества.
+    var quick = CATS.filter(function (c) { return cnt[c.id]; }).sort(function (a, b) { return cnt[b.id] - cnt[a.id]; }).slice(0, 4);
     var stats = [
-      [ALL.length, T.st_clubs],
+      [ALL.length, plural(ALL.length, L)],
       [CATS.length, T.st_cats],
       [ALL.filter(function (c) { return c.beginner; }).length, T.st_new]
     ];
-    return '<section class="screen">' +
-      '<div class="hero-card">' + ORNAMENT +
-      '<div class="hero-body"><h1 class="hero">' + esc(T.h1) + '</h1>' +
-      '<p class="lead">' + esc(T.lead) + '</p>' +
-      '<ul class="stats">' + stats.map(function (st) { return '<li><b>' + st[0] + '</b><span>' + esc(st[1]) + '</span></li>'; }).join('') + '</ul>' +
-      '</div></div>' +
-      (window.QOSYL_HELPER ? window.QOSYL_HELPER.blockHTML() : '') +
-      '<div class="search-row"><label class="search"><span class="sr-only">' + esc(T.search_label) + '</span>' +
-      '<input id="q" type="search" autocomplete="off" value="' + esc(state.q) + '" placeholder="' + esc(T.search_ph) + '"></label>' +
-      '<a class="map-btn" href="#/map" aria-label="' + esc(T.nav_map) + '"><span class="dot"></span><span class="lbl">' + esc(T.nav_map) + '</span></a></div>' +
-      '<div class="chips" id="chips">' + chipsHTML() + '</div>' +
+    var hero = '<section class="hero">' + MARK('hero-mark') +
+      '<div class="wrap hero-in"><div class="hero-copy">' +
+      '<p class="hero-kicker"><span class="pulse"></span>' + esc(T.hero_kicker) + '</p>' +
+      '<h1 class="hero-h"><span>' + esc(T.hero_a) + '</span> <em>' + esc(T.hero_b) + '</em></h1>' +
+      '<p class="hero-lead">' + esc(T.lead) + '</p>' +
+      '<form class="hero-search" role="search" data-search>' + icon('search', 22) +
+      '<label class="sr-only" for="q">' + esc(T.search_label) + '</label>' +
+      '<input id="q" type="search" autocomplete="off" enterkeyhint="search" value="' + esc(state.q) + '" placeholder="' + esc(T.search_ph) + '">' +
+      '<button class="hero-go" type="submit">' + esc(T.search_go) + '</button></form>' +
+      '<div id="hero-found">' + heroFoundHTML() + '</div>' +
+      '<div class="hero-quick">' + (quick.length ? '<span class="lbl">' + esc(T.quick_lbl) + '</span>' : '') +
+      quick.map(function (c) {
+        return '<button class="q-chip" data-action="go-cat" data-id="' + c.id + '" style="--h:' + hueOf(c.id) + '">' + icon(c.id, 18) + esc(c[L]) + '</button>';
+      }).join('') +
+      (ALL.length > 1 ? '<button class="q-chip dice" data-action="random">' + icon('dice', 18) + esc(T.random) + '</button>' : '') +
+      '</div>' +
+      '<ul class="hero-stats">' + stats.map(function (s) { return '<li><b data-count="' + s[0] + '">' + s[0] + '</b><span>' + esc(s[1]) + '</span></li>'; }).join('') + '</ul>' +
+      '</div>' +
+      '<div class="hero-art" aria-hidden="true">' + CATS.slice(0, 8).map(function (c) {
+        return '<span class="float-tile" data-action="go-cat" data-id="' + c.id + '" style="--h:' + hueOf(c.id) + '" title="' + esc(c[L]) + '">' + icon(c.id, 40) + '</span>';
+      }).join('') + '</div>' +
+      '</div></section>';
+
+    var how = '<section class="sec wrap" data-reveal><div class="sec-head"><div><p class="sec-kicker">' + esc(T.how_k) + '</p>' +
+      '<h2 class="sec-h">' + esc(T.how_h) + '</h2></div></div><div class="steps">' +
+      [['spark', 262, T.how_1h, T.how_1p], ['wa', 150, T.how_2h, T.how_2p], ['door', 40, T.how_3h, T.how_3p]].map(function (st, i) {
+        return '<div class="step" style="--h:' + st[1] + '"><span class="step-n" aria-hidden="true">0' + (i + 1) + '</span>' +
+          '<span class="step-ic">' + icon(st[0], 26) + '</span><h3>' + esc(st[2]) + '</h3><p>' + esc(st[3]) + '</p></div>';
+      }).join('') + '</div></section>';
+
+    var helper = window.QOSYL_HELPER ? window.QOSYL_HELPER.blockHTML() : '';
+
+    var catalog = '<section class="sec wrap" id="catalog">' +
+      '<div class="sec-head"><div><p class="sec-kicker">' + esc(T.cat_k) + '</p><h2 class="sec-h">' + esc(T.cat_h) + '</h2></div>' +
+      '<a class="sec-link" href="#/map">' + icon('map', 18) + esc(T.map_link) + '</a></div>' +
+      '<div class="cats" id="chips" role="group" aria-label="' + esc(T.cat_k) + '">' + catsHTML() + '</div>' +
       '<div id="dist-wrap">' + distRowHTML() + '</div>' +
-      '<div id="results">' + resultsHTML() + '</div>' +
-      ownBlock() +
-      '</section>';
+      '<div id="results">' + resultsHTML() + '</div></section>';
+
+    return '<div class="home">' + hero + how +
+      (helper ? '<div class="sec wrap" data-reveal>' + helper + '</div>' : '') +
+      catalog + '<div class="sec wrap">' + ownBlock() + '</div></div>';
   }
 
-
-  // Призыв для организаторов: виден прямо под каталогом, а не только в «О проекте».
+  // Призыв для организаторов: ведёт на форму прямо на сайте.
   function ownBlock() {
-    var T = STR[state.lang], url = safeUrl(CFG.orgFormUrl) || '#/add';
-    var ext = url.indexOf('#') === 0 ? '' : ' target="_blank" rel="noopener"';
-    return '<section class="own"><div class="own-in">' +
-      '<h2>' + esc(T.own_h) + '</h2><p>' + esc(T.own_p) + '</p>' +
-      '<a class="own-btn" href="' + esc(url) + '"' + ext + '>' + esc(T.own_b) + '</a>' +
-      '</div></section>';
+    var T = STR[state.lang];
+    return '<section class="own" data-reveal>' + MARK('mark') +
+      '<div class="own-txt"><h2>' + esc(T.own_h) + '</h2><p>' + esc(T.own_p) + '</p>' +
+      '<a class="own-btn" href="#/join">' + icon('plus', 20) + esc(T.own_b) + '</a></div>' +
+      '<ul class="perks">' + [T.perk1, T.perk2, T.perk3, T.perk4].map(function (p) {
+        return '<li><span class="ok-ic">' + icon('check', 16) + '</span>' + esc(p) + '</li>';
+      }).join('') + '</ul></section>';
+  }
+
+  function aboutParas(text) {
+    return String(text || '').split(/\n+/).map(function (p) { return p.trim(); }).filter(Boolean)
+      .map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('');
   }
 
   function clubView(id) {
     var L = state.lang, T = STR[L];
     var c = findClub(id);
     if (!c) {
-      return '<section class="screen tight"><a class="back" href="#/">' + esc(T.back) + '</a>' +
-        '<div class="empty"><h2>' + esc(T.not_found_h) + '</h2><p>' + esc(T.not_found_p) + '</p>' +
-        '<a class="btn-outline" href="#/">' + esc(T.empty_cta) + '</a></div></section>';
+      return '<section class="screen tight wrap"><a class="back" href="#/">' + esc(T.back) + '</a>' +
+        '<div class="empty"><span class="ic">' + icon('search', 28) + '</span><h2>' + esc(T.not_found_h) + '</h2><p>' + esc(T.not_found_p) + '</p>' +
+        '<div class="empty-btns"><a class="btn-outline" href="#/">' + esc(T.empty_cta) + '</a></div></div></section>';
     }
-    var reported = state.reported.indexOf(c.id) !== -1;
+    var h = hueOf(c.cat);
     var photo = photoSrc(c.photo);
     var tel = digits(c.tel);
-    var geo = !isNaN(c.lat) && !isNaN(c.lng);
+    var geo = hasCoords(c);
     var url = shareUrl(c);
+    var reported = state.reported.indexOf(c.id) !== -1;
+    var media = mediaList(c.media);
+    var slug = esc(encodeURIComponent(c.slug));
     var ALL = allClubs();
     var similar = ALL.filter(function (s) { return s.cat === c.cat && s.id !== c.id; })
       .concat(ALL.filter(function (s) { return s.cat !== c.cat && s.beginner && s.id !== c.id; }))
-      .slice(0, 2);
+      .slice(0, 3);
 
-    var facts = [[T.f_sched, c.sched[L]], [T.f_addr, c.addr[L]]];
-    if (c.dist) facts.push([T.f_dist, distLabel(c.dist, L)]);
-    facts = facts.concat([[T.f_cost, c.cost[L]], [T.f_langs, c.langs[L]]]);
+    var facts = [['user', T.f_age, c.age], ['tenge', T.f_cost, c.cost[L]], ['clock', T.f_sched, c.sched[L]], ['pin', T.f_addr, c.addr[L]]];
+    if (c.dist) facts.push(['map', T.f_dist, distLabel(c.dist, L)]);
+    facts.push(['talk', T.f_langs, c.langs[L]]);
+    facts = facts.filter(function (f) { return f[2] && f[2] !== '—' && !/^нет$/i.test(String(f[2]).trim()); });
 
-    return '<article class="screen tight">' +
-      '<a class="back" href="#/">' + esc(T.back) + '</a>' +
-      '<p class="eyebrow">' + esc(catLabel(c.cat, L)) + '</p>' +
-      '<h1 class="title">' + esc(c.name[L]) + '</h1>' +
-      '<div class="badges"><span class="badge">' + esc(c.age) + '</span>' +
-      (c.featured ? '<span class="badge top">' + STAR + esc(T.featured) + '</span>' : '') +
-      (c.beginner ? '<span class="badge beg">' + esc(T.beginner) + '</span>' : '') +
-      (c.verified ? '<span class="badge ok">' + esc(T.verified) + '</span>' : '') + '</div>' +
-      (photo
-        ? '<img class="photo" src="' + esc(photo) + '" alt="' + esc(c.name[L]) + '" loading="lazy">'
-        : '<div class="photo-ph"><span>' + esc(T.photo_ph) + '</span></div>') +
-      '<p class="about-text">' + esc(c.about[L]) + '</p>' +
-      '<dl class="facts">' + facts.map(function (f) { return '<div class="fact"><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>'; }).join('') + '</dl>' +
-      '<h2 class="sub">' + esc(T.contact_h) + '</h2>' +
-      '<div class="contacts">' +
-      (tel ? '<a class="wa" data-track="whatsapp" href="https://wa.me/' + tel + '?text=' + encodeURIComponent(T.greet) + '" target="_blank" rel="noopener">WhatsApp<small>' + esc(T.write) + '</small></a>' : '') +
-      ((c.ig || c.tg) ? '<div class="grid2">' +
-        (c.ig ? '<a class="social" data-track="instagram" href="https://instagram.com/' + esc(encodeURIComponent(c.ig)) + '" target="_blank" rel="noopener">Instagram</a>' : '') +
-        (c.tg ? '<a class="social" data-track="telegram" href="https://t.me/' + esc(encodeURIComponent(c.tg)) + '" target="_blank" rel="noopener">Telegram</a>' : '') +
+    // Фото от организаторов бывают любых пропорций и часто это логотип: показываем
+    // картинку целиком, а пустые поля заполняем её же размытой копией.
+    var cover = '<div class="cp-cover">' + (photo
+      ? '<img class="cp-bg" src="' + esc(photo) + '" alt="" aria-hidden="true"><img class="cp-img" src="' + esc(photo) + '" alt="' + esc(c.name[L]) + '">'
+      : coverArt(c)) +
+      (c.featured ? '<span class="seal lg" role="img" aria-label="' + esc(T.featured) + '"></span>' : '') + '</div>';
+
+    var head = '<header class="cp-head"><span class="cp-cat">' + icon(c.cat, 18) + esc(catLabel(c.cat, L)) + '</span>' +
+      '<h1 class="cp-title">' + esc(c.name[L]) + '</h1>' +
+      (c.tag[L] ? '<p class="cp-tag">' + esc(c.tag[L]) + '</p>' : '') +
+      '<div class="cp-badges">' +
+      (c.featured ? '<span class="m top">' + STAR + esc(T.featured) + '</span>' : '') +
+      (isFree(c) ? '<span class="m free">' + esc(T.f_free) + '</span>' : '') +
+      (c.beginner ? '<span class="m beg">' + esc(T.beginner) + '</span>' : '') +
+      (c.verified ? '<span class="m ok">' + icon('check', 13) + esc(T.verified) + '</span>' : '') +
+      '</div></header>';
+
+    var factsHTML = facts.length ? '<dl class="cp-facts">' + facts.map(function (f) {
+      return '<div class="cp-fact"><span class="ic">' + icon(f[0], 20) + '</span><div><dt>' + esc(f[1]) + '</dt><dd>' + esc(f[2]) + '</dd></div></div>';
+    }).join('') + '</dl>' : '';
+
+    var about = c.about[L] ? '<section class="cp-sec cp-about-sec"><h2>' + esc(T.about_h2) + '</h2><div class="cp-about">' + aboutParas(c.about[L]) + '</div></section>' : '';
+
+    var mediaSec = '<section class="cp-sec cp-media-sec"><h2>' + esc(T.media_h) + '</h2>' +
+      (media.length
+        ? '<div class="media" id="media">' + media.map(function (m, i) { return mediaTileHTML(m, i, T); }).join('') + '</div>' +
+          (media.some(function (m) { return m.kind !== 'img'; }) ? '<p class="media-note">' + esc(T.media_note) + '</p>' : '')
+        : '<div class="media-empty"><span class="ic">' + icon('ig', 24) + '</span><b>' + esc(T.media_empty_h) + '</b>' +
+          '<p>' + esc(T.media_empty_p) + ' <a href="#/join/' + slug + '">' + esc(T.media_empty_b) + ' →</a></p></div>') +
+      '</section>';
+
+    var mapSec = geo ? '<section class="cp-sec cp-map-sec"><h2>' + esc(T.where_h) + '</h2><div class="mini-map" id="mini-map"></div>' +
+      '<div class="maplinks"><a class="maplink" href="https://2gis.kz/astana/geo/' + c.lng + ',' + c.lat + '" target="_blank" rel="noopener">' + icon('map', 18) + esc(T.twogis) + '</a>' +
+      '<a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=' + c.lat + ',' + c.lng + '" target="_blank" rel="noopener">' + icon('pin', 18) + esc(T.gmaps) + '</a></div></section>' : '';
+
+    var hasContact = tel || c.ig || c.tg;
+    var join = '<div class="join-card"><h2>' + esc(T.join_h) + '</h2>' +
+      (tel ? '<a class="btn-wa" data-track="whatsapp" href="https://wa.me/' + tel + '?text=' + encodeURIComponent(T.greet) + '" target="_blank" rel="noopener">' + icon('wa', 22) + 'WhatsApp <small>· ' + esc(T.write) + '</small></a>' : '') +
+      (hasContact
+        ? '<div class="chat"><p class="chat-lbl">' + esc(T.bubble_lbl) + '</p>' +
+          '<div class="bubble"><span id="greet-text">' + esc(T.greet) + '</span><time aria-hidden="true">✓✓</time></div>' +
+          '<button class="chat-copy" data-action="copy-greet">' + icon('copy', 16) + esc(T.greet_copy) + '</button></div>'
+        : '<p class="join-note">' + esc(T.no_contact) + '</p>') +
+      ((c.ig || c.tg) ? '<div class="soc">' +
+        (c.ig ? '<a data-track="instagram" href="https://instagram.com/' + esc(encodeURIComponent(c.ig)) + '" target="_blank" rel="noopener">' + icon('ig', 19) + 'Instagram</a>' : '') +
+        (c.tg ? '<a data-track="telegram" href="https://t.me/' + esc(encodeURIComponent(c.tg)) + '" target="_blank" rel="noopener">' + icon('tg', 19) + 'Telegram</a>' : '') +
         '</div>' : '') +
       (tel ? '<a class="tel" data-track="phone" href="tel:+' + tel + '">' + esc(c.tel) + '</a>' : '') +
-      '</div>' +
-      (geo ? '<div class="grid2 maplinks">' +
-        '<a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=' + c.lat + ',' + c.lng + '" target="_blank" rel="noopener">' + esc(T.gmaps) + '</a>' +
-        '<a class="maplink" href="https://2gis.kz/astana/geo/' + c.lng + ',' + c.lat + '" target="_blank" rel="noopener">' + esc(T.twogis) + '</a>' +
-        '</div>' : '') +
-      ((tel || c.ig || c.tg)
-        ? '<div class="greet"><h3>' + esc(T.greet_h) + '</h3>' +
-          '<p class="greet-text" id="greet-text">' + esc(T.greet) + '</p>' +
-          '<div class="greet-row"><button class="greet-copy" data-action="copy-greet">' + esc(T.greet_copy) + '</button>' +
-          '<span class="greet-note">' + esc(T.greet_p) + '</span></div></div>'
-        : '') +
-      '<div class="checked-row"><span class="date">' + esc(T.checked + ': ' + fmtDate(c.checked, L)) + '</span><div class="grow"></div>' +
+      (c.beginner ? '<p class="join-note">' + icon('spark', 18) + esc(T.beg_note) + '</p>' : '') +
+      '</div>';
+
+    var trust = '<div class="trust"><span class="date">' + icon('shield', 18) + esc(T.checked + ': ' + fmtDate(c.checked, L)) + '</span><div class="grow"></div>' +
       (reported
         ? '<span class="thanks" role="status">' + esc(T.reported) + '</span>'
-        : '<button class="linkish" data-action="report" data-id="' + esc(c.id) + '">' + esc(T.report) + '</button>') +
-      '</div>' +
-      '<div class="share"><div class="qr" id="qr" aria-hidden="true"></div><div style="min-width:0">' +
+        : '<button class="linkish" data-action="report" data-id="' + esc(c.id) + '">' + esc(T.report) + '</button>') + '</div>';
+
+    var share = '<div class="share"><div class="qr" id="qr" aria-hidden="true"></div><div style="min-width:0">' +
       '<h2>' + esc(T.share_h) + '</h2><p class="share-url">' + esc(url.replace(/^https?:\/\//, '')) + '</p>' +
       '<div class="share-actions"><button data-action="copy-link" data-url="' + esc(url) + '">' + esc(state.linkCopied ? T.link_copied : T.copy_link) + '</button>' +
-      '<button data-action="qr-dl" data-slug="' + esc(c.slug) + '">' + esc(T.qr_dl) + '</button></div>' +
-      '</div></div>' +
-      (similar.length ? '<h2 class="sub">' + esc(T.similar_h) + '</h2><div class="similar">' +
-        similar.map(function (s) { return '<a class="card" href="#/club/' + esc(encodeURIComponent(s.slug)) + '"><b>' + esc(s.name[L]) + '</b><span>' + esc(metaLine(s, L)) + '</span></a>'; }).join('') +
-        '</div>' : '') +
+      '<button data-action="qr-dl" data-slug="' + esc(c.slug) + '">' + esc(T.qr_dl) + '</button></div></div></div>';
+
+    var upd = '<a class="upd-link" href="#/join/' + slug + '">' + icon('plus', 16) + esc(T.update_link) + '</a>';
+
+    return '<article class="screen tight wrap" style="--h:' + h + '">' +
+      '<a class="back" href="#/">' + esc(T.back) + '</a>' +
+      '<div class="cp">' + cover +
+      '<div class="cp-main">' + head + factsHTML + about + mediaSec + mapSec + '</div>' +
+      '<aside class="cp-side">' + join + trust + share + upd + '</aside>' +
+      '</div>' +
+      (similar.length ? '<section class="sec" data-reveal><div class="sec-head"><h2 class="sec-h">' + esc(T.similar_h) + '</h2></div>' +
+        '<div class="grid">' + similar.map(function (s) { return cardHTML(s, L, T); }).join('') + '</div></section>' : '') +
       '</article>';
   }
 
   function aboutView() {
     var T = STR[state.lang];
-    var formUrl = safeUrl(CFG.orgFormUrl);
-    return '<article class="screen about">' + LOGO(58) +
+    return '<article class="screen wrap"><div class="about"><div class="about-hero">' + LOGO(58) +
       '<h1>' + esc(T.about_h1) + '</h1>' +
-      '<p class="lead-lg">' + esc(T.about_lead) + '</p>' +
+      '<p class="lead-lg">' + esc(T.about_lead) + '</p></div>' +
+      '<div class="about-list">' +
       T.about_s.concat(CFG.goatcounter ? [{ h: T.stats_h, p: T.stats_p }] : [])
-        .map(function (s) { return '<section><h2>' + esc(s.h) + '</h2><p>' + esc(s.p) + '</p></section>'; }).join('') +
-      '<div class="cta"><h2>' + esc(T.cta_h) + '</h2><p>' + esc(T.cta_p) + '</p><div class="cta-btns">' +
-      '<a class="cta-w" href="' + esc(formUrl || '#/add') + '"' + (formUrl ? ' target="_blank" rel="noopener"' : '') + '>' + esc(T.cta_b1) + '</a>' +
+        .map(function (s) { return '<section data-reveal><h2>' + esc(s.h) + '</h2><p>' + esc(s.p) + '</p></section>'; }).join('') +
+      '</div>' +
+      '<div class="cta" data-reveal><h2>' + esc(T.cta_h) + '</h2><p>' + esc(T.cta_p) + '</p><div class="cta-btns">' +
+      '<a class="cta-w" href="#/join">' + esc(T.cta_b1) + '</a>' +
       '<a class="cta-o" href="#/">' + esc(T.cta_b2) + '</a></div></div>' +
-      '</article>';
+      '</div></article>';
+  }
+
+  // ---------- форма для организаторов (#/join) ----------
+  // Заявка уходит в ту же Google Форму, что и раньше (номера полей — в config.js),
+  // поэтому проверять её Дамир продолжает там же. Черновик хранится в браузере
+  // организатора, чтобы случайное обновление страницы не стёрло пять минут работы.
+  function blankJoin() {
+    return { name: '', cat: '', tag: '', about: '', age: '', cost: '', sched: '', addr: '', dist: '', langs: [], langOther: '', beginner: '',
+      tel: '', ig: '', tg: '', media: '', cover: '', contact: '', consent: false, top: '', upd: '', hp: '' };
+  }
+  function loadDraft() {
+    var d = load(DRAFT_KEY, null);
+    if (!d || typeof d !== 'object') return blankJoin();
+    var b = blankJoin();
+    Object.keys(b).forEach(function (k) { if (d[k] != null) b[k] = d[k]; });
+    if (!Array.isArray(b.langs)) b.langs = [];
+    b.hp = '';
+    return b;
+  }
+  function saveDraft() { save(DRAFT_KEY, state.join); }
+  function clearDraft() { try { window.localStorage.removeItem(DRAFT_KEY); } catch (e) { /* хранилище недоступно */ } }
+
+  // Карточка уже на сайте — открываем форму с её данными, чтобы организатор
+  // только дописал недостающее (чаще всего — фото и видео).
+  function joinFromClub(c) {
+    var d = blankJoin(), L = 'ru';
+    d.upd = c.slug;
+    d.name = c.name[L] || '';
+    d.cat = c.cat || '';
+    d.tag = c.tag[L] || '';
+    d.about = c.about[L] || '';
+    d.age = c.age && c.age !== '—' ? c.age : '';
+    ['cost', 'sched', 'addr'].forEach(function (k) { var v = c[k] && c[k][L]; d[k] = v && v !== '—' ? v : ''; });
+    d.dist = c.dist || '';
+    d.tel = c.tel || '';
+    d.ig = c.ig || '';
+    d.tg = c.tg || '';
+    d.media = mediaList(c.media).map(function (m) { return m.url; }).join('\n');
+    d.beginner = c.beginner ? 'yes' : '';
+    return d;
+  }
+
+  var JOIN_STEPS = 4;
+  function jfLabel(text, optional) {
+    var T = STR[state.lang];
+    return '<span class="jf-l">' + esc(text) + (optional ? ' <span class="opt">' + esc(T.j_opt) + '</span>' : '') + '</span>';
+  }
+  function jfNote(key, hint) {
+    var err = state.joinErr[key];
+    return err ? '<span class="jf-err" role="alert">' + esc(err) + '</span>' : (hint ? '<span class="jf-hint">' + esc(hint) + '</span>' : '');
+  }
+  function jfInput(key, label, o) {
+    o = o || {};
+    var v = state.join[key] || '';
+    return '<label class="jf-f' + (state.joinErr[key] ? ' bad' : '') + '">' + jfLabel(label, o.optional) +
+      (o.area
+        ? '<textarea data-j="' + key + '" rows="' + (o.rows || 4) + '" placeholder="' + esc(o.ph || '') + '">' + esc(v) + '</textarea>'
+        : '<input data-j="' + key + '" type="' + (o.type || 'text') + '" value="' + esc(v) + '" placeholder="' + esc(o.ph || '') + '"' +
+          (o.auto ? ' autocomplete="' + o.auto + '"' : '') + (o.mode ? ' inputmode="' + o.mode + '"' : '') + '>') +
+      jfNote(key, o.hint) + (o.after || '') + '</label>';
+  }
+  function mediaCountText() {
+    var T = STR[state.lang];
+    var lines = mediaLines(state.join.media);
+    if (!lines.length) return '';
+    var ok = mediaList(lines).length;
+    return T.j_media_ok + ': ' + ok + ' / ' + lines.length;
+  }
+
+  function wizardHTML() {
+    var L = state.lang, T = STR[L], d = state.join, step = state.joinStep;
+    var titles = [T.j_s1, T.j_s2, T.j_s3, T.j_s4];
+    var body = '';
+    if (step === 0) {
+      body = jfInput('name', T.j_name, { ph: T.j_name_ph, auto: 'organization' }) +
+        '<div class="jf-f' + (state.joinErr.cat ? ' bad' : '') + '">' + jfLabel(T.j_cat) +
+        '<div class="jf-cats" role="group" aria-label="' + esc(T.j_cat) + '">' +
+        CATS.map(function (c) {
+          return '<button type="button" class="jf-cat" data-action="j-cat" data-id="' + c.id + '" aria-pressed="' + (d.cat === c.id) + '" style="--h:' + hueOf(c.id) + '">' +
+            '<span class="ic">' + icon(c.id, 19) + '</span>' + esc(c[L]) + '</button>';
+        }).join('') +
+        '<button type="button" class="jf-cat" data-action="j-cat" data-id="other" aria-pressed="' + (d.cat === 'other') + '" style="--h:262"><span class="ic">' + icon('plus', 19) + '</span>' + esc(T.j_cat_other) + '</button>' +
+        '</div>' + jfNote('cat') + '</div>' +
+        jfInput('tag', T.j_tag, { ph: T.j_tag_ph }) +
+        jfInput('about', T.j_about, { area: true, rows: 5, ph: T.j_about_ph, hint: T.j_about_hint });
+    } else if (step === 1) {
+      body = '<div class="jf-row two">' + jfInput('age', T.j_age, { ph: '12–17' }) +
+        jfInput('cost', T.j_cost, { ph: T.j_cost_ph, after: '<span class="jf-pills" style="margin-top:2px"><button type="button" class="pill" data-action="j-free" aria-pressed="' + (d.cost === T.f_free) + '">' + esc(T.f_free) + '</button></span>' }) + '</div>' +
+        '<div class="jf-row two">' + jfInput('sched', T.j_sched, { ph: T.j_sched_ph }) + jfInput('addr', T.j_addr, { ph: T.j_addr_ph, auto: 'street-address' }) + '</div>' +
+        '<div class="jf-f">' + jfLabel(T.j_dist, true) + '<div class="jf-pills">' +
+        DISTRICTS.map(function (x) {
+          return '<button type="button" class="pill" data-action="j-dist" data-id="' + x.id + '" aria-pressed="' + (d.dist === x.id) + '">' + esc(x[L]) + '</button>';
+        }).join('') + '</div></div>' +
+        '<div class="jf-f' + (state.joinErr.langs ? ' bad' : '') + '">' + jfLabel(T.j_langs) + '<div class="jf-pills">' +
+        [['kz', 'Қазақша'], ['ru', 'Русский'], ['en', 'English']].map(function (l) {
+          return '<button type="button" class="pill" data-action="j-lang" data-id="' + l[0] + '" aria-pressed="' + (d.langs.indexOf(l[0]) !== -1) + '">' + l[1] + '</button>';
+        }).join('') + '</div>' +
+        '<input data-j="langOther" type="text" value="' + esc(d.langOther) + '" placeholder="' + esc(T.j_lang_other) + '" style="max-width:280px">' +
+        jfNote('langs') + '</div>' +
+        '<div class="jf-f' + (state.joinErr.beginner ? ' bad' : '') + '">' + jfLabel(T.j_beg) + '<div class="jf-pills">' +
+        '<button type="button" class="pill" data-action="j-beg" data-id="yes" aria-pressed="' + (d.beginner === 'yes') + '">' + esc(T.j_yes) + '</button>' +
+        '<button type="button" class="pill" data-action="j-beg" data-id="no" aria-pressed="' + (d.beginner === 'no') + '">' + esc(T.j_no) + '</button>' +
+        '</div>' + jfNote('beginner') + '</div>';
+    } else if (step === 2) {
+      body = jfInput('tel', T.j_tel, { type: 'tel', ph: '+7 701 234 56 78', hint: T.j_tel_hint, auto: 'tel', mode: 'tel' }) +
+        '<div class="jf-row two">' + jfInput('ig', 'Instagram', { ph: '@club.astana', optional: true }) + jfInput('tg', 'Telegram', { ph: '@club_astana', optional: true }) + '</div>' +
+        jfInput('media', T.j_media, { area: true, rows: 4, optional: true, ph: 'https://www.instagram.com/p/…\nhttps://youtu.be/…', hint: T.j_media_hint,
+          after: '<span class="jf-hint" id="media-count" aria-live="polite">' + esc(mediaCountText()) + '</span>' }) +
+        jfInput('cover', T.j_cover, { optional: true, ph: 'https://…', hint: T.j_cover_hint });
+    } else {
+      body = jfInput('contact', T.j_contact, { ph: T.j_contact_ph, hint: T.j_contact_hint, auto: 'name' }) +
+        '<div class="jf-f">' + jfLabel(T.j_top, true) + '<div class="jf-pills">' +
+        '<button type="button" class="pill" data-action="j-top" data-id="no" aria-pressed="' + (d.top === 'no') + '">' + esc(T.j_top_no) + '</button>' +
+        '<button type="button" class="pill" data-action="j-top" data-id="yes" aria-pressed="' + (d.top === 'yes') + '">' + esc(T.j_top_yes) + '</button>' +
+        '</div></div>' +
+        '<button type="button" class="jf-check' + (state.joinErr.consent ? ' bad' : '') + '" data-action="j-consent" aria-pressed="' + !!d.consent + '"><i>' + (d.consent ? icon('check', 15) : '') + '</i><span>' + esc(T.j_consent) + '</span></button>' +
+        jfNote('consent') +
+        '<label class="hp" aria-hidden="true">Website<input data-j="hp" type="text" tabindex="-1" autocomplete="off"></label>';
+    }
+    var sending = state.joinStatus === 'sending';
+    var club = d.upd && findClub(d.upd);
+    return '<div class="wiz-top"><span class="wiz-step">' + esc(T.j_step + ' ' + (step + 1) + ' ' + T.j_of + ' ' + JOIN_STEPS) + '</span>' +
+      '<span class="wiz-saved">' + esc(T.j_saved) + '</span></div>' +
+      '<div class="wiz-bar" aria-hidden="true">' + [0, 1, 2, 3].map(function (i) { return '<i' + (i <= step ? ' class="on"' : '') + '></i>'; }).join('') + '</div>' +
+      '<h2 id="wiz-h" tabindex="-1">' + esc(titles[step]) + '</h2>' +
+      (club ? '<p class="upd-banner">' + esc(T.j_update_p.replace('{name}', club.name[L])) + '</p>' : '') +
+      '<div class="jf">' + body + '</div>' +
+      (state.joinStatus === 'fail'
+        ? '<p class="wiz-fail" role="alert">' + esc(T.j_fail) + (safeUrl(CFG.orgFormUrl) ? ' <a href="' + esc(CFG.orgFormUrl) + '" target="_blank" rel="noopener">' + esc(T.j_fail_alt) + '</a>' : '') + '</p>'
+        : '') +
+      '<div class="wiz-nav">' +
+      (step > 0 ? '<button type="button" class="wiz-back" data-action="j-back">← ' + esc(T.j_back) + '</button>' : '') +
+      (step < JOIN_STEPS - 1
+        ? '<button type="button" class="wiz-next" data-action="j-next">' + esc(T.j_next) + icon('arrow', 18) + '</button>'
+        : '<button type="button" class="wiz-next" data-action="j-send"' + (sending ? ' disabled' : '') + '>' + esc(sending ? T.j_sending : T.j_send) + (sending ? '' : icon('arrow', 18)) + '</button>') +
+      '</div>';
+  }
+
+  function sentHTML() {
+    var T = STR[state.lang];
+    return '<div class="wiz-ok"><span class="big">' + icon('check', 40) + '</span>' +
+      '<h2 id="wiz-h" tabindex="-1">' + esc(T.j_ok_h) + '</h2><p>' + esc(T.j_ok_p) + '</p>' +
+      '<div class="empty-btns"><a class="btn-solid" href="#/">' + esc(T.j_ok_b) + '</a>' +
+      '<button class="btn-outline" data-action="j-again">' + esc(T.j_ok_more) + '</button></div></div>';
+  }
+
+  function joinView() {
+    var T = STR[state.lang];
+    var li = function (p) { return '<li><span class="ok-ic">' + icon('check', 15) + '</span>' + esc(p) + '</li>'; };
+    return '<section class="screen wrap join"><a class="back" href="#/">' + esc(T.back) + '</a>' +
+      '<div class="join-grid"><aside class="join-aside">' +
+      '<p class="sec-kicker">' + esc(T.join_k) + '</p><h1>' + esc(T.join_h1) + '</h1><p class="lead">' + esc(T.join_lead) + '</p>' +
+      '<ul class="join-perks">' + [T.perk1, T.perk2, T.perk3, T.perk4].map(li).join('') + '</ul>' +
+      '<div class="join-how"><h2>' + esc(T.join_how_h) + '</h2><ol>' +
+      [T.join_how1, T.join_how2, T.join_how3].map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ol></div>' +
+      '</aside><div class="wiz" id="wiz">' + (state.joinStatus === 'sent' ? sentHTML() : wizardHTML()) + '</div></div></section>';
+  }
+
+  // Перерисовываем только саму форму и возвращаем фокус туда, где он был.
+  function paintWiz(focusHead) {
+    var box = document.getElementById('wiz');
+    if (!box) return;
+    var a = document.activeElement;
+    var key = a && a.getAttribute && (a.getAttribute('data-action') ? '[data-action="' + a.getAttribute('data-action') + '"]' + (a.getAttribute('data-id') ? '[data-id="' + a.getAttribute('data-id') + '"]' : '') : null);
+    box.innerHTML = state.joinStatus === 'sent' ? sentHTML() : wizardHTML();
+    if (focusHead) {
+      var hd = document.getElementById('wiz-h');
+      if (hd) hd.focus({ preventScroll: true });
+      var top = box.getBoundingClientRect().top + window.pageYOffset - 84;
+      if (window.pageYOffset > top) window.scrollTo(0, top);
+      return;
+    }
+    if (key) { var again = box.querySelector(key); if (again) again.focus({ preventScroll: true }); }
+  }
+
+  function joinCheck(step) {
+    var T = STR[state.lang], d = state.join, e = {};
+    function req(k) { if (!String(d[k] || '').trim()) e[k] = T.j_req; }
+    if (step === 0) { req('name'); if (!d.cat) e.cat = T.j_req_cat; req('tag'); req('about'); }
+    if (step === 1) {
+      req('age'); req('cost'); req('sched'); req('addr');
+      if (!d.langs.length && !String(d.langOther || '').trim()) e.langs = T.j_req_lang;
+      if (d.beginner !== 'yes' && d.beginner !== 'no') e.beginner = T.j_req_beg;
+    }
+    if (step === 2 && digits(d.tel).length < 10) e.tel = T.j_req_tel;
+    if (step === 3) { req('contact'); if (!d.consent) e.consent = T.j_req_consent; }
+    return e;
+  }
+
+  // Описание — единственное большое поле формы, поэтому в него же кладём всё,
+  // для чего в Google Форме нет отдельного вопроса: точную секцию, район,
+  // ссылки на фото и видео и пометку, что это обновление существующей карточки.
+  function joinCarrier(d) {
+    var head = [];
+    var cat = d.cat === 'other' ? 'Другое' : catLabel(d.cat, 'ru');
+    head.push('Секция на сайте: ' + cat);
+    if (d.dist) head.push('Район: ' + distLabel(d.dist, 'ru'));
+    if (d.upd) head.push('ОБНОВЛЕНИЕ карточки: ' + d.upd);
+    var links = mediaLines(d.media);
+    var tail = [];
+    if (links.length) tail.push('Фото и видео:\n' + links.join('\n'));
+    if (String(d.cover || '').trim()) tail.push('Обложка: ' + d.cover.trim());
+    tail.push('Отправлено с qosyl.club');
+    return head.join('\n') + '\n\n' + String(d.about || '').trim() + '\n\n' + tail.join('\n\n');
+  }
+
+  function joinSubmit() {
+    var F = CFG.form, d = state.join;
+    if (state.joinStatus === 'sending') return;
+    // Скрытое поле заполняют только роботы: делаем вид, что всё отправилось.
+    if (d.hp) { state.joinStatus = 'sent'; paintWiz(true); return; }
+    if (!F || !F.action || !window.fetch) { state.joinStatus = 'fail'; paintWiz(); return; }
+    var E = F.entries, p = new URLSearchParams();
+    p.append(E.name, d.name.trim());
+    p.append(E.cat, F.cat[d.cat] || F.cat.other);
+    p.append(E.tag, d.tag.trim());
+    p.append(E.about, joinCarrier(d));
+    p.append(E.age, d.age.trim());
+    p.append(E.cost, d.cost.trim());
+    p.append(E.sched, d.sched.trim());
+    p.append(E.addr, d.addr.trim());
+    d.langs.forEach(function (l) { if (F.langs[l]) p.append(E.langs, F.langs[l]); });
+    if (String(d.langOther || '').trim()) {
+      p.append(E.langs, '__other_option__');
+      p.append(E.langs + '.other_option_response', d.langOther.trim());
+    }
+    p.append(E.beginner, d.beginner === 'yes' ? F.yes : F.no);
+    p.append(E.tel, d.tel.trim());
+    if (d.ig.trim()) p.append(E.ig, d.ig.trim().replace(/^@/, ''));
+    if (d.tg.trim()) p.append(E.tg, d.tg.trim().replace(/^@/, ''));
+    p.append(E.contact, d.contact.trim());
+    p.append(E.consent, F.consent);
+    if (d.top) p.append(E.top, d.top === 'yes' ? F.topYes : F.topNo);
+    p.append('pageHistory', F.pages);
+    p.append('fvv', '1');
+    state.joinStatus = 'sending';
+    paintWiz();
+    // Google не разрешает читать ответ с чужого сайта (no-cors), поэтому
+    // успехом считаем то, что запрос ушёл без сетевой ошибки.
+    fetch(F.action, { method: 'POST', mode: 'no-cors', body: p }).then(function () {
+      state.joinStatus = 'sent';
+      statsSend({ path: 'join/sent' + (d.upd ? '/update' : ''), title: 'Заявка с сайта', event: true });
+      state.join = blankJoin();
+      state.joinStep = 0;
+      clearDraft();
+      paintWiz(true);
+    }, function () {
+      state.joinStatus = 'fail';
+      paintWiz();
+    });
+  }
+
+  // ---------- оживление ----------
+  // Плавное появление блоков при прокрутке. instant — для частичных перерисовок
+  // (поиск, фильтры), где анимация на каждое нажатие клавиши только мешала бы.
+  var revealIO = null;
+  function reveal(root, instant) {
+    if (!root) return;
+    var els = root.querySelectorAll('[data-reveal]:not(.in)');
+    if (instant || !revealIO) { for (var i = 0; i < els.length; i++) els[i].classList.add('in'); return; }
+    for (var j = 0; j < els.length; j++) revealIO.observe(els[j]);
+  }
+  if ('IntersectionObserver' in window && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    revealIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); revealIO.unobserve(en.target); }
+      });
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.06 });
+    document.documentElement.classList.add('js-reveal');
+    window.addEventListener('beforeprint', function () { reveal(document, true); });
+  }
+
+  // Цифры в бренд-блоке «набегают» от нуля при первом показе главной.
+  function countUp(root) {
+    if (!root || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    var els = root.querySelectorAll('[data-count]');
+    var t0 = null, dur = 900;
+    function frame(t) {
+      if (t0 == null) t0 = t;
+      var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      for (var i = 0; i < els.length; i++) els[i].textContent = String(Math.round(Number(els[i].getAttribute('data-count')) * e));
+      if (k < 1) window.requestAnimationFrame(frame);
+    }
+    if (els.length) window.requestAnimationFrame(frame);
+  }
+
+  function toCatalog() {
+    var el = document.getElementById('catalog');
+    if (!el) return;
+    var y = el.getBoundingClientRect().top + window.pageYOffset - 70;
+    var smooth = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    window.scrollTo({ top: y, behavior: smooth ? 'smooth' : 'auto' });
+  }
+
+  function openLightbox(src) {
+    closeLightbox();
+    var T = STR[state.lang];
+    var box = document.createElement('div');
+    box.className = 'lb';
+    box.id = 'lb';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-modal', 'true');
+    box.innerHTML = '<img src="' + esc(src) + '" alt=""><button class="lb-x" data-action="lb-close" aria-label="' + esc(T.close) + '">✕</button>';
+    box.addEventListener('click', function (e) { if (e.target === box || e.target.closest('.lb-x')) closeLightbox(); });
+    document.body.appendChild(box);
+    box.querySelector('.lb-x').focus();
+  }
+  function closeLightbox() {
+    var box = document.getElementById('lb');
+    if (box) box.parentNode.removeChild(box);
   }
 
   function mapListHTML() {
@@ -551,8 +1054,9 @@
     var all = allClubs();
     var rest = all.length - state.shown;
     return all.slice(0, state.shown).map(function (c) {
-      return '<a class="map-item" href="#/club/' + esc(encodeURIComponent(c.slug)) + '"><span class="dot' + (c.mine ? ' mine' : '') + '" style="width:8px;height:8px"></span>' +
-        '<b>' + esc(c.name[L]) + '</b><span>' + esc(c.addr[L]) + '</span></a>';
+      var addr = c.addr[L] && c.addr[L] !== '—' && !/^нет$/i.test(c.addr[L]) ? c.addr[L] : catLabel(c.cat, L);
+      return '<a class="map-item" href="#/club/' + esc(encodeURIComponent(c.slug)) + '" style="--h:' + hueOf(c.cat) + '"><span class="ic">' + icon(c.cat, 18) + '</span>' +
+        '<b>' + esc(c.name[L]) + '</b><span>' + esc(addr) + '</span></a>';
     }).join('') +
     (rest > 0 ? '<button class="more" data-action="more-map">' + esc(T.more) + ' (' + rest + ')</button>' : '');
   }
@@ -567,9 +1071,9 @@
 
   function mapView() {
     var T = STR[state.lang];
-    return '<section class="screen tight">' +
+    return '<section class="screen tight wrap">' +
       '<a class="back" href="#/">' + esc(T.back) + '</a>' +
-      '<h1 class="map-title">' + esc(T.map_h1) + '</h1>' +
+      '<h1 class="page-h">' + esc(T.map_h1) + '</h1>' +
       '<div class="map-box"><div class="map" id="map"></div><div id="pin">' + pinHTML() + '</div></div>' +
       '<div class="map-list" id="map-list">' + mapListHTML() + '</div>' +
       '</section>';
@@ -730,6 +1234,7 @@
       age: m.age || '—', cost: tri(m.cost || '—'), sched: tri(m.sched || '—'),
       addr: tri(m.addr || '—'), langs: tri(m.langs || '—'),
       tel: m.tel || '', ig: m.ig || '', tg: m.tg || '', photo: m.photo || '',
+      media: mediaList(m.media).map(function (x) { return x.url; }),
       lat: Number(m.lat), lng: Number(m.lng), kw: m.kw || ''
     };
   }
@@ -767,7 +1272,7 @@
       '<a class="back" href="#/">← Каталог</a>' +
       '<p class="eyebrow" style="font-size:10.5px">панель создателя</p>' +
       '<h1 class="title">Добавить сообщество</h1>' +
-      '<p class="intro">Сообщество заполняет Google Форму, ты переносишь ответы сюда. Оно сразу появляется в каталоге и пином на карте — но только в этом браузере. Чтобы его увидели все, скопируй код внизу в массив CLUBS файла data.js и опубликуй сайт.</p>' +
+      '<p class="intro">Заявки приходят в Google Форму — с формы на сайте (#/join) или напрямую. Ссылки на фото и видео лежат в конце описания заявки. Ты переносишь ответы сюда. Оно сразу появляется в каталоге и пином на карте — но только в этом браузере. Чтобы его увидели все, скопируй код внизу в массив CLUBS файла data.js и опубликуй сайт.</p>' +
       (saved ? '<div class="saved" role="status"><span>Сообщество добавлено — оно уже в каталоге и на карте.</span>' +
         '<a class="a1" href="#/club/' + esc(encodeURIComponent(saved.slug)) + '">Страница сообщества</a><a class="a2" href="#/map">На карте</a></div>' : '') +
       '<p class="label">Секция</p>' +
@@ -781,6 +1286,8 @@
       }).join('') + '</div>' +
       '<label class="field" style="margin-bottom:18px"><span>Описание</span>' +
       '<textarea data-field="about" rows="4" placeholder="Кто ходит, как проходит первое занятие, можно ли прийти одному">' + esc(f.about) + '</textarea></label>' +
+      '<label class="field" style="margin-bottom:18px"><span>Фото и видео — ссылки, по одной в строке</span>' +
+      '<textarea data-field="media" rows="3" placeholder="https://www.instagram.com/p/…">' + esc(f.media) + '</textarea></label>' +
       photoBlockHTML() +
       '<div class="toggles">' + [['beginner', 'Подходит новичкам'], ['verified', 'Я связался с организатором'], ['featured', '★ Лучшее — размещение оплачено']].map(function (tg) {
         return '<button class="toggle" data-action="toggle" data-id="' + tg[0] + '" aria-pressed="' + !!f[tg[0]] + '"><i></i>' + tg[1] + '</button>';
@@ -805,13 +1312,15 @@
   }
 
   // ---------- maps ----------
-  var maps = { view: null, pins: null, pick: null, pickMark: null };
+  var maps = { view: null, pins: null, pick: null, pickMark: null, mini: null };
 
-  function pinIcon(mine) {
+  // Пин в цвет направления; у добавленных в этом браузере — тёмная обводка.
+  function pinIcon(mine, hue) {
+    var bg = hue == null ? '#2F6BFF' : 'oklch(0.56 0.17 ' + hue + ')';
     return window.L.divIcon({
       className: '',
-      html: '<span style="display:block;width:14px;height:14px;border-radius:50%;background:' + (mine ? '#1B52DA' : '#2F6BFF') + ';border:2.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35)"></span>',
-      iconSize: [14, 14], iconAnchor: [7, 7]
+      html: '<span style="display:block;width:18px;height:18px;border-radius:50%;background:' + bg + ';border:3px solid ' + (mine ? '#0E1530' : '#fff') + ';box-shadow:0 2px 6px rgba(0,0,0,.35)"></span>',
+      iconSize: [18, 18], iconAnchor: [9, 9]
     });
   }
   function tiles() {
@@ -822,13 +1331,14 @@
   function destroyMaps() {
     if (maps.view) { maps.view.remove(); maps.view = null; maps.pins = null; }
     if (maps.pick) { maps.pick.remove(); maps.pick = null; maps.pickMark = null; }
+    if (maps.mini) { maps.mini.remove(); maps.mini = null; }
   }
   function drawPins() {
     if (!maps.view) return;
     var L = state.lang;
     maps.pins.clearLayers();
     allClubs().filter(function (c) { return !isNaN(c.lat) && !isNaN(c.lng); }).forEach(function (c) {
-      var m = window.L.marker([c.lat, c.lng], { icon: pinIcon(c.mine), title: c.name[L] }).addTo(maps.pins);
+      var m = window.L.marker([c.lat, c.lng], { icon: pinIcon(c.mine, hueOf(c.cat)), title: c.name[L] }).addTo(maps.pins);
       m.bindTooltip(c.name[L], { direction: 'top', offset: [0, -10] });
       m.on('click', function () { state.pin = c.id; document.getElementById('pin').innerHTML = pinHTML(); });
     });
@@ -843,6 +1353,16 @@
       if (state.pin) { state.pin = null; document.getElementById('pin').innerHTML = ''; }
     });
     drawPins();
+  }
+  // Маленькая карта на странице сообщества. На телефоне её нельзя таскать
+  // пальцем, иначе она перехватывает прокрутку страницы.
+  function mountMiniMap(c) {
+    var el = document.getElementById('mini-map');
+    if (!el || !window.L || !c || !hasCoords(c)) return;
+    var mobile = window.L.Browser && window.L.Browser.mobile;
+    maps.mini = window.L.map(el, { zoomControl: !mobile, scrollWheelZoom: false, dragging: !mobile, tap: false }).setView([c.lat, c.lng], 14);
+    tiles().addTo(maps.mini);
+    window.L.marker([c.lat, c.lng], { icon: pinIcon(false, hueOf(c.cat)) }).addTo(maps.mini);
   }
   function setPickMarker() {
     var f = state.form, lat = Number(f.lat), lng = Number(f.lng);
@@ -959,7 +1479,9 @@
   function repaintList() {
     var wrap = document.getElementById('dist-wrap'), res = document.getElementById('results');
     if (wrap) wrap.innerHTML = distRowHTML();
-    if (res) res.innerHTML = resultsHTML();
+    if (res) { res.innerHTML = resultsHTML(); reveal(res, true); }
+    var hf = document.getElementById('hero-found');
+    if (hf) hf.innerHTML = heroFoundHTML();
   }
 
   // ---------- chrome (header/footer) ----------
@@ -971,9 +1493,13 @@
     document.getElementById('foot-mission').textContent = T.foot_mission;
     document.getElementById('foot-creator').textContent = T.creator;
     document.getElementById('foot-creator-note').textContent = T.creator_note;
-    var about = document.getElementById('nav-about');
-    about.textContent = T.nav_about;
-    if (r.screen === 'about') about.setAttribute('aria-current', 'page'); else about.removeAttribute('aria-current');
+    var nav = { 'nav-about': ['about', T.nav_about], 'nav-map': ['map', T.nav_map], 'nav-add': ['join', T.nav_add] };
+    Object.keys(nav).forEach(function (id) {
+      var a = document.getElementById(id);
+      if (!a) return;
+      a.textContent = nav[id][1];
+      if (r.screen === nav[id][0]) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
     var langs = document.getElementById('langs');
     langs.setAttribute('aria-label', T.lang_label);
     langs.innerHTML = LANGS.map(function (l) {
@@ -993,6 +1519,7 @@
     if (r.screen === 'about') return T.nav_about + ' — ' + site;
     if (r.screen === 'map') return T.map_h1 + ' — ' + site;
     if (r.screen === 'add') return 'Панель создателя — ' + site;
+    if (r.screen === 'join') return T.join_h1 + ' — ' + site;
     return site + ' — ' + T.h1;
   }
 
@@ -1008,7 +1535,9 @@
     destroyMaps();
     renderChrome(r);
     var app = document.getElementById('app');
+    if (r.screen === 'join' && changedPage) prepareJoin(r.id);
     var html = r.screen === 'club' ? clubView(r.id)
+      : r.screen === 'join' ? joinView()
       : r.screen === 'about' ? aboutView()
       : r.screen === 'map' ? mapView()
       : r.screen === 'add' ? addView()
@@ -1020,12 +1549,24 @@
 
     if (r.screen === 'map') mountViewMap();
     if (r.screen === 'add') mountPickMap();
-    if (r.screen === 'club') { var c = findClub(r.id); if (c) renderQR(shareUrl(c)); }
+    if (r.screen === 'club') { var c = findClub(r.id); if (c) { renderQR(shareUrl(c)); mountMiniMap(c); } }
+    reveal(app, !changedPage);
+    if (r.screen === 'home' && changedPage) countUp(app);
 
     if (changedPage && !(opts && opts.keepScroll)) {
       window.scrollTo(0, 0);
       if (opts && opts.focus) app.focus({ preventScroll: true });
     }
+  }
+
+  // Открыли форму: по ссылке «дополнить карточку» подставляем данные сообщества,
+  // по обычной — начинаем с чистого листа, если в черновике было чужое обновление.
+  function prepareJoin(slug) {
+    state.joinErr = {};
+    if (state.joinStatus !== 'sending') state.joinStatus = '';
+    var c = slug && findClub(slug);
+    if (c && state.join.upd !== c.slug) { state.join = joinFromClub(c); state.joinStep = 0; saveDraft(); }
+    else if (!slug && state.join.upd) { state.join = blankJoin(); state.joinStep = 0; saveDraft(); }
   }
 
   // ---------- events ----------
@@ -1052,8 +1593,108 @@
       case 'cat':
         state.cat = id;
         state.shown = PAGE;
-        document.getElementById('chips').innerHTML = chipsHTML();
-        document.getElementById('results').innerHTML = resultsHTML();
+        document.getElementById('chips').innerHTML = catsHTML();
+        repaintList();
+        break;
+      case 'go-cat':
+        state.cat = id;
+        state.shown = PAGE;
+        if (document.getElementById('chips')) { document.getElementById('chips').innerHTML = catsHTML(); repaintList(); }
+        toCatalog();
+        break;
+      case 'to-catalog':
+        toCatalog();
+        break;
+      case 'clear-q': {
+        state.q = '';
+        state.shown = PAGE;
+        var qi = document.getElementById('q');
+        if (qi) qi.value = '';
+        repaintList();
+        break;
+      }
+      case 'random': {
+        var pool = allClubs();
+        var cur = route().id;
+        var others = pool.filter(function (c) { return c.slug !== cur; });
+        var pick = (others.length ? others : pool)[Math.floor(Math.random() * (others.length || pool.length))];
+        if (pick) { statsSend({ path: 'random', title: 'Случайное сообщество', event: true }); window.location.hash = '#/club/' + encodeURIComponent(pick.slug); }
+        break;
+      }
+      case 'embed': {
+        var rc = route(), ec = rc.screen === 'club' && findClub(rc.id);
+        var item = ec && mediaList(ec.media)[Number(el.getAttribute('data-i'))];
+        if (!item) break;
+        var holder = document.createElement('div');
+        holder.className = 'm-open';
+        holder.innerHTML = embedHTML(item);
+        el.parentNode.replaceChild(holder, el);
+        statsSend({ path: 'media/' + item.kind + '/' + ec.slug, title: ec.name.ru + ' — ' + item.kind, event: true });
+        break;
+      }
+      case 'lightbox':
+        openLightbox(el.getAttribute('data-src'));
+        break;
+      case 'j-cat':
+        state.join.cat = id; delete state.joinErr.cat; saveDraft(); paintWiz();
+        break;
+      case 'j-dist':
+        state.join.dist = state.join.dist === id ? '' : id; saveDraft(); paintWiz();
+        break;
+      case 'j-lang': {
+        var ls = state.join.langs, at = ls.indexOf(id);
+        if (at === -1) ls.push(id); else ls.splice(at, 1);
+        delete state.joinErr.langs; saveDraft(); paintWiz();
+        break;
+      }
+      case 'j-beg':
+        state.join.beginner = id; delete state.joinErr.beginner; saveDraft(); paintWiz();
+        break;
+      case 'j-free': {
+        var free = STR[state.lang].f_free;
+        state.join.cost = state.join.cost === free ? '' : free; delete state.joinErr.cost; saveDraft(); paintWiz();
+        break;
+      }
+      case 'j-top':
+        state.join.top = state.join.top === id ? '' : id; saveDraft(); paintWiz();
+        break;
+      case 'j-consent':
+        state.join.consent = !state.join.consent; delete state.joinErr.consent; saveDraft(); paintWiz();
+        break;
+      case 'j-next': {
+        var errs = joinCheck(state.joinStep);
+        state.joinErr = errs;
+        if (Object.keys(errs).length) {
+          paintWiz();
+          var bad = document.querySelector('#wiz .bad input, #wiz .bad textarea, #wiz .bad button, #wiz .jf-check.bad');
+          if (bad) bad.focus();
+          break;
+        }
+        state.joinStep = Math.min(JOIN_STEPS - 1, state.joinStep + 1);
+        state.joinStatus = '';
+        saveDraft();
+        paintWiz(true);
+        statsSend({ path: 'join/step-' + (state.joinStep + 1), title: 'Заявка — шаг ' + (state.joinStep + 1), event: true });
+        break;
+      }
+      case 'j-back':
+        state.joinErr = {};
+        state.joinStep = Math.max(0, state.joinStep - 1);
+        paintWiz(true);
+        break;
+      case 'j-send': {
+        var all = {};
+        for (var si = 0; si < JOIN_STEPS; si++) {
+          var se = joinCheck(si);
+          if (Object.keys(se).length) { state.joinErr = se; state.joinStep = si; paintWiz(true); all = null; break; }
+        }
+        if (all) { state.joinErr = {}; joinSubmit(); }
+        break;
+      }
+      case 'j-again':
+        state.join = blankJoin(); state.joinStep = 0; state.joinStatus = ''; state.joinErr = {};
+        clearDraft();
+        if (route().id) window.location.hash = '#/join'; else paintWiz(true);
         break;
       case 'form-dist':
         state.form.dist = state.form.dist === id ? '' : id;
@@ -1063,11 +1704,6 @@
         state.dist = id;
         state.shown = PAGE;
         repaintList();
-        break;
-      case 'cats-more':
-      case 'cats-less':
-        state.allCats = action === 'cats-more';
-        document.getElementById('chips').innerHTML = chipsHTML();
         break;
       case 'flag':
         state[id] = !state[id];
@@ -1081,10 +1717,14 @@
         state.near = null; state.nearState = null; state.shown = PAGE;
         repaintList();
         break;
-      case 'reset':
+      case 'reset': {
         state.q = ''; state.cat = 'all'; state.dist = 'all'; state.free = false; state.beg = false; state.shown = PAGE;
-        render({ keepScroll: true });
+        var qr = document.getElementById('q');
+        if (qr) qr.value = '';
+        if (document.getElementById('chips')) document.getElementById('chips').innerHTML = catsHTML();
+        repaintList();
         break;
+      }
       case 'report': {
         if (state.reported.indexOf(id) === -1) state.reported.push(id);
         save(REPORT_KEY, state.reported);
@@ -1099,6 +1739,7 @@
       case 'more':
         state.shown += PAGE;
         document.getElementById('results').innerHTML = resultsHTML();
+        reveal(document.getElementById('results'), true);
         break;
       case 'more-map':
         state.shown += PAGE;
@@ -1184,6 +1825,21 @@
       state.q = t.value;
       state.shown = PAGE;
       document.getElementById('results').innerHTML = resultsHTML();
+      var hf = document.getElementById('hero-found');
+      if (hf) hf.innerHTML = heroFoundHTML();
+      return;
+    }
+    var jk = t.getAttribute && t.getAttribute('data-j');
+    if (jk) {
+      state.join[jk] = t.value;
+      if (state.joinErr[jk]) {
+        delete state.joinErr[jk];
+        var f = t.closest('.jf-f');
+        if (f) { f.classList.remove('bad'); var er = f.querySelector('.jf-err'); if (er) er.parentNode.removeChild(er); }
+      }
+      if (jk === 'langOther' && state.joinErr.langs && t.value.trim()) delete state.joinErr.langs;
+      if (jk === 'media') { var mc = document.getElementById('media-count'); if (mc) mc.textContent = mediaCountText(); }
+      if (jk !== 'hp') saveDraft();
       return;
     }
     var key = t.getAttribute && t.getAttribute('data-field');
@@ -1192,6 +1848,19 @@
       if (state.formErr) { state.formErr = ''; showFormErr(); }
       if (key === 'name' || key === 'tag' || key === 'kw' || key === 'about') updateGuess();
     }
+  });
+
+  // Поиск в бренд-блоке: Enter прокручивает к найденному и прячет клавиатуру телефона.
+  document.addEventListener('submit', function (e) {
+    if (!e.target.hasAttribute || !e.target.hasAttribute('data-search')) return;
+    e.preventDefault();
+    var qi = document.getElementById('q');
+    if (qi) qi.blur();
+    statsSend({ path: 'search', title: 'Поиск: ' + state.q.trim().slice(0, 40), event: true });
+    toCatalog();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeLightbox();
   });
 
   function showFormErr() {
@@ -1270,7 +1939,10 @@
   // и каждый раз берёт каталог, язык и разметку карточки отсюда.
   window.QOSYL_APP = {
     allClubs: allClubs,
-    rowHTML: rowHTML,
+    rowHTML: cardHTML,
+    icon: icon,
+    hueOf: hueOf,
+    reveal: reveal,
     catLabel: catLabel,
     esc: esc,
     lang: function () { return state.lang; },

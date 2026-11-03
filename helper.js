@@ -13,18 +13,18 @@ window.QOSYL_HELPER = (function () {
   // ответ не отрезает каталог, а поднимает подходящее — поэтому пустого экрана не бывает.
   var QUESTIONS = [
     { id: 'what', opts: [
-      { id: 'move',   cats: { sport: 8 } },
-      { id: 'make',   cats: { eng: 8, it: 7, stem: 5 } },
-      { id: 'create', cats: { art: 8, media: 6 } },
-      { id: 'speak',  cats: { debate: 8, lang: 7 } },
-      { id: 'help',   cats: { vol: 8 } },
-      { id: 'build',  cats: { biz: 8, it: 4, stem: 3 } },
-      { id: 'people', cats: { vol: 7, art: 5, debate: 5 } }
+      { id: 'move',   ic: 'sport',  cat: 'sport',  cats: { sport: 8 } },
+      { id: 'make',   ic: 'eng',    cat: 'eng',    cats: { eng: 8, it: 7, stem: 5 } },
+      { id: 'create', ic: 'art',    cat: 'art',    cats: { art: 8, media: 6 } },
+      { id: 'speak',  ic: 'debate', cat: 'debate', cats: { debate: 8, lang: 7 } },
+      { id: 'help',   ic: 'vol',    cat: 'vol',    cats: { vol: 8 } },
+      { id: 'build',  ic: 'biz',    cat: 'biz',    cats: { biz: 8, it: 4, stem: 3 } },
+      { id: 'people', ic: 'users',  cat: 'lang',   cats: { vol: 7, art: 5, debate: 5 } }
     ] },
-    { id: 'age',   opts: [{ id: 'a12', age: 13 }, { id: 'a14', age: 15 }, { id: 'a16', age: 17 }, { id: 'a18', age: 19 }] },
-    { id: 'exp',   opts: [{ id: 'new' }, { id: 'some' }, { id: 'pro' }] },
-    { id: 'money', opts: [{ id: 'free' }, { id: 'cheap' }, { id: 'any' }] },
-    { id: 'who',   opts: [{ id: 'alone' }, { id: 'friends' }, { id: 'either' }] }
+    { id: 'age',   opts: [{ id: 'a12', age: 13, txt: '12' }, { id: 'a14', age: 15, txt: '14' }, { id: 'a16', age: 17, txt: '16' }, { id: 'a18', age: 19, txt: '18' }] },
+    { id: 'exp',   opts: [{ id: 'new', ic: 'spark', hue: 150 }, { id: 'some', ic: 'check', hue: 212 }, { id: 'pro', ic: 'trophy', hue: 82 }] },
+    { id: 'money', opts: [{ id: 'free', ic: 'tenge', hue: 148 }, { id: 'cheap', ic: 'tenge', hue: 82 }, { id: 'any', ic: 'tenge', hue: 262 }] },
+    { id: 'who',   opts: [{ id: 'alone', ic: 'user', hue: 285 }, { id: 'friends', ic: 'users', hue: 352 }, { id: 'either', ic: 'dice', hue: 212 }] }
   ];
   var STEP_PAGE = 3; // сколько карточек показываем за раз
   // Ниже этого числа блока на главной нет: на пустом каталоге спрашивать
@@ -150,10 +150,14 @@ window.QOSYL_HELPER = (function () {
     return '<section class="helper' + (cls ? ' ' + cls : '') + '" id="helper">' + inner + '</section>';
   }
 
+  function ic(name, size) { return A().icon ? A().icon(name, size) : ''; }
+
   function closedHTML(T) {
     return wrapHTML('', '<div class="helper-call">' +
-      '<div class="helper-call-txt"><h2>' + esc(T.h_h) + '</h2><p>' + esc(T.h_p) + '</p></div>' +
-      '<button class="helper-go" data-h="start">' + esc(T.h_start) + '</button>' +
+      '<span class="helper-dots" aria-hidden="true"><span></span><span></span></span>' +
+      '<div class="helper-call-txt"><span class="tag">' + ic('spark', 14) + esc(T.h_tag) + '</span>' +
+      '<h2>' + esc(T.h_h) + '</h2><p>' + esc(T.h_p) + '</p></div>' +
+      '<button class="helper-go" data-h="start">' + esc(T.h_start) + ic('arrow', 18) + '</button>' +
       '</div>');
   }
 
@@ -161,25 +165,28 @@ window.QOSYL_HELPER = (function () {
     var q = QUESTIONS[st.step];
     return wrapHTML('open',
       '<div class="helper-top">' +
-      '<span class="helper-step mono">' + esc(T.h_step) + ' ' + (st.step + 1) + ' / ' + QUESTIONS.length + '</span>' +
+      '<span class="helper-step">' + esc(T.h_step) + ' ' + (st.step + 1) + ' / ' + QUESTIONS.length + '</span>' +
       '<button class="helper-x" data-h="close">' + esc(T.h_close) + '</button>' +
       '</div>' +
       '<div class="helper-bar"><i style="width:' + Math.round((st.step / QUESTIONS.length) * 100) + '%"></i></div>' +
       '<div class="helper-body" aria-live="polite">' +
       '<h3 class="helper-q" id="helper-q" tabindex="-1">' + esc(T['h_q_' + q.id]) + '</h3>' +
       '<div class="helper-opts">' + q.opts.map(function (o) {
-        return '<button class="helper-opt" data-h="pick" data-q="' + q.id + '" data-o="' + o.id + '">' +
-          esc(T['h_o_' + o.id]) + '</button>';
+        var hue = o.cat ? (A().hueOf ? A().hueOf(o.cat) : 262) : (o.hue || 262);
+        var badge = o.txt ? '<b>' + esc(o.txt) + '</b>' : ic(o.ic, 22);
+        return '<button class="helper-opt" data-h="pick" data-q="' + q.id + '" data-o="' + o.id + '" style="--h:' + hue + '">' +
+          '<span class="ic">' + badge + '</span><span>' + esc(T['h_o_' + o.id]) + '</span></button>';
       }).join('') + '</div>' +
       (st.step > 0 ? '<button class="helper-back" data-h="back">' + esc(T.h_back) + '</button>' : '') +
       '</div>');
   }
 
+  // Подбор показываем той же карточкой, что и каталог, а причины — внутри неё.
+  // Раньше карточка вкладывалась в отдельную рамку, и у «Лучшего» слетали отступы.
   function hitHTML(h, L, T) {
-    var row = A().rowHTML ? A().rowHTML(h.club, L, T) : '';
     var why = (h.km != null ? '<span class="d">' + esc(A().kmText(h.km, L)) + '</span>' : '') +
       h.why.map(function (k) { return '<span>' + esc(T['h_why_' + k]) + '</span>'; }).join('');
-    return '<div class="helper-hit">' + row + (why ? '<p class="helper-why">' + why + '</p>' : '') + '</div>';
+    return A().rowHTML ? A().rowHTML(h.club, L, T, why ? '<span class="club-why">' + why + '</span>' : '') : '';
   }
 
   // Кнопка «рядом со мной» и честная строчка о том, куда уходят координаты.
@@ -196,7 +203,7 @@ window.QOSYL_HELPER = (function () {
   }
 
   function headHTML(T) {
-    return '<div class="helper-top"><span class="helper-step mono">' + esc(T.h_res_step) + '</span>' +
+    return '<div class="helper-top"><span class="helper-step">' + esc(T.h_res_step) + '</span>' +
       '<button class="helper-x" data-h="close">' + esc(T.h_close) + '</button></div>';
   }
 
@@ -227,7 +234,7 @@ window.QOSYL_HELPER = (function () {
         '<p class="helper-note">' + esc(T.h_off_p) + '</p>' +
         (other.length
           ? '<p class="helper-sub">' + esc(T.h_near_h) + '</p>' +
-            '<div class="helper-hits">' + other.map(function (h) { return hitHTML(h, L, T); }).join('') + '</div>'
+            '<div class="helper-hits grid">' + other.map(function (h) { return hitHTML(h, L, T); }).join('') + '</div>'
           : '') +
         foot.replace('%MORE%', '') + '</div>');
     }
@@ -237,12 +244,12 @@ window.QOSYL_HELPER = (function () {
     return wrapHTML('open res', headHTML(T) +
       '<div class="helper-body"><h3 class="helper-q" id="helper-q" tabindex="-1">' + esc(T.h_res_h) + '</h3>' +
       '<p class="helper-note">' + esc(T.h_res_p) + '</p>' +
-      '<div class="helper-hits">' + shown.map(function (h) { return hitHTML(h, L, T); }).join('') + '</div>' +
+      '<div class="helper-hits grid">' + shown.map(function (h) { return hitHTML(h, L, T); }).join('') + '</div>' +
       // Чужие секции показываем, только если своих нашлось совсем мало,
       // и обязательно под отдельной честной подписью.
       (fit.length < 3 && other.length
         ? '<p class="helper-sub">' + esc(T.h_near_h) + '</p>' +
-          '<div class="helper-hits">' + other.map(function (h) { return hitHTML(h, L, T); }).join('') + '</div>'
+          '<div class="helper-hits grid">' + other.map(function (h) { return hitHTML(h, L, T); }).join('') + '</div>'
         : '') +
       foot.replace('%MORE%', more) + '</div>');
   }
@@ -261,6 +268,7 @@ window.QOSYL_HELPER = (function () {
     var el = document.getElementById('helper'), html = blockHTML();
     if (!el || !html) return;
     el.outerHTML = html;
+    if (A().reveal) A().reveal(document.getElementById('helper'), true);
     if (st.focus) {
       var q = document.getElementById('helper-q');
       if (q) q.focus({ preventScroll: true });
