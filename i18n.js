@@ -346,6 +346,7 @@ Object.assign(STR.en, { f_free: 'Free', f_beg: 'For beginners' });
 // Новый дизайн (ноябрь 2026): бренд-блок, «как это работает», страница сообщества
 // с фото и видео и форма для организаторов прямо на сайте.
 Object.assign(STR.ru, {
+  cat_short: { it: 'IT', eng: 'Роботы', stem: 'Наука', debate: 'Дебаты', lang: 'Языки', sport: 'Спорт', art: 'Арт', media: 'Медиа', vol: 'Волонтёры', biz: 'Бизнес' },
   hero_kicker: 'Каталог для подростков Астаны',
   hero_a: 'Найди своих', hero_b: 'после уроков',
   lead: 'Сообщества Астаны в одном месте: IT, дебаты, спорт, творчество, волонтёрство. Бесплатно и без регистрации.',
@@ -385,6 +386,7 @@ Object.assign(STR.ru, {
   join_how3: 'Карточка появляется в каталоге, на карте и в поиске Google.',
   j_step: 'Шаг', j_of: 'из', j_saved: 'Черновик сохраняется',
   j_s1: 'О сообществе', j_s2: 'Как к вам попасть', j_s3: 'Контакты, фото и видео', j_s4: 'Последний шаг',
+  j_code: 'Код сообщества', j_code_hint: 'Его выдаёт Qosyl организатору — так никто посторонний не сможет изменить вашу карточку. Нет кода? Напишите в Instagram @_zhagaparov_ с аккаунта сообщества — пришлём.', j_req_code: 'Введите код сообщества',
   j_name: 'Название сообщества', j_name_ph: 'Например: дебатный клуб «Сөз»',
   j_cat: 'Направление', j_cat_other: 'Другое',
   j_tag: 'Чем занимаетесь — одной строкой', j_tag_ph: 'Собираем роботов и учим их ездить по линии',
@@ -418,6 +420,7 @@ Object.assign(STR.ru, {
   j_update_p: 'Вы дополняете карточку «{name}». Поля уже заполнены тем, что есть на сайте, — исправьте или добавьте нужное, особенно фото и видео.'
 });
 Object.assign(STR.kz, {
+  cat_short: { it: 'IT', eng: 'Роботтар', stem: 'Ғылым', debate: 'Дебат', lang: 'Тілдер', sport: 'Спорт', art: 'Өнер', media: 'Медиа', vol: 'Еріктілер', biz: 'Бизнес' },
   hero_kicker: 'Астана жасөспірімдеріне арналған каталог',
   hero_a: 'Сабақтан кейін', hero_b: 'өз ортаңды тап',
   lead: 'Астана қоғамдастықтары бір жерде: IT, дебат, спорт, шығармашылық, еріктілік. Тегін әрі тіркеусіз.',
@@ -457,6 +460,7 @@ Object.assign(STR.kz, {
   join_how3: 'Карточка каталогта, картада және Google іздеуінде пайда болады.',
   j_step: 'Қадам', j_of: '/', j_saved: 'Нобай сақталады',
   j_s1: 'Қоғамдастық туралы', j_s2: 'Сізге қалай келуге болады', j_s3: 'Байланыс, фото және видео', j_s4: 'Соңғы қадам',
+  j_code: 'Қоғамдастық коды', j_code_hint: 'Оны Qosyl ұйымдастырушыға береді — осылайша бөгде адам карточкаңызды өзгерте алмайды. Код жоқ па? Қоғамдастық аккаунтынан Instagram-ға жазыңыз: @_zhagaparov_ — жібереміз.', j_req_code: 'Қоғамдастық кодын енгізіңіз',
   j_name: 'Қоғамдастық атауы', j_name_ph: 'Мысалы: «Сөз» дебат клубы',
   j_cat: 'Бағыты', j_cat_other: 'Басқа',
   j_tag: 'Немен айналысасыздар — бір сөйлеммен', j_tag_ph: 'Робот құрастырып, оларды сызық бойымен жүруге үйретеміз',
@@ -490,6 +494,7 @@ Object.assign(STR.kz, {
   j_update_p: 'Сіз «{name}» карточкасын толықтырып жатырсыз. Өрістер сайттағы мәліметпен толтырылған — қажетін түзетіңіз не қосыңыз, әсіресе фото мен видео.'
 });
 Object.assign(STR.en, {
+  cat_short: { it: 'IT', eng: 'Robots', stem: 'Science', debate: 'Debate', lang: 'Languages', sport: 'Sports', art: 'Arts', media: 'Media', vol: 'Volunteer', biz: 'Business' },
   hero_kicker: 'A catalogue for Astana teens',
   hero_a: 'Find your people', hero_b: 'after school',
   lead: 'Astana communities in one place: IT, debate, sports, arts, volunteering. Free, no sign-up.',
@@ -529,6 +534,7 @@ Object.assign(STR.en, {
   join_how3: 'Your listing appears in the catalogue, on the map and in Google search.',
   j_step: 'Step', j_of: 'of', j_saved: 'Draft is saved',
   j_s1: 'About the community', j_s2: 'How to get there', j_s3: 'Contacts, photos and videos', j_s4: 'Last step',
+  j_code: 'Community code', j_code_hint: 'Qosyl gives it to the organiser so nobody else can change your listing. No code? Message @_zhagaparov_ on Instagram from the community account and we will send it.', j_req_code: 'Enter the community code',
   j_name: 'Community name', j_name_ph: 'For example: Söz debate club',
   j_cat: 'Direction', j_cat_other: 'Other',
   j_tag: 'What you do — in one line', j_tag_ph: 'We build robots and teach them to follow a line',

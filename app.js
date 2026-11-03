@@ -172,9 +172,11 @@
     var stored = load(LANG_KEY, null);
     var pick = [fromUrl, stored].filter(function (l) { return l && STR[l]; })[0];
     if (pick) return pick;
+    // Казахский телефон — казахский сайт. Английский только по кнопке или ?lang=en:
+    // поисковые роботы Google открывают сайт с английским браузером, и раньше
+    // в выдаче из-за этого стоял английский заголовок вместо русского.
     var nav = (navigator.language || '').toLowerCase();
     if (nav.indexOf('kk') === 0) return 'kz';
-    if (nav.indexOf('en') === 0) return 'en';
     return 'ru';
   }
   function blankForm() {
@@ -548,6 +550,35 @@
         : state.near ? '<p class="near-note">' + esc(T.near_on) + '</p>' : '');
   }
 
+  // Плитки направлений в бренд-блоке. На компьютере — сетка справа, которая
+  // чуть сдвигается вслед за мышкой; на телефоне — бегущая лента под цифрами.
+  // Это украшение-дубль ряда направлений в каталоге, поэтому скрыто от дикторов.
+  function heroTiles(L, T, cnt, kind, limit) {
+    var list = CATS.filter(function (c) { return cnt[c.id]; }).concat(CATS.filter(function (c) { return !cnt[c.id]; }));
+    if (limit) list = list.slice(0, limit);
+    var short = T.cat_short || {};
+    var tiles = list.map(function (c, i) {
+      return '<span class="float-tile" data-action="go-cat" data-id="' + c.id + '" style="--h:' + hueOf(c.id) + ';--d:' + (6 + (i * 5) % 14) + 'px;--sd:' + (i * 0.9).toFixed(1) + 's" title="' + esc(c[L]) + '">' +
+        (cnt[c.id] ? '<span class="n">' + cnt[c.id] + '</span>' : '') + icon(c.id, 48) + '<b>' + esc(short[c.id] || c[L]) + '</b></span>';
+    }).join('');
+    if (kind === 'hero-strip') return '<div class="hero-strip" aria-hidden="true"><div class="hero-strip-in">' + tiles + tiles + '</div></div>';
+    return '<div class="hero-art" aria-hidden="true">' + tiles + '</div>';
+  }
+
+  // Параллакс: плитки смещаются вслед за мышкой, каждая на свою глубину (--d).
+  var parallaxRAF = 0;
+  document.addEventListener('mousemove', function (e) {
+    var art = document.querySelector('.hero-art');
+    if (!art || parallaxRAF || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    parallaxRAF = window.requestAnimationFrame(function () {
+      parallaxRAF = 0;
+      var hero = art.closest('.hero'), r = hero && hero.getBoundingClientRect();
+      if (!r || e.clientY < r.top || e.clientY > r.bottom) { art.style.setProperty('--px', 0); art.style.setProperty('--py', 0); return; }
+      art.style.setProperty('--px', ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
+      art.style.setProperty('--py', ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
+    });
+  });
+
   function heroFoundHTML() {
     var T = STR[state.lang];
     if (!state.q.trim()) return '';
@@ -582,10 +613,8 @@
       '</div>' +
       '<ul class="hero-stats">' + stats.map(function (s) { return '<li><b data-count="' + s[0] + '">' + s[0] + '</b><span>' + esc(s[1]) + '</span></li>'; }).join('') + '</ul>' +
       '</div>' +
-      '<div class="hero-art" aria-hidden="true">' + CATS.slice(0, 8).map(function (c) {
-        return '<span class="float-tile" data-action="go-cat" data-id="' + c.id + '" style="--h:' + hueOf(c.id) + '" title="' + esc(c[L]) + '">' + icon(c.id, 40) + '</span>';
-      }).join('') + '</div>' +
-      '</div></section>';
+      heroTiles(L, T, cnt, 'hero-art', 8) +
+      '</div>' + heroTiles(L, T, cnt, 'hero-strip', 0) + '</section>';
 
     var how = '<section class="sec wrap" data-reveal><div class="sec-head"><div><p class="sec-kicker">' + esc(T.how_k) + '</p>' +
       '<h2 class="sec-h">' + esc(T.how_h) + '</h2></div></div><div class="steps">' +
@@ -745,7 +774,7 @@
   // организатора, чтобы случайное обновление страницы не стёрло пять минут работы.
   function blankJoin() {
     return { name: '', cat: '', tag: '', about: '', age: '', cost: '', sched: '', addr: '', dist: '', langs: [], langOther: '', beginner: '',
-      tel: '', ig: '', tg: '', media: '', cover: '', contact: '', consent: false, top: '', upd: '', hp: '' };
+      tel: '', ig: '', tg: '', media: '', cover: '', contact: '', consent: false, top: '', upd: '', code: '', hp: '' };
   }
   function loadDraft() {
     var d = load(DRAFT_KEY, null);
@@ -756,7 +785,12 @@
     b.hp = '';
     return b;
   }
-  function saveDraft() { save(DRAFT_KEY, state.join); }
+  // Код сообщества в черновик не попадает: компьютер бывает общий.
+  function saveDraft() {
+    var copy = {};
+    Object.keys(state.join).forEach(function (k) { if (k !== 'code' && k !== 'hp') copy[k] = state.join[k]; });
+    save(DRAFT_KEY, copy);
+  }
   function clearDraft() { try { window.localStorage.removeItem(DRAFT_KEY); } catch (e) { /* хранилище недоступно */ } }
 
   // Карточка уже на сайте — открываем форму с её данными, чтобы организатор
@@ -811,7 +845,12 @@
     var titles = [T.j_s1, T.j_s2, T.j_s3, T.j_s4];
     var body = '';
     if (step === 0) {
-      body = jfInput('name', T.j_name, { ph: T.j_name_ph, auto: 'organization' }) +
+      // Изменить чужую карточку можно только с кодом, который знают организатор
+      // и владелец сайта. Сайт код не проверяет — он лишь передаёт его вместе
+      // с заявкой, а сверяет Дамир по своему закрытому списку (в репозиторий
+      // список не попадает, иначе его увидел бы любой).
+      body = (d.upd ? jfInput('code', T.j_code, { ph: 'QS-XXXX-XXXX', hint: T.j_code_hint, auto: 'off' }) : '') +
+        jfInput('name', T.j_name, { ph: T.j_name_ph, auto: 'organization' }) +
         '<div class="jf-f' + (state.joinErr.cat ? ' bad' : '') + '">' + jfLabel(T.j_cat) +
         '<div class="jf-cats" role="group" aria-label="' + esc(T.j_cat) + '">' +
         CATS.map(function (c) {
@@ -915,7 +954,7 @@
   function joinCheck(step) {
     var T = STR[state.lang], d = state.join, e = {};
     function req(k) { if (!String(d[k] || '').trim()) e[k] = T.j_req; }
-    if (step === 0) { req('name'); if (!d.cat) e.cat = T.j_req_cat; req('tag'); req('about'); }
+    if (step === 0) { if (d.upd && !String(d.code || '').trim()) e.code = T.j_req_code; req('name'); if (!d.cat) e.cat = T.j_req_cat; req('tag'); req('about'); }
     if (step === 1) {
       req('age'); req('cost'); req('sched'); req('addr');
       if (!d.langs.length && !String(d.langOther || '').trim()) e.langs = T.j_req_lang;
@@ -934,7 +973,7 @@
     var cat = d.cat === 'other' ? 'Другое' : catLabel(d.cat, 'ru');
     head.push('Секция на сайте: ' + cat);
     if (d.dist) head.push('Район: ' + distLabel(d.dist, 'ru'));
-    if (d.upd) head.push('ОБНОВЛЕНИЕ карточки: ' + d.upd);
+    if (d.upd) head.push('ОБНОВЛЕНИЕ карточки: ' + d.upd + ' · код: ' + (String(d.code || '').trim().toUpperCase() || 'НЕ УКАЗАН'));
     var links = mediaLines(d.media);
     var tail = [];
     if (links.length) tail.push('Фото и видео:\n' + links.join('\n'));
