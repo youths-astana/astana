@@ -5,7 +5,7 @@
   "slug": "tumar-global",
   "verified": true,
   "beginner": true,
-  "featured": false,
+  "featured": true,
   "checked": "2026-09-28",
   "name": {
    "ru": "Tumar.global",
@@ -57,7 +57,7 @@
   "slug": "qadam-volunteers",
   "verified": true,
   "beginner": true,
-  "featured": true,
+  "featured": false,
   "checked": "2026-10-01",
   "name": {
    "ru": "Qadam Volunteers",

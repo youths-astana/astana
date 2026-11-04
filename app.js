@@ -520,7 +520,7 @@
       (c.tag[L] ? '<span class="club-tag">' + esc(c.tag[L]) + '</span>' : '') +
       (addr ? '<span class="club-addr">' + icon('pin', 14) + esc(addr) + '</span>' : '') +
       '<span class="club-meta">' +
-      (c.featured ? '<span class="m top">' + STAR + esc(T.featured) + '</span>' : '') +
+      (c.featured ? '<span class="m best">' + STAR + esc(T.featured) + '</span>' : '') +
       (d != null ? '<span class="m km">' + esc(kmText(d, L)) + '</span>' : '') +
       (c.age && c.age !== '—' ? '<span class="m">' + esc(c.age) + '</span>' : '') +
       (isFree(c) ? '<span class="m free">' + esc(T.f_free) + '</span>'
@@ -822,7 +822,7 @@
       '<h1 class="cp-title">' + esc(c.name[L]) + '</h1>' +
       (c.tag[L] ? '<p class="cp-tag">' + esc(c.tag[L]) + '</p>' : '') +
       '<div class="cp-badges">' +
-      (c.featured ? '<span class="m top">' + STAR + esc(T.featured) + '</span>' : '') +
+      (c.featured ? '<span class="m best">' + STAR + esc(T.featured) + '</span>' : '') +
       (isFree(c) ? '<span class="m free">' + esc(T.f_free) + '</span>' : '') +
       (c.beginner ? '<span class="m beg">' + esc(T.beginner) + '</span>' : '') +
       (c.verified ? '<span class="m ok">' + icon('check', 13) + esc(T.verified) + '</span>'
