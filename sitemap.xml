@@ -1,8 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="sitemap-style.xml"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://qosyl.club/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://qosyl.club/catalog.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://qosyl.club/c-tumar-global.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://qosyl.club/c-qadam-volunteers.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://qosyl.club/catalog.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://qosyl.club/besplatnye-kruzhki-astana.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://qosyl.club/robototehnika-astana.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://qosyl.club/it-kruzhki-astana.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://qosyl.club/nauka-olimpiady-astana.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://qosyl.club/debaty-astana.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://qosyl.club/yazykovye-kluby-astana.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://qosyl.club/sportivnye-sekcii-astana.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://qosyl.club/tvorcheskie-kruzhki-astana.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://qosyl.club/media-zhurnalistika-astana.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://qosyl.club/volonterstvo-astana.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://qosyl.club/c-tumar-global.html</loc><lastmod>2026-09-28</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-qadam-volunteers.html</loc><lastmod>2026-10-01</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-dvorets-shkolnikov-al-farabi.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-debatnye-kluby-shkol-astany.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-dvorets-shkolnikov-utemisova.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-tsentr-tehnicheskogo-tvorchestva.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-tanym-nura.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-tanym-art.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-tanym-sport.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-tsentr-turizma-i-kraevedeniya.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-orken.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-arka-alan.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-debat-eli.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-american-corner-astana.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-qazvolunteer.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://qosyl.club/c-society-astana.html</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
 </urlset>

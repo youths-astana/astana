@@ -101,7 +101,7 @@ img { max-width: 100% }
   .nav-link { padding: 0 7px; font-size: 13.5px }
   .langs button { padding: 0 7px }
 }
-@media (max-width: 480px) { .nav-map { display: none } }
+@media (max-width: 480px) { .nav-about { display: none } }
 
 /* ---------- главная: бренд-блок ---------- */
 .hero { position: relative; overflow: hidden; color: #fff;
@@ -247,26 +247,123 @@ img { max-width: 100% }
 .helper-geo.wait { display: inline-flex; align-items: center; min-height: 44px; padding: 0 6px; border: 0; background: none; font-weight: 500; color: var(--accent) }
 .helper-geo-note { margin: 12px 0 0; max-width: 46em; font-size: 12.5px; line-height: 1.45; color: var(--faint) }
 
-/* ---------- каталог: ряд направлений ---------- */
-.cats { display: flex; gap: 10px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; margin: 0 -18px; padding: 4px 18px 14px; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 26px), transparent); mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 26px), transparent); scroll-padding-left: 18px }
+/* ---------- каталог: шапка ----------
+   Каталог — отдельная «зона» сайта: своя тёмная шапка с названием, цифрами
+   и поиском, а плитки направлений заходят на её нижний край. Так с первого
+   взгляда понятно, что дальше идёт сам каталог, а не ещё один блок главной. */
+.catalog { position: relative; margin-top: 52px; scroll-margin-top: 62px }
+.home.is-catalog .catalog { margin-top: 0 }
+.cs-top { position: relative; overflow: hidden; padding: 40px 0 96px; color: #fff;
+  background: radial-gradient(55% 90% at 100% 0%, oklch(0.52 0.17 285 / .6) 0%, rgb(0 0 0 / 0) 62%),
+              radial-gradient(45% 80% at 0% 100%, oklch(0.55 0.13 174 / .38) 0%, rgb(0 0 0 / 0) 66%),
+              linear-gradient(160deg, #0F2160 0%, #0A1638 100%) }
+.cs-top::before { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(rgb(255 255 255 / .1) 1px, rgb(0 0 0 / 0) 1.3px); background-size: 22px 22px; -webkit-mask-image: linear-gradient(180deg, #000 0%, rgb(0 0 0 / .2) 100%); mask-image: linear-gradient(180deg, #000 0%, rgb(0 0 0 / .2) 100%) }
+.cs-glow { position: absolute; left: 50%; top: -40%; width: 70%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(closest-side, oklch(0.6 0.16 262 / .28), rgb(0 0 0 / 0)); pointer-events: none }
+.cs-mark { position: absolute; right: -70px; bottom: -150px; width: 440px; height: 440px; color: #fff; opacity: .06; pointer-events: none }
+.cs-top-in { position: relative; display: grid; gap: 22px }
+@media (min-width: 900px) {
+  .cs-top { padding: 56px 0 108px }
+  .cs-top-in { grid-template-columns: minmax(0, 1fr) auto; align-items: end; column-gap: 40px }
+  .cs-search { grid-column: 1 / -1 }
+}
+.cs-kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 14px; padding: 6px 13px 6px 10px; border-radius: 999px; background: rgb(255 255 255 / .1); border: 1px solid rgb(255 255 255 / .14); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #CFE0FF }
+.cs-h { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(30px, 5.6vw, 56px); line-height: 1.02; letter-spacing: -0.045em; text-wrap: balance }
+.cs-lead { margin: 14px 0 0; max-width: 34em; font-size: 16px; line-height: 1.55; color: rgb(255 255 255 / .74); text-wrap: pretty }
+.cs-stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none }
+.cs-stats li { min-width: 104px; padding: 12px 16px 13px; border-radius: 18px; background: rgb(255 255 255 / .07); border: 1px solid rgb(255 255 255 / .13) }
+.cs-stats b { display: block; font-family: var(--display); font-weight: 700; font-size: 28px; line-height: 1.1; letter-spacing: -0.04em }
+.cs-stats span { display: block; max-width: 9.5em; font-size: 12.5px; line-height: 1.3; color: rgb(255 255 255 / .7) }
+@media (max-width: 520px) { .cs-stats li { flex: 1 1 0; min-width: 0; padding: 10px 12px } .cs-stats b { font-size: 23px } }
+.cs-search { display: flex; align-items: center; gap: 10px; min-height: 58px; padding: 0 10px 0 18px; border-radius: 18px; background: #fff; color: var(--soft); box-shadow: 0 14px 36px rgb(0 0 0 / .28) }
+.cs-search:focus-within { box-shadow: 0 0 0 3px rgb(47 107 255 / .55), 0 14px 36px rgb(0 0 0 / .28) }
+.cs-search input { flex: 1; min-width: 0; min-height: 54px; border: 0; outline: none; background: transparent; font-size: 16.5px; color: var(--ink) }
+.cs-search input::-webkit-search-cancel-button { cursor: pointer }
+.cs-body { position: relative; margin-top: -70px }
+
+/* ---------- каталог: плитки направлений ----------
+   Цветные плитки, как полки в магазине приложений: у каждой секции свой цвет
+   (меняется только оттенок --h), белая подпись и большой значок в углу. */
+.cats { display: flex; gap: 10px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; margin: 0 -18px; padding: 6px 18px 16px; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 26px), transparent); mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 26px), transparent); scroll-padding-left: 18px }
 .cats::-webkit-scrollbar { display: none }
 @media (min-width: 760px) { .cats { margin: 0 -28px; padding-left: 28px; padding-right: 28px; scroll-padding-left: 28px } }
 @media (min-width: 1000px) {
-  .cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); overflow: visible; margin: 0; padding: 4px 0 14px; -webkit-mask-image: none; mask-image: none }
+  .cats { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; overflow: visible; margin: 0; padding: 6px 0 16px; -webkit-mask-image: none; mask-image: none }
 }
-.cat { position: relative; flex: none; width: 124px; min-height: 104px; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 12px 12px 13px; border: 1.5px solid transparent; border-radius: 20px; background: var(--card); box-shadow: var(--sh-1); text-align: left; color: var(--ink); transition: transform .18s var(--ease), box-shadow .18s, border-color .15s, background .15s }
-@media (min-width: 1000px) { .cat { width: auto } }
-.cat:hover { transform: translateY(-3px); box-shadow: var(--sh-2) }
-.cat .ic { width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; background: oklch(0.95 0.045 var(--h)); color: oklch(0.5 0.16 var(--h)) }
-.cat-txt { display: grid; gap: 2px }
-.cat b { font-size: 13.5px; font-weight: 700; line-height: 1.22; letter-spacing: -0.01em }
-.cat small { font-size: 12px; font-weight: 500; color: var(--faint) }
-.cat[aria-pressed="true"] { border-color: oklch(0.58 0.16 var(--h)); background: oklch(0.975 0.022 var(--h)) }
-.cat[aria-pressed="true"] .ic { background: oklch(0.56 0.17 var(--h)); color: #fff }
-.cat.is-empty { box-shadow: none; background: transparent; border: 1.5px dashed var(--field) }
+.cat { position: relative; overflow: hidden; flex: none; width: 138px; min-height: 116px; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 14px; padding: 13px 13px 14px; border: 0; border-radius: 20px; text-align: left; color: #fff;
+  background: linear-gradient(150deg, oklch(0.63 0.15 var(--h)) 0%, oklch(0.5 0.16 var(--h)) 100%);
+  box-shadow: 0 8px 22px oklch(0.42 0.14 var(--h) / .26); transition: transform .2s var(--ease), box-shadow .2s, opacity .2s, filter .2s }
+@media (min-width: 1000px) { .cat { width: auto; min-height: 124px } }
+.cat:hover { transform: translateY(-3px); box-shadow: 0 14px 30px oklch(0.42 0.14 var(--h) / .34) }
+.cat-art { position: absolute; right: -16px; bottom: -18px; color: rgb(255 255 255 / .2); transform: rotate(-14deg); transition: transform .35s var(--ease); pointer-events: none }
+.cat-art .ic-svg { width: 86px; height: 86px; stroke-width: 1.5 }
+.cat:hover .cat-art { transform: rotate(-4deg) scale(1.08) }
+.cat .ic { position: relative; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: rgb(255 255 255 / .2); color: #fff }
+.cat-txt { position: relative; display: grid; gap: 3px }
+.cat b { font-size: 13.5px; font-weight: 700; line-height: 1.22; letter-spacing: -0.01em; text-shadow: 0 1px 2px oklch(0.3 0.1 var(--h) / .3) }
+.cat small { font-size: 12px; font-weight: 600; color: rgb(255 255 255 / .82) }
+.cat[aria-pressed="true"] { box-shadow: 0 0 0 3px #fff, 0 0 0 6px oklch(0.55 0.17 var(--h)), 0 14px 30px oklch(0.42 0.14 var(--h) / .34) }
+.cat[aria-pressed="true"]::after { content: "✓"; position: absolute; right: 10px; top: 10px; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #fff; color: oklch(0.45 0.16 var(--h)); font-size: 13px; font-weight: 800 }
+/* Выбрана секция — остальные приглушаем, чтобы выбор читался издалека. */
+.cats:has(.cat[aria-pressed="true"]:not([data-id="all"])) .cat[aria-pressed="false"] { opacity: .5; filter: saturate(.6) }
+.cats:has(.cat[aria-pressed="true"]:not([data-id="all"])) .cat[aria-pressed="false"]:hover { opacity: 1; filter: none }
+.cat.is-empty { background: #fff; color: var(--ink); box-shadow: none; outline: 1.5px dashed var(--field); outline-offset: -1.5px }
 .cat.is-empty .ic { background: var(--chip); color: var(--faint) }
-.cat.is-empty b { color: var(--soft) }
-.cat.is-empty[aria-pressed="true"] { border-style: solid; border-color: var(--soft); background: #fff }
+.cat.is-empty .cat-art { color: var(--line) }
+.cat.is-empty b { color: var(--soft); text-shadow: none }
+.cat.is-empty small { color: var(--faint); font-weight: 500 }
+.cat.is-empty[aria-pressed="true"] { outline: 0; box-shadow: 0 0 0 2px var(--soft) }
+.cat.is-empty[aria-pressed="true"]::after { background: var(--ink); color: #fff }
+
+/* ---------- каталог: панель фильтров ----------
+   Фильтров немного, поэтому они в строку над выдачей, а не в боковой колонке.
+   На компьютере панель прилипает под шапкой сайта, пока листаешь выдачу. */
+.cs-bar { position: relative; z-index: 600; margin: 4px 0 0 }
+@media (min-width: 760px) {
+  .cs-bar { position: sticky; top: 62px; margin: 4px -28px 0; padding: 10px 28px; background: rgb(245 247 252 / .9); -webkit-backdrop-filter: saturate(1.4) blur(12px); backdrop-filter: saturate(1.4) blur(12px) }
+}
+.cs-bar-in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px }
+.cs-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px }
+@media (max-width: 759px) {
+  .cs-bar .filters { flex-wrap: nowrap; overflow-x: auto; margin: 0 -18px; padding: 2px 18px 4px; scrollbar-width: none }
+  .cs-bar .filters::-webkit-scrollbar { display: none }
+  .cs-bar .pill { flex: none }
+  .cs-tools { width: 100% }
+  .cs-tools .seg { margin-left: auto }
+}
+.sel { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 30px 0 12px; border: 1.5px solid var(--line); border-radius: 999px; background: #fff; color: var(--soft); transition: border-color .15s }
+.sel:hover, .sel:focus-within { border-color: var(--field) }
+.sel select { -webkit-appearance: none; appearance: none; min-height: 36px; padding: 0; border: 0; outline: none; background: transparent; font-size: 13.5px; font-weight: 600; color: var(--ink); cursor: pointer; max-width: 13em; text-overflow: ellipsis }
+.sel::after { content: ""; position: absolute; right: 13px; top: 50%; width: 7px; height: 7px; margin-top: -5px; border-right: 1.8px solid var(--soft); border-bottom: 1.8px solid var(--soft); transform: rotate(45deg); pointer-events: none }
+.seg { display: inline-flex; padding: 3px; border-radius: 999px; background: #E6EAF3 }
+.seg button { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; font-size: 13.5px; font-weight: 600; color: var(--soft) }
+.seg button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgb(16 34 92 / .14) }
+.count-l { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 0 }
+.linkish.reset-all { min-height: 32px; margin-left: 12px }
+
+/* Подсказка в выдаче: дальше — карточки из открытых источников. */
+.grid-sep { grid-column: 1 / -1; display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border: 1.5px dashed var(--field); border-radius: 18px; background: rgb(255 255 255 / .6) }
+.grid-sep .ic { flex: none; width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: var(--chip); color: var(--soft) }
+.grid-sep b { display: block; font-size: 14.5px; font-weight: 700; letter-spacing: -0.01em }
+.grid-sep p { margin: 2px 0 0; max-width: 60em; font-size: 13.5px; line-height: 1.5; color: var(--soft) }
+
+/* ---------- каталог: карта ---------- */
+.cs-split { display: grid; gap: 14px }
+.cs-rows { display: grid; gap: 8px; align-content: start }
+.cat-map { height: 52vh; min-height: 300px; border: 1px solid var(--line); border-radius: var(--r-l); overflow: hidden; background: #EEF1F6; box-shadow: var(--sh-1) }
+.cs-map-note { margin: 8px 4px 0; font-size: 12.5px; color: var(--faint) }
+@media (min-width: 900px) {
+  .cs-split { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); align-items: start }
+  .cs-rows { order: 1 }
+  .cs-map { order: 2; position: sticky; top: 132px }
+  .cat-map { height: min(68vh, 600px) }
+}
+.cs-rows .map-item { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; row-gap: 2px; transition: border-color .15s, box-shadow .15s }
+.cs-rows .map-item .ic { grid-row: span 2 }
+.cs-rows .map-item span:last-child { text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.cs-rows .map-item.hl { border-color: oklch(0.58 0.16 var(--h)); box-shadow: 0 0 0 3px oklch(0.58 0.16 var(--h) / .18) }
+.leaflet-popup-content .pop { display: grid; gap: 3px; min-width: 150px; color: var(--ink); font-family: "Golos Text", system-ui, sans-serif }
+.leaflet-popup-content .pop b { font-size: 14px; line-height: 1.3 }
+.leaflet-popup-content .pop span { font-size: 12.5px; font-weight: 600; color: var(--accent-dk) }
 
 /* Фильтры под направлениями */
 .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 2px }
@@ -315,6 +412,30 @@ img { max-width: 100% }
 .m.km { background: var(--ink); color: #fff }
 .m.top { background: linear-gradient(135deg, #F9E3AC 0%, #E9C271 100%); color: var(--gold-dk) }
 .m .ic-svg { width: 13px; height: 13px }
+/* Карточка: адрес, другие направления, пометка «открытые данные» */
+.club-addr { display: flex; align-items: flex-start; gap: 6px; font-size: 13px; line-height: 1.4; color: var(--soft) }
+.club-addr .ic-svg { flex: none; margin-top: 1px; color: var(--faint) }
+.club-also { position: absolute; right: 12px; top: 12px; z-index: 1; display: flex; padding-left: 6px }
+.club-also i { display: grid; place-items: center; width: 28px; height: 28px; margin-left: -6px; border-radius: 50%; border: 2px solid #fff; background: oklch(0.95 0.045 var(--h)); color: oklch(0.45 0.15 var(--h)); font-style: normal; box-shadow: 0 2px 6px rgb(16 34 92 / .14) }
+.club-also i.n { background: var(--ink); color: #fff; font-size: 11px; font-weight: 700 }
+.club-cover:has(.club-also) .club-cat { max-width: calc(100% - 170px) }
+.m.src { background: transparent; box-shadow: inset 0 0 0 1px var(--field); color: var(--soft) }
+
+/* Обложка центра, где много направлений: вокруг главного значка плавают
+   значки остальных секций, каждый своего цвета. */
+.cover-art .ca-f { position: absolute; z-index: 1; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 13px; background: oklch(0.975 0.025 var(--h)); color: oklch(0.5 0.16 var(--h)); box-shadow: 0 6px 16px oklch(0.4 0.12 var(--h) / .2); animation: caf 6s ease-in-out infinite }
+.cover-art .ca-f .ic-svg { width: 20px; height: 20px; opacity: 1 }
+.cover-art .ca-0 { left: 8%; top: 46% }
+.cover-art .ca-1 { left: 19%; top: 70%; animation-delay: -1.2s }
+.cover-art .ca-2 { left: 23%; top: 34%; animation-delay: -2.4s }
+.cover-art .ca-3 { right: 8%; top: 40%; animation-delay: -3.1s }
+.cover-art .ca-4 { right: 19%; top: 68%; animation-delay: -4.2s }
+.cover-art .ca-5 { right: 23%; top: 24%; animation-delay: -5s }
+@keyframes caf { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-5px) } }
+@media (prefers-reduced-motion: reduce) { .cover-art .ca-f { animation: none } }
+.cp-cover .cover-art .ca-f { width: 58px; height: 58px; border-radius: 18px }
+.cp-cover .cover-art .ca-f .ic-svg { width: 28px; height: 28px }
+
 .club-why { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 8px; border-top: 1px dashed var(--line); margin-top: 6px }
 .club-why span { font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 7px; background: var(--ok-bg); color: var(--ok) }
 .club-why span.d { background: var(--accent-bg); color: var(--accent-dk) }
@@ -372,6 +493,25 @@ img { max-width: 100% }
 .trust { order: 8 }
 .share { order: 9 }
 .upd-link { order: 10 }
+
+/* Направления центра на его странице — кнопками в каталог нужной секции. */
+.cp-dirs { order: 2; display: flex; flex-wrap: wrap; gap: 8px }
+.dir { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 0 14px 0 10px; border: 0; border-radius: 999px; background: oklch(0.95 0.045 var(--h)); color: oklch(0.42 0.14 var(--h)); font-size: 13.5px; font-weight: 700; transition: background .15s, transform .15s }
+.dir:hover { background: oklch(0.91 0.07 var(--h)); transform: translateY(-1px) }
+
+/* Карточка из открытых источников: откуда сведения и как подтвердить/убрать. */
+.open-note { order: 3; padding: 18px 18px 14px; border: 1.5px dashed var(--field); border-radius: var(--r-l); background: #fff }
+.open-note h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font-size: 16px; font-weight: 700; letter-spacing: -0.01em }
+.open-note h2 .ic-svg { color: var(--soft) }
+.open-note p { margin: 0 0 12px; font-size: 14px; line-height: 1.5; color: var(--muted) }
+.open-note .src-h { margin: 0 0 6px; font-size: 11.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--faint) }
+.src-list { display: grid; gap: 6px; margin: 0 0 16px; padding: 0; list-style: none; font-size: 13.5px; line-height: 1.4 }
+.src-list a { font-weight: 600; overflow-wrap: anywhere }
+.open-note .claim { width: 100%; min-height: 50px }
+.open-note .linkish { display: block; margin: 4px auto 0 }
+.btn-web { display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 54px; margin: 0 0 12px; border-radius: 15px; background: var(--ink); color: #fff; font-size: 15.5px; font-weight: 700; transition: background .15s }
+.btn-web:hover { background: var(--navy-2); color: #fff }
+
 @media (min-width: 920px) {
   .cp { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 26px 40px; align-items: start }
   .cp-cover { grid-column: 1 / -1; grid-row: 1 }
@@ -666,3 +806,11 @@ img { max-width: 100% }
 .guess { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 10px; padding: 11px 13px; border: 1px solid var(--accent); border-radius: 12px; background: var(--accent-bg) }
 .guess span { flex: 1; min-width: 150px; font-size: 13.5px; line-height: 1.45; color: var(--accent-dk) }
 .guess button { min-height: 44px; padding: 0 15px; border: 0; border-radius: 9px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 600 }
+
+/* Текст для поисковиков без JavaScript (генерирует build.py). Когда сайт
+   запустился, его заменяет настоящая страница, поэтому с JS он скрыт сразу. */
+.js .pre { display: none }
+.pre { padding-top: 26px; padding-bottom: 40px }
+.pre h1 { font-family: var(--display); font-size: clamp(26px, 5vw, 40px); letter-spacing: -0.04em; line-height: 1.1; margin: 0 0 12px }
+.pre h2 { font-size: 19px; margin: 26px 0 10px }
+.pre ul { padding-left: 20px; line-height: 1.7 }

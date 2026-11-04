@@ -102,5 +102,916 @@
   "lat": 51.12823,
   "lng": 71.43049,
   "kw": "akniymsol волонтерство Qadam Volunteers"
+ },
+ {
+  "id": "open-dvorets-shkolnikov-al-farabi",
+  "cat": "eng",
+  "slug": "dvorets-shkolnikov-al-farabi",
+  "verified": false,
+  "open": true,
+  "beginner": true,
+  "featured": false,
+  "checked": "2026-11-04",
+  "name": {
+   "ru": "Дворец школьников имени аль-Фараби",
+   "kz": "Әл-Фараби атындағы Оқушылар сарайы",
+   "en": "Al-Farabi Palace of Schoolchildren"
+  },
+  "tag": {
+   "ru": "Главный дворец школьников Астаны: сотни групп — от робототехники и астрономии до вокала, дебатов и бокса",
+   "kz": "Астананың басты оқушылар сарайы: робототехника мен астрономиядан вокал, пікірсайыс және боксқа дейін жүздеген топ",
+   "en": "Astana's main palace of schoolchildren: hundreds of groups, from robotics and astronomy to singing, debate and boxing"
+  },
+  "about": {
+   "ru": "Государственный центр дополнительного образования. По городскому реестру qosymsha.kz — 645 групп и больше 8 000 детей. При Дворце работает центр SANA с робототехникой, Makerspace и IT Lab, а ещё — проектный офис дебатного движения Астаны.\n\nНаправления: робототехника, 3D-моделирование, астрономия, физика, химия, биология, электромобили и энергетика, английский, казахский, китайский и французский языки, ораторское искусство и дебаты, журналистика и медиацентр, школа дизайна, актёрское мастерство, вокал, домбыра, гитара, танцы, ИЗО и керамика, шахматы, футбол, баскетбол, волейбол, бокс, дзюдо, каратэ, плавание, фигурное катание.\n\nКак записаться: получить целевой ваучер и выбрать группу на qosymsha.kz. Если в группе есть свободные места, зачисляют за 5 рабочих дней.",
+   "kz": "Мемлекеттік қосымша білім беру орталығы. qosymsha.kz қалалық тізілімі бойынша — 645 топ және 8 000-нан астам бала. Сарайда робототехникасы, Makerspace және IT Lab бар SANA орталығы, сондай-ақ Астана пікірсайыс қозғалысының жобалық кеңсесі жұмыс істейді.\n\nБағыттар: робототехника, 3D-модельдеу, астрономия, физика, химия, биология, электромобильдер мен энергетика, ағылшын, қазақ, қытай және француз тілдері, шешендік өнер мен пікірсайыс, журналистика және медиаорталық, дизайн мектебі, актерлік шеберлік, вокал, домбыра, гитара, би, бейнелеу өнері мен керамика, шахмат, футбол, баскетбол, волейбол, бокс, дзюдо, каратэ, жүзу, мәнерлеп сырғанау.\n\nҚалай жазылуға болады: qosymsha.kz сайтында мақсатты ваучер алып, топты таңдау керек. Топта бос орын болса, 5 жұмыс күні ішінде қабылдайды.",
+   "en": "A state centre of extracurricular education. The city registry qosymsha.kz lists 645 groups and more than 8,000 children. The palace runs the SANA centre with robotics, a Makerspace and an IT Lab, and hosts the project office of the Astana debate movement.\n\nDirections: robotics, 3D modelling, astronomy, physics, chemistry, biology, electric cars and energy, English, Kazakh, Chinese and French, public speaking and debate, journalism and a media centre, a design school, acting, singing, dombra, guitar, dance, art and ceramics, chess, football, basketball, volleyball, boxing, judo, karate, swimming and figure skating.\n\nHow to join: get a targeted voucher and pick a group on qosymsha.kz. If the group has free places, enrolment takes 5 working days."
+  },
+  "age": "6–18",
+  "cost": {
+   "ru": "Бесплатно по госзаказу",
+   "kz": "Мемлекеттік тапсырыс бойынша тегін",
+   "en": "Free (state-funded)"
+  },
+  "sched": {
+   "ru": "Расписание групп — на qosymsha.kz",
+   "kz": "Топтар кестесі — qosymsha.kz сайтында",
+   "en": "Group timetable on qosymsha.kz"
+  },
+  "addr": {
+   "ru": "пр. Б. Момышулы, 5",
+   "kz": "Б. Момышұлы даңғылы, 5",
+   "en": "5 B. Momyshuly Ave"
+  },
+  "langs": {
+   "ru": "Казахский, русский, английский",
+   "kz": "Қазақ, орыс, ағылшын",
+   "en": "Kazakh, Russian, English"
+  },
+  "tel": "",
+  "ig": "",
+  "tg": "",
+  "photo": "",
+  "kw": "дворец школьников оқушылар сарайы аль-фараби әл-фараби afos sana makerspace it lab робототехника 3d астрономия физика химия биология энергетика английский китайский французский ораторское дебаты журналистика медиацентр дизайн актерское вокал домбыра гитара танцы изо керамика шахматы футбол баскетбол волейбол бокс дзюдо каратэ плавание бассейн фигурное",
+  "free": true,
+  "also": [
+   "it",
+   "stem",
+   "debate",
+   "lang",
+   "art",
+   "media",
+   "sport"
+  ],
+  "lat": 51.13742,
+  "lng": 71.46342,
+  "web": "https://afos.edu.kz",
+  "src": [
+   {
+    "n": "qosymsha.kz — реестр кружков Астаны",
+    "u": "https://qosymsha.kz/ru/view/421"
+   },
+   {
+    "n": "afos.edu.kz — сайт Дворца школьников",
+    "u": "https://afos.edu.kz"
+   },
+   {
+    "n": "Акимат Астаны, gov.kz",
+    "u": "https://www.gov.kz/memleket/entities/astana/press/news/details/532145?lang=ru"
+   }
+  ]
+ },
+ {
+  "id": "open-debatnye-kluby-shkol-astany",
+  "cat": "debate",
+  "slug": "debatnye-kluby-shkol-astany",
+  "verified": false,
+  "open": true,
+  "beginner": true,
+  "featured": false,
+  "checked": "2026-11-04",
+  "name": {
+   "ru": "Школьные дебатные клубы Астаны",
+   "kz": "Астана мектептерінің пікірсайыс клубтары",
+   "en": "Astana school debate clubs"
+  },
+  "tag": {
+   "ru": "Дебатный клуб есть почти в каждой школе города — проектный офис во Дворце школьников выводит их на турниры",
+   "kz": "Қаладағы мектептердің көбінде пікірсайыс клубы бар — Оқушылар сарайындағы жобалық кеңсе оларды турнирлерге шығарады",
+   "en": "Almost every school in the city has a debate club; a project office at the Palace of Schoolchildren brings them to tournaments"
+  },
+  "about": {
+   "ru": "По словам проектного офиса дебатного движения Астаны, в городе больше 200 школ и почти в каждой есть дебатный клуб; на городские турниры выходят около 50 из них. Офис работает во Дворце школьников имени аль-Фараби и связывает школы, колледжи и организаторов турниров.\n\nРеспубликанский школьный турнир проходит в формате WSDC — в казахской, русской и английской лигах.\n\nКак начать: спроси про дебатный клуб у завуча или классного руководителя. Если в твоей школе клуба нет — обратись в проектный офис во Дворце школьников.",
+   "kz": "Астана пікірсайыс қозғалысының жобалық кеңсесінің айтуынша, қалада 200-ден астам мектеп бар және олардың көбінде пікірсайыс клубы жұмыс істейді; қалалық турнирлерге шамамен 50-і шығады. Кеңсе әл-Фараби атындағы Оқушылар сарайында орналасқан және мектептерді, колледждерді, турнир ұйымдастырушыларын байланыстырады.\n\nРеспубликалық мектеп турнирі WSDC форматында — қазақ, орыс және ағылшын лигаларында өтеді.\n\nҚалай бастау керек: пікірсайыс клубы туралы оқу ісінің меңгерушісінен немесе сынып жетекшісінен сұра. Мектебіңде клуб болмаса — Оқушылар сарайындағы жобалық кеңсеге хабарлас.",
+   "en": "According to the project office of the Astana debate movement, the city has more than 200 schools and almost every one has a debate club; about 50 of them compete at city level. The office is based at the Al-Farabi Palace of Schoolchildren and connects schools, colleges and tournament organisers.\n\nThe national school tournament uses the WSDC format, with Kazakh, Russian and English leagues.\n\nHow to start: ask your deputy head or class teacher about the debate club. If your school has none, contact the project office at the Palace of Schoolchildren."
+  },
+  "age": "12–18",
+  "cost": {
+   "ru": "Бесплатно — клуб в своей школе",
+   "kz": "Тегін — өз мектебіңдегі клуб",
+   "en": "Free — the club at your own school"
+  },
+  "sched": {
+   "ru": "У каждого клуба своё расписание",
+   "kz": "Әр клубтың өз кестесі бар",
+   "en": "Each club sets its own schedule"
+  },
+  "addr": {
+   "ru": "Проектный офис: Дворец школьников, пр. Б. Момышулы, 5",
+   "kz": "Жобалық кеңсе: Оқушылар сарайы, Б. Момышұлы даңғылы, 5",
+   "en": "Project office: Palace of Schoolchildren, 5 B. Momyshuly Ave"
+  },
+  "langs": {
+   "ru": "Казахский, русский, английский",
+   "kz": "Қазақ, орыс, ағылшын",
+   "en": "Kazakh, Russian, English"
+  },
+  "tel": "",
+  "ig": "",
+  "tg": "",
+  "photo": "",
+  "kw": "дебаты дебатный клуб пікірсайыс wsdc школа турнир лига ораторское дворец школьников проектный офис",
+  "free": true,
+  "lat": 51.13762,
+  "lng": 71.46372,
+  "web": "https://afos.edu.kz",
+  "src": [
+   {
+    "n": "Казахстанская правда — «Дуэль взглядов и интеллекта»",
+    "u": "https://kazpravda.kz/n/duel-vzglyadov-i-intellekta/"
+   },
+   {
+    "n": "Казинформ — республиканский турнир WSDC",
+    "u": "https://www.inform.kz/ru/luchshih-spikerov-i-oratorov-vibrali-sredi-shkolnikov-kazahstana-f95dd3"
+   }
+  ]
+ },
+ {
+  "id": "open-dvorets-shkolnikov-utemisova",
+  "cat": "art",
+  "slug": "dvorets-shkolnikov-utemisova",
+  "verified": false,
+  "open": true,
+  "beginner": true,
+  "featured": false,
+  "checked": "2026-11-04",
+  "name": {
+   "ru": "Дворец школьников имени Махамбета Утемисова",
+   "kz": "Махамбет Өтемісов атындағы Оқушылар сарайы",
+   "en": "Makhambet Utemisov Palace of Schoolchildren"
+  },
+  "tag": {
+   "ru": "Танцы, вокал, театр, домбыра, языки, робототехника и плавание — второй большой дворец школьников города",
+   "kz": "Би, вокал, театр, домбыра, тілдер, робототехника және жүзу — қаладағы екінші үлкен оқушылар сарайы",
+   "en": "Dance, singing, theatre, dombra, languages, robotics and swimming at the city's second big palace of schoolchildren"
+  },
+  "about": {
+   "ru": "Государственный центр дополнительного образования. Есть группы для детей с особыми образовательными потребностями.\n\nНаправления по реестру qosymsha.kz: народные, бальные и современные танцы, балет, эстрадный вокал, актёрское мастерство, домбыра и гитара, ИЗО, резьба по дереву и ковроткачество, английский, казахский, китайский и польский языки, робототехника, моделирование, компьютерный дизайн, видеография, шахматы, баскетбол, волейбол, каратэ, плавание.\n\nКак записаться: получить целевой ваучер и выбрать группу на qosymsha.kz. Если в группе есть свободные места, зачисляют за 5 рабочих дней.",
+   "kz": "Мемлекеттік қосымша білім беру орталығы. Ерекше білім беру қажеттіліктері бар балаларға арналған топтар бар.\n\nqosymsha.kz тізілімі бойынша бағыттар: халық, бальдық және заманауи билер, балет, эстрадалық вокал, актерлік шеберлік, домбыра мен гитара, бейнелеу өнері, ағаш ою мен кілем тоқу, ағылшын, қазақ, қытай және поляк тілдері, робототехника, модельдеу, компьютерлік дизайн, видеография, шахмат, баскетбол, волейбол, каратэ, жүзу.\n\nҚалай жазылуға болады: qosymsha.kz сайтында мақсатты ваучер алып, топты таңдау керек. Топта бос орын болса, 5 жұмыс күні ішінде қабылдайды.",
+   "en": "A state centre of extracurricular education, with groups for children with special educational needs.\n\nDirections in the qosymsha.kz registry: folk, ballroom and modern dance, ballet, pop singing, acting, dombra and guitar, art, woodcarving and carpet weaving, English, Kazakh, Chinese and Polish, robotics, modelling, computer design, videography, chess, basketball, volleyball, karate and swimming.\n\nHow to join: get a targeted voucher and pick a group on qosymsha.kz. If the group has free places, enrolment takes 5 working days."
+  },
+  "age": "6–18",
+  "cost": {
+   "ru": "Бесплатно по госзаказу",
+   "kz": "Мемлекеттік тапсырыс бойынша тегін",
+   "en": "Free (state-funded)"
+  },
+  "sched": {
+   "ru": "Расписание групп — на qosymsha.kz",
+   "kz": "Топтар кестесі — qosymsha.kz сайтында",
+   "en": "Group timetable on qosymsha.kz"
+  },
+  "addr": {
+   "ru": "ул. А. Мамбетова, 1",
+   "kz": "Ә. Мәмбетов көшесі, 1",
+   "en": "1 A. Mambetov St"
+  },
+  "langs": {
+   "ru": "Казахский, русский, английский",
+   "kz": "Қазақ, орыс, ағылшын",
+   "en": "Kazakh, Russian, English"
+  },
+  "tel": "",
+  "ig": "",
+  "tg": "",
+  "photo": "",
+  "kw": "дворец школьников утемисова өтемісов оқушылар сарайы танцы балет вокал театр актерское домбыра гитара изо резьба английский китайский польский робототехника моделирование компьютерный дизайн видеография видео шахматы баскетбол волейбол каратэ плавание бассейн",
+  "free": true,
+  "also": [
+   "lang",
+   "eng",
+   "media",
+   "sport"
+  ],
+  "dist": "saryarka",
+  "lat": 51.16179,
+  "lng": 71.42277,
+  "src": [
+   {
+    "n": "qosymsha.kz — реестр кружков Астаны",
+    "u": "https://qosymsha.kz/ru/view/427"
+   },
+   {
+    "n": "Акимат Астаны, gov.kz",
+    "u": "https://www.gov.kz/memleket/entities/astana/press/news/details/532145?lang=ru"
+   }
+  ]
+ },
+ {
+  "id": "open-tsentr-tehnicheskogo-tvorchestva",
+  "cat": "eng",
+  "slug": "tsentr-tehnicheskogo-tvorchestva",
+  "verified": false,
+  "open": true,
+  "beginner": true,
+  "featured": false,
+  "checked": "2026-11-04",
+  "name": {
+   "ru": "Центр технического и художественного творчества",
+   "kz": "Техникалық және көркем шығармашылық орталығы",
+   "en": "Centre for Technical and Artistic Creativity"
+  },
+  "tag": {
+   "ru": "21 группа робототехники, авиа- и ракетомоделирование, 3D и «Юный пилот» — плюс рукоделие, домбыра и спорт",
+   "kz": "Робототехниканың 21 тобы, авиа- және зымыран модельдеу, 3D және «Жас ұшқыш» — сондай-ақ қолөнер, домбыра және спорт",
+   "en": "21 robotics groups, aircraft and rocket modelling, 3D and a young pilots club, plus crafts, dombra and sports"
+  },
+  "about": {
+   "ru": "Государственный центр в жилом массиве Железнодорожный.\n\nНаправления по реестру qosymsha.kz: робототехника (конструирование и программирование), авиамоделирование, ракетомоделирование, судо- и радиомоделирование, 3D-моделирование, изобретательство, «Юный пилот», архитектура, математика, физика, биология, журналистика, английский и казахский языки, рукоделие и шитьё, ИЗО, вокал, домбыра, гитара, шахматы и тоғызқұмалақ, бокс, дзюдо, қазақ күресі, волейбол, футбол, баскетбол.\n\nКак записаться: получить целевой ваучер и выбрать группу на qosymsha.kz. Если в группе есть свободные места, зачисляют за 5 рабочих дней.",
+   "kz": "Железнодорожный тұрғын алабындағы мемлекеттік орталық.\n\nqosymsha.kz тізілімі бойынша бағыттар: робототехника (құрастыру және бағдарламалау), авиамодельдеу, зымыран модельдеу, кеме және радио модельдеу, 3D-модельдеу, өнертапқыштық, «Жас ұшқыш», сәулет, математика, физика, биология, журналистика, ағылшын және қазақ тілдері, қолөнер мен тігін, бейнелеу өнері, вокал, домбыра, гитара, шахмат пен тоғызқұмалақ, бокс, дзюдо, қазақ күресі, волейбол, футбол, баскетбол.\n\nҚалай жазылуға болады: qosymsha.kz сайтында мақсатты ваучер алып, топты таңдау керек. Топта бос орын болса, 5 жұмыс күні ішінде қабылдайды.",
+   "en": "A state centre in the Zheleznodorozhny neighbourhood.\n\nDirections in the qosymsha.kz registry: robotics (building and programming), aircraft, rocket, ship and radio modelling, 3D modelling, inventing, a young pilots club, architecture, maths, physics, biology, journalism, English and Kazakh, crafts and sewing, art, singing, dombra, guitar, chess and togyz kumalak, boxing, judo, kazakh kuresi, volleyball, football and basketball.\n\nHow to join: get a targeted voucher and pick a group on qosymsha.kz. If the group has free places, enrolment takes 5 working days."
+  },
+  "age": "6–18",
+  "cost": {
+   "ru": "Бесплатно по госзаказу",
+   "kz": "Мемлекеттік тапсырыс бойынша тегін",
+   "en": "Free (state-funded)"
+  },
+  "sched": {
+   "ru": "Расписание групп — на qosymsha.kz",
+   "kz": "Топтар кестесі — qosymsha.kz сайтында",
+   "en": "Group timetable on qosymsha.kz"
+  },
+  "addr": {
+   "ru": "ж/м Железнодорожный, ул. Жамбыла Жабаева, 27",
+   "kz": "Железнодорожный тұрғын алабы, Жамбыл Жабаев көшесі, 27",
+   "en": "27 Zhambyl Zhabayev St, Zheleznodorozhny"
+  },
+  "langs": {
+   "ru": "Казахский, русский",
+   "kz": "Қазақ, орыс",
+   "en": "Kazakh, Russian"
+  },
+  "tel": "",
+  "ig": "",
+  "tg": "",
+  "photo": "",
+  "kw": "центр технического творчества техникалық шығармашылық робототехника авиамоделирование ракетомоделирование судомоделирование радиоэлектроника 3d изобретательство юный пилот архитектура математика физика биология журналистика английский рукоделие шитье изо вокал домбыра гитара шахматы тогызкумалак бокс дзюдо курес волейбол футбол баскетбол железнодорожный",
+  "free": true,
+  "also": [
+   "stem",
+   "media",
+   "art",
+   "sport",
+   "lang"
+  ],
+  "lat": 51.14266,
+  "lng": 71.54305,
+  "src": [
+   {
+    "n": "qosymsha.kz — реестр кружков Астаны",
+    "u": "https://qosymsha.kz/ru/view/428"
+   }
+  ]
+ },
+ {
+  "id": "open-tanym-nura",
+  "cat": "stem",
+  "slug": "tanym-nura",
+  "verified": false,
+  "open": true,
+  "beginner": true,
+  "featured": false,
+  "checked": "2026-11-04",
+  "name": {
+   "ru": "Многофункциональный комплекс «Tanym»",
+   "kz": "«Tanym» көпфункционалды кешені",
+   "en": "Tanym multifunctional centre"
+  },
+  "tag": {
+   "ru": "Беспилотники, альтернативная энергетика, аквапоника, программирование, кино и бассейн — в районе Нура",
+   "kz": "Ұшқышсыз аппараттар, балама энергетика, аквапоника, бағдарламалау, кино және бассейн — Нұра ауданында",
+   "en": "Drones, alternative energy, aquaponics, coding, film-making and a pool in the Nura district"
+  },
+  "about": {
+   "ru": "Государственный многофункциональный комплекс в районе Нура.\n\nНаправления по реестру qosymsha.kz: беспилотные летательные аппараты, основы инженерного проектирования, альтернативная энергетика, аквапоника, ландшафтоведение, программирование, робототехника, физика, математика, судо- и ракетомоделирование, киновидеотворчество, компьютерная графика и анимация, актёрское мастерство, вокал, домбыра, танцы, ИЗО и керамика, английский, шахматы, футбол, волейбол, баскетбол, дзюдо, бассейн.\n\nКак записаться: получить целевой ваучер и выбрать группу на qosymsha.kz. Если в группе есть свободные места, зачисляют за 5 рабочих дней.",
+   "kz": "Нұра ауданындағы мемлекеттік көпфункционалды кешен.\n\nqosymsha.kz тізілімі бойынша бағыттар: ұшқышсыз ұшу аппараттары, инженерлік жобалау негіздері, балама энергетика, аквапоника, ландшафттану, бағдарламалау, робототехника, физика, математика, кеме және зымыран модельдеу, кино-видео шығармашылығы, компьютерлік графика мен анимация, актерлік шеберлік, вокал, домбыра, би, бейнелеу өнері мен керамика, ағылшын тілі, шахмат, футбол, волейбол, баскетбол, дзюдо, бассейн.\n\nҚалай жазылуға болады: qosymsha.kz сайтында мақсатты ваучер алып, топты таңдау керек. Топта бос орын болса, 5 жұмыс күні ішінде қабылдайды.",
+   "en": "A state multifunctional centre in the Nura district.\n\nDirections in the qosymsha.kz registry: drones, engineering design basics, alternative energy, aquaponics, landscape studies, coding, robotics, physics, maths, ship and rocket modelling, film and video, computer graphics and animation, acting, singing, dombra, dance, art and ceramics, English, chess, football, volleyball, basketball, judo and swimming.\n\nHow to join: get a targeted voucher and pick a group on qosymsha.kz. If the group has free places, enrolment takes 5 working days."
+  },
+  "age": "6–18",
+  "cost": {
+   "ru": "Бесплатно по госзаказу",
+   "kz": "Мемлекеттік тапсырыс бойынша тегін",
+   "en": "Free (state-funded)"
+  },
+  "sched": {
+   "ru": "Расписание групп — на qosymsha.kz",
+   "kz": "Топтар кестесі — qosymsha.kz сайтында",
+   "en": "Group timetable on qosymsha.kz"
+  },
+  "addr": {
+   "ru": "район Нура, ул. К. Мухамедханова, 26",
+   "kz": "Нұра ауданы, Қ. Мұхамедханов көшесі, 26",
+   "en": "26 K. Mukhamedkhanov St, Nura district"
+  },
+  "langs": {
+   "ru": "Казахский, русский, английский",
+   "kz": "Қазақ, орыс, ағылшын",
+   "en": "Kazakh, Russian, English"
+  },
+  "tel": "",
+  "ig": "",
+  "tg": "",
+  "photo": "",
+  "kw": "tanym таным беспилотники дроны инженерное проектирование альтернативная энергетика аквапоника программирование робототехника физика математика ракетомоделирование кино видео анимация графика актерское вокал домбыра танцы изо керамика английский шахматы футбол волейбол баскетбол дзюдо бассейн нура",
+  "free": true,
+  "also": [
+   "it",
+   "eng",
+   "media",
+   "art",
+   "sport",
+   "lang"
+  ],
+  "dist": "nura",
+  "src": [
+   {
+    "n": "qosymsha.kz — реестр кружков Астаны",
+    "u": "https://qosymsha.kz/ru/view/849"
+   }
+  ]
+ },
+ {
+  "id": "open-tanym-art",
+  "cat": "art",
+  "slug": "tanym-art",
+  "verified": false,
+  "open": true,
+  "beginner": true,
+  "featured": false,
+  "checked": "2026-11-04",
+  "name": {
+   "ru": "Комплекс «TANYM Art»",
+   "kz": "«TANYM Art» кешені",
+   "en": "TANYM Art centre"
+  },
+  "tag": {
+   "ru": "Актёрское мастерство, вокал, домбыра и кобыз, декоративное искусство, английский и шахматы",
+   "kz": "Актерлік шеберлік, вокал, домбыра мен қобыз, сәндік өнер, ағылшын тілі және шахмат",
+   "en": "Acting, singing, dombra and kobyz, decorative arts, English and chess"
+  },
+  "about": {
+   "ru": "Государственный комплекс в районе Сарыарка.\n\nНаправления по реестру qosymsha.kz: актёрское мастерство, вокал, домбыра, кобыз, декоративно-прикладное искусство, английский язык, биология, шахматы и тоғызқұмалақ, каратэ, волейбол, баскетбол, бочча для детей с нарушениями опорно-двигательного аппарата.\n\nКак записаться: получить целевой ваучер и выбрать группу на qosymsha.kz. Если в группе есть свободные места, зачисляют за 5 рабочих дней.",
+   "kz": "Сарыарқа ауданындағы мемлекеттік кешен.\n\nqosymsha.kz тізілімі бойынша бағыттар: актерлік шеберлік, вокал, домбыра, қобыз, сәндік-қолданбалы өнер, ағылшын тілі, биология, шахмат пен тоғызқұмалақ, каратэ, волейбол, баскетбол, тірек-қимыл аппараты бұзылған балаларға арналған бочча.\n\nҚалай жазылуға болады: qosymsha.kz сайтында мақсатты ваучер алып, топты таңдау керек. Топта бос орын болса, 5 жұмыс күні ішінде қабылдайды.",
+   "en": "A state centre in the Saryarka district.\n\nDirections in the qosymsha.kz registry: acting, singing, dombra, kobyz, decorative arts, English, biology, chess and togyz kumalak, karate, volleyball, basketball and boccia for children with motor impairments.\n\nHow to join: get a targeted voucher and pick a group on qosymsha.kz. If the group has free places, enrolment takes 5 working days."
+  },
+  "age": "6–18",
+  "cost": {
+   "ru": "Бесплатно по госзаказу",
+   "kz": "Мемлекеттік тапсырыс бойынша тегін",
+   "en": "Free (state-funded)"
+  },
+  "sched": {
+   "ru": "Расписание групп — на qosymsha.kz",
+   "kz": "Топтар кестесі — qosymsha.kz сайтында",
+   "en": "Group timetable on qosymsha.kz"
+  },
+  "addr": {
+   "ru": "район Сарыарка, ул. Бейбарыс султан, 15",
+   "kz": "Сарыарқа ауданы, Бейбарыс сұлтан көшесі, 15",
+   "en": "15 Beibarys Sultan St, Saryarka district"
+  },
+  "langs": {
+   "ru": "Казахский, русский",
+   "kz": "Қазақ, орыс",
+   "en": "Kazakh, Russian"
+  },
+  "tel": "",
+  "ig": "",
+  "tg": "",
+  "photo": "",
+  "kw": "tanym art таным актерское театр вокал домбыра кобыз декоративное искусство английский биология шахматы тогызкумалак каратэ волейбол баскетбол бочча сарыарка",
+  "free": true,
+  "also": [
+   "sport",
+   "lang",
+   "stem"
+  ],
+  "dist": "saryarka",
+  "lat": 51.16904,
+  "lng": 71.36973,
+  "src": [
+   {
+    "n": "qosymsha.kz — реестр кружков Астаны",
+    "u": "https://qosymsha.kz/ru/view/973"
+   }
+  ]
+ },
+ {
+  "id": "open-tanym-sport",
+  "cat": "sport",
+  "slug": "tanym-sport",
+  "verified": false,
+  "open": true,
+  "beginner": true,
+  "featured": false,
+  "checked": "2026-11-04",
+  "name": {
+   "ru": "Комплекс «TANYM Sport»",
+   "kz": "«TANYM Sport» кешені",
+   "en": "TANYM Sport centre"
+  },
+  "tag": {
+   "ru": "Бокс, дзюдо, настольный теннис и бассейн — а ещё графический дизайн, керамика и китайский",
+   "kz": "Бокс, дзюдо, үстел теннисі және бассейн — сондай-ақ графикалық дизайн, керамика мен қытай тілі",
+   "en": "Boxing, judo, table tennis and a pool, plus graphic design, ceramics and Chinese"
+  },
+  "about": {
+   "ru": "Государственный комплекс в Алматинском районе.\n\nНаправления по реестру qosymsha.kz: бокс, дзюдо, настольный теннис, бассейн, культуризм, графический дизайн, керамика и скульптура, ИЗО, вокал, домбыра, китайский язык.\n\nКак записаться: получить целевой ваучер и выбрать группу на qosymsha.kz. Если в группе есть свободные места, зачисляют за 5 рабочих дней.",
+   "kz": "Алматы ауданындағы мемлекеттік кешен.\n\nqosymsha.kz тізілімі бойынша бағыттар: бокс, дзюдо, үстел теннисі, бассейн, бодибилдинг, графикалық дизайн, керамика мен мүсін, бейнелеу өнері, вокал, домбыра, қытай тілі.\n\nҚалай жазылуға болады: qosymsha.kz сайтында мақсатты ваучер алып, топты таңдау керек. Топта бос орын болса, 5 жұмыс күні ішінде қабылдайды.",
+   "en": "A state centre in the Almaty district.\n\nDirections in the qosymsha.kz registry: boxing, judo, table tennis, swimming pool, bodybuilding, graphic design, ceramics and sculpture, art, singing, dombra and Chinese.\n\nHow to join: get a targeted voucher and pick a group on qosymsha.kz. If the group has free places, enrolment takes 5 working days."
+  },
+  "age": "6–18",
+  "cost": {
+   "ru": "Бесплатно по госзаказу",
+   "kz": "Мемлекеттік тапсырыс бойынша тегін",
+   "en": "Free (state-funded)"
+  },
+  "sched": {
+   "ru": "Расписание групп — на qosymsha.kz",
+   "kz": "Топтар кестесі — qosymsha.kz сайтында",
+   "en": "Group timetable on qosymsha.kz"
+  },
+  "addr": {
+   "ru": "Алматинский район, ул. Мукана Тулебаева, 3",
+   "kz": "Алматы ауданы, Мұқан Төлебаев көшесі, 3",
+   "en": "3 Mukan Tulebayev St, Almaty district"
+  },
+  "langs": {
+   "ru": "Казахский, русский",
+   "kz": "Қазақ, орыс",
+   "en": "Kazakh, Russian"
+  },
+  "tel": "",
+  "ig": "",
+  "tg": "",
+  "photo": "",
+  "kw": "tanym sport таным спорт бокс дзюдо настольный теннис бассейн плавание культуризм графический дизайн керамика скульптура изо вокал домбыра китайский",
+  "free": true,
+  "also": [
+   "art",
+   "lang"
+  ],
+  "dist": "almaty",
+  "src": [
+   {
+    "n": "qosymsha.kz — реестр кружков Астаны",
+    "u": "https://qosymsha.kz/ru/view/974"
+   }
+  ]
+ },
+ {
+  "id": "open-tsentr-turizma-i-kraevedeniya",
+  "cat": "vol",
+  "slug": "tsentr-turizma-i-kraevedeniya",
+  "verified": false,
+  "open": true,
+  "beginner": true,
+  "featured": false,
+  "checked": "2026-11-04",
+  "name": {
+   "ru": "Центр детско-юношеского туризма и краеведения",
+   "kz": "Балалар мен жасөспірімдер туризмі және өлкетану орталығы",
+   "en": "Youth Tourism and Local Studies Centre"
+  },
+  "tag": {
+   "ru": "Походы, скалолазание, альпинизм, спортивное ориентирование, экология и краеведение",
+   "kz": "Жорықтар, жартасқа өрмелеу, альпинизм, спорттық бағдарлау, экология және өлкетану",
+   "en": "Hiking, climbing, mountaineering, orienteering, ecology and local history"
+  },
+  "about": {
+   "ru": "Государственный центр, где учат ходить в походы, ориентироваться на местности и изучать природу и историю родного края.\n\nНаправления по реестру qosymsha.kz: пешеходный и горный туризм, скалолазание и альпинизм, спортивное ориентирование, экологические кружки, краеведение. Есть адаптивное скалолазание для детей с особыми образовательными потребностями.\n\nКак записаться: получить целевой ваучер и выбрать группу на qosymsha.kz. Если в группе есть свободные места, зачисляют за 5 рабочих дней.",
+   "kz": "Жорыққа шығуды, жер бедерінде бағдар алуды, туған өлкенің табиғаты мен тарихын үйрететін мемлекеттік орталық.\n\nqosymsha.kz тізілімі бойынша бағыттар: жаяу және тау туризмі, жартасқа өрмелеу мен альпинизм, спорттық бағдарлау, экология үйірмелері, өлкетану. Ерекше білім беру қажеттіліктері бар балаларға бейімделген жартасқа өрмелеу бар.\n\nҚалай жазылуға болады: qosymsha.kz сайтында мақсатты ваучер алып, топты таңдау керек. Топта бос орын болса, 5 жұмыс күні ішінде қабылдайды.",
+   "en": "A state centre that teaches hiking, orienteering, and the nature and history of the region.\n\nDirections in the qosymsha.kz registry: hiking and mountain tourism, rock climbing and mountaineering, orienteering, ecology clubs and local history, plus adaptive climbing for children with special educational needs.\n\nHow to join: get a targeted voucher and pick a group on qosymsha.kz. If the group has free places, enrolment takes 5 working days."
+  },
+  "age": "6–18",
+  "cost": {
+   "ru": "Бесплатно по госзаказу",
+   "kz": "Мемлекеттік тапсырыс бойынша тегін",
+   "en": "Free (state-funded)"
+  },
+  "sched": {
+   "ru": "Расписание групп — на qosymsha.kz",
+   "kz": "Топтар кестесі — qosymsha.kz сайтында",
+   "en": "Group timetable on qosymsha.kz"
+  },
+  "addr": {
+   "ru": "ул. Тамшалы, 24",
+   "kz": "Тамшалы көшесі, 24",
+   "en": "24 Tamshaly St"
+  },
+  "langs": {
+   "ru": "Казахский, русский",
+   "kz": "Қазақ, орыс",
+   "en": "Kazakh, Russian"
+  },
+  "tel": "",
+  "ig": "",
+  "tg": "",
+  "photo": "",
+  "kw": "туризм краеведение өлкетану экология эколог поход скалолазание альпинизм ориентирование природа горы",
+  "free": true,
+  "also": [
+   "sport",
+   "stem"
+  ],
+  "dist": "saryarka",
+  "lat": 51.20327,
+  "lng": 71.36726,
+  "src": [
+   {
+    "n": "qosymsha.kz — реестр кружков Астаны",
+    "u": "https://qosymsha.kz/ru/view/429"
+   }
+  ]
+ },
+ {
+  "id": "open-orken",
+  "cat": "sport",
+  "slug": "orken",
+  "verified": false,
+  "open": true,
+  "beginner": true,
+  "featured": false,
+  "checked": "2026-11-04",
+  "name": {
+   "ru": "Детско-юношеский центр физического воспитания «Өркен»",
+   "kz": "«Өркен» балалар мен жасөспірімдердің дене тәрбиесі орталығы",
+   "en": "Orken Youth Physical Education Centre"
+  },
+  "tag": {
+   "ru": "Футбол, волейбол, баскетбол, таэквондо, каратэ, дзюдо, қазақ күресі и асық ату",
+   "kz": "Футбол, волейбол, баскетбол, таэквондо, каратэ, дзюдо, қазақ күресі және асық ату",
+   "en": "Football, volleyball, basketball, taekwondo, karate, judo, kazakh kuresi and asyk atu"
+  },
+  "about": {
+   "ru": "Государственный спортивный центр акимата Астаны.\n\nНаправления по реестру qosymsha.kz: футбол, волейбол, баскетбол, таэквондо, каратэ, дзюдо, қазақ күресі, асық ату, тоғызқұмалақ.\n\nКак записаться: получить целевой ваучер и выбрать группу на qosymsha.kz. Если в группе есть свободные места, зачисляют за 5 рабочих дней.",
+   "kz": "Астана қаласы әкімдігінің мемлекеттік спорт орталығы.\n\nqosymsha.kz тізілімі бойынша бағыттар: футбол, волейбол, баскетбол, таэквондо, каратэ, дзюдо, қазақ күресі, асық ату, тоғызқұмалақ.\n\nҚалай жазылуға болады: qosymsha.kz сайтында мақсатты ваучер алып, топты таңдау керек. Топта бос орын болса, 5 жұмыс күні ішінде қабылдайды.",
+   "en": "A state sports centre of the Astana city administration.\n\nDirections in the qosymsha.kz registry: football, volleyball, basketball, taekwondo, karate, judo, kazakh kuresi, asyk atu and togyz kumalak.\n\nHow to join: get a targeted voucher and pick a group on qosymsha.kz. If the group has free places, enrolment takes 5 working days."
+  },
+  "age": "6–18",
+  "cost": {
+   "ru": "Бесплатно по госзаказу",
+   "kz": "Мемлекеттік тапсырыс бойынша тегін",
+   "en": "Free (state-funded)"
+  },
+  "sched": {
+   "ru": "Расписание групп — на qosymsha.kz",
+   "kz": "Топтар кестесі — qosymsha.kz сайтында",
+   "en": "Group timetable on qosymsha.kz"
+  },
+  "addr": {
+   "ru": "ул. К. Рыскулбекова, 4/4",
+   "kz": "Қ. Рысқұлбеков көшесі, 4/4",
+   "en": "4/4 K. Ryskulbekov St"
+  },
+  "langs": {
+   "ru": "Казахский, русский",
+   "kz": "Қазақ, орыс",
+   "en": "Kazakh, Russian"
+  },
+  "tel": "",
+  "ig": "",
+  "tg": "",
+  "photo": "",
+  "kw": "өркен оркен спорт футбол волейбол баскетбол таэквондо каратэ дзюдо курес асык ату тогызкумалак единоборства",
+  "free": true,
+  "dist": "almaty",
+  "lat": 51.15335,
+  "lng": 71.4996,
+  "src": [
+   {
+    "n": "qosymsha.kz — реестр кружков Астаны",
+    "u": "https://qosymsha.kz/ru/view/424"
+   }
+  ]
+ },
+ {
+  "id": "open-arka-alan",
+  "cat": "sport",
+  "slug": "arka-alan",
+  "verified": false,
+  "open": true,
+  "beginner": true,
+  "featured": false,
+  "checked": "2026-11-04",
+  "name": {
+   "ru": "Центр национальных видов спорта «Арқа Alan»",
+   "kz": "«Арқа Alan» ұлттық спорт түрлерін дамыту орталығы",
+   "en": "Arqa Alan national sports centre"
+  },
+  "tag": {
+   "ru": "Қазақ күресі, асық ату, бес тас, тоғызқұмалақ и шахматы",
+   "kz": "Қазақ күресі, асық ату, бес тас, тоғызқұмалақ және шахмат",
+   "en": "Kazakh wrestling, asyk atu, bes tas, togyz kumalak and chess"
+  },
+  "about": {
+   "ru": "Отделение центра «Өркен», где занимаются национальными видами спорта.\n\nНаправления по реестру qosymsha.kz: қазақ күресі, асық ату, бес тас, тоғызқұмалақ, шахматы.\n\nКак записаться: получить целевой ваучер и выбрать группу на qosymsha.kz. Если в группе есть свободные места, зачисляют за 5 рабочих дней.",
+   "kz": "«Өркен» орталығының ұлттық спорт түрлерімен айналысатын бөлімшесі.\n\nqosymsha.kz тізілімі бойынша бағыттар: қазақ күресі, асық ату, бес тас, тоғызқұмалақ, шахмат.\n\nҚалай жазылуға болады: qosymsha.kz сайтында мақсатты ваучер алып, топты таңдау керек. Топта бос орын болса, 5 жұмыс күні ішінде қабылдайды.",
+   "en": "A branch of the Orken centre dedicated to national sports.\n\nDirections in the qosymsha.kz registry: kazakh kuresi, asyk atu, bes tas, togyz kumalak and chess.\n\nHow to join: get a targeted voucher and pick a group on qosymsha.kz. If the group has free places, enrolment takes 5 working days."
+  },
+  "age": "6–18",
+  "cost": {
+   "ru": "Бесплатно по госзаказу",
+   "kz": "Мемлекеттік тапсырыс бойынша тегін",
+   "en": "Free (state-funded)"
+  },
+  "sched": {
+   "ru": "Расписание групп — на qosymsha.kz",
+   "kz": "Топтар кестесі — qosymsha.kz сайтында",
+   "en": "Group timetable on qosymsha.kz"
+  },
+  "addr": {
+   "ru": "ул. Ч. Айтматова, 41/1",
+   "kz": "Ш. Айтматов көшесі, 41/1",
+   "en": "41/1 Ch. Aitmatov St"
+  },
+  "langs": {
+   "ru": "Казахский, русский",
+   "kz": "Қазақ, орыс",
+   "en": "Kazakh, Russian"
+  },
+  "tel": "",
+  "ig": "",
+  "tg": "",
+  "photo": "",
+  "kw": "арка алан arqa alan национальные виды спорта ұлттық курес борьба асык ату бес тас тогызкумалак шахматы chess",
+  "free": true,
+  "dist": "nura",
+  "lat": 51.14028,
+  "lng": 71.36367,
+  "src": [
+   {
+    "n": "qosymsha.kz — реестр кружков Астаны",
+    "u": "https://qosymsha.kz/ru/view/850"
+   }
+  ]
+ },
+ {
+  "id": "open-debat-eli",
+  "cat": "debate",
+  "slug": "debat-eli",
+  "verified": false,
+  "open": true,
+  "beginner": false,
+  "featured": false,
+  "checked": "2026-11-04",
+  "name": {
+   "ru": "Debat Eli",
+   "kz": "Debat Eli",
+   "en": "Debat Eli"
+  },
+  "tag": {
+   "ru": "Турнир El Umiti Cup и академия дебатов для 8–12 классов и студентов: английская и казахская лиги",
+   "kz": "8–12 сынып оқушылары мен студенттерге арналған El Umiti Cup турнирі мен пікірсайыс академиясы: ағылшын және қазақ лигалары",
+   "en": "El Umiti Cup tournament and a debate academy for grades 8–12 and college students, with English and Kazakh leagues"
+  },
+  "about": {
+   "ru": "Общественный фонд, который проводит дебатные турниры для школьников с 8 по 12 класс и студентов колледжей и вузов.\n\nEl Umiti Cup в 2026 году проходит уже в пятый раз, в английской и казахской лигах. Победители английской лиги могут представить Казахстан на чемпионате мира среди школьников (WSDC).\n\nDebat Eli Academy — лекции и мастер-классы, встречи с опытными дебатёрами, тимбилдинги, настольные игры и экскурсии. Есть онлайн-тренировки.\n\nКак присоединиться: форма регистрации на сайте фонда или его Telegram-канал.",
+   "kz": "8–12 сынып оқушылары мен колледж, жоғары оқу орны студенттеріне пікірсайыс турнирлерін өткізетін қоғамдық қор.\n\nEl Umiti Cup 2026 жылы бесінші рет ағылшын және қазақ лигаларында өтеді. Ағылшын лигасының жеңімпаздары Қазақстан атынан мектеп оқушылары арасындағы әлем чемпионатына (WSDC) қатыса алады.\n\nDebat Eli Academy — дәрістер мен шеберлік сабақтары, тәжірибелі дебатшылармен кездесулер, тимбилдинг, үстел ойындары және экскурсиялар. Онлайн жаттығулар да бар.\n\nҚалай қосылуға болады: қор сайтындағы тіркеу формасы немесе Telegram-арнасы арқылы.",
+   "en": "A public foundation running debate tournaments for school students in grades 8–12 and for college and university students.\n\nThe El Umiti Cup runs for the fifth time in 2026, with English and Kazakh leagues. English league winners can represent Kazakhstan at the World Schools Debating Championship (WSDC).\n\nDebat Eli Academy offers lectures and masterclasses, meetings with experienced debaters, team-building, board games and excursions, plus online practice games.\n\nHow to join: the registration form on the foundation website or its Telegram channel."
+  },
+  "age": "13+",
+  "cost": {
+   "ru": "Уточняйте у организаторов",
+   "kz": "Ұйымдастырушылардан нақтылаңыз",
+   "en": "Ask the organisers"
+  },
+  "sched": {
+   "ru": "Турниры и занятия — по анонсам фонда",
+   "kz": "Турнирлер мен сабақтар — қор хабарландыруы бойынша",
+   "en": "Tournaments and sessions are announced by the foundation"
+  },
+  "addr": {
+   "ru": "ул. Бигельдинова, 12",
+   "kz": "Бигелдинов көшесі, 12",
+   "en": "12 Bigeldinov St"
+  },
+  "langs": {
+   "ru": "Английский, казахский",
+   "kz": "Ағылшын, қазақ",
+   "en": "English, Kazakh"
+  },
+  "tel": "",
+  "ig": "",
+  "tg": "",
+  "photo": "",
+  "kw": "debat eli дебат дебаты пікірсайыс el umiti cup wsdc академия турнир английская лига казахская лига",
+  "dist": "saryarka",
+  "lat": 51.16519,
+  "lng": 71.41552,
+  "web": "https://debateli.kz",
+  "src": [
+   {
+    "n": "debateli.kz — сайт фонда",
+    "u": "https://debateli.kz"
+   }
+  ]
+ },
+ {
+  "id": "open-american-corner-astana",
+  "cat": "lang",
+  "slug": "american-corner-astana",
+  "verified": false,
+  "open": true,
+  "beginner": true,
+  "featured": false,
+  "checked": "2026-11-04",
+  "name": {
+   "ru": "American Corner & Maker Space Astana",
+   "kz": "American Corner & Maker Space Astana",
+   "en": "American Corner & Maker Space Astana"
+  },
+  "tag": {
+   "ru": "Разговорные, дискуссионные и дебатные клубы на английском и мейкерспейс с 3D-принтером и робототехникой",
+   "kz": "Ағылшын тіліндегі сөйлесу, пікірталас және дебат клубтары, 3D-принтер мен робототехникасы бар мейкерспейс",
+   "en": "English speaking, discussion and debate clubs, plus a maker space with a 3D printer and robotics"
+  },
+  "about": {
+   "ru": "Информационно-ресурсный центр в научной библиотеке ЕНУ имени Гумилёва.\n\nКлубы, чтобы разговориться на английском: Discussion Club, Speaking Club, Speech Club, Video Film Club и дебатные клубы. MakerSpace — мастерская «сделай сам» с 3D-принтером, программами, робототехникой и электроникой. Ещё здесь библиотека книг и фильмов, база eLibraryUSA и консультации EducationUSA об учёбе в США.\n\nРасписание клубов уточняйте у координатора центра.",
+   "kz": "Гумилев атындағы ЕҰУ ғылыми кітапханасындағы ақпараттық-ресурстық орталық.\n\nАғылшынша еркін сөйлеуге арналған клубтар: Discussion Club, Speaking Club, Speech Club, Video Film Club және дебат клубтары. MakerSpace — 3D-принтері, бағдарламалары, робототехникасы мен электроникасы бар «өзің жаса» шеберханасы. Сондай-ақ кітаптар мен фильмдер кітапханасы, eLibraryUSA базасы және АҚШ-та оқу туралы EducationUSA кеңестері бар.\n\nКлубтар кестесін орталық үйлестірушісінен нақтылаңыз.",
+   "en": "An information and resource centre at the ENU Scientific Library.\n\nClubs for speaking English: Discussion Club, Speaking Club, Speech Club, Video Film Club and debate clubs. The MakerSpace is a do-it-yourself lab with a 3D printer, software, robotics and electronics. There is also a library of books and films, the eLibraryUSA database and EducationUSA advice on studying in the US.\n\nAsk the centre coordinator for the club schedule."
+  },
+  "age": "—",
+  "cost": {
+   "ru": "Бесплатно",
+   "kz": "Тегін",
+   "en": "Free"
+  },
+  "sched": {
+   "ru": "Центр открыт: пн–пт 9:00–20:00, сб 9:00–17:00",
+   "kz": "Орталық ашық: дс–жм 9:00–20:00, сн 9:00–17:00",
+   "en": "Open Mon–Fri 9:00–20:00, Sat 9:00–17:00"
+  },
+  "addr": {
+   "ru": "ул. Пушкина, 11, научная библиотека ЕНУ, каб. 307",
+   "kz": "Пушкин көшесі, 11, ЕҰУ ғылыми кітапханасы, 307-кабинет",
+   "en": "11 Pushkin St, ENU Scientific Library, room 307"
+  },
+  "langs": {
+   "ru": "Английский",
+   "kz": "Ағылшын",
+   "en": "English"
+  },
+  "tel": "",
+  "ig": "",
+  "tg": "",
+  "photo": "",
+  "kw": "american corner американский уголок английский english speaking club разговорный клуб discussion debate дебаты makerspace мейкерспейс 3d принтер робототехника электроника educationusa енү ену библиотека",
+  "free": true,
+  "also": [
+   "eng",
+   "debate"
+  ],
+  "dist": "baikonur",
+  "lat": 51.15973,
+  "lng": 71.46498,
+  "web": "https://lib.enu.kz/en/page/about-us/library-divisions/information-and-resource-center-american-corner-and-maker-space-astana",
+  "src": [
+   {
+    "n": "Научная библиотека ЕНУ — страница центра",
+    "u": "https://lib.enu.kz/en/page/about-us/library-divisions/information-and-resource-center-american-corner-and-maker-space-astana"
+   }
+  ]
+ },
+ {
+  "id": "open-qazvolunteer",
+  "cat": "vol",
+  "slug": "qazvolunteer",
+  "verified": false,
+  "open": true,
+  "beginner": true,
+  "featured": false,
+  "checked": "2026-11-04",
+  "name": {
+   "ru": "QazVolunteer — Единая платформа волонтёров",
+   "kz": "QazVolunteer — Еріктілердің бірыңғай платформасы",
+   "en": "QazVolunteer — national volunteer platform"
+  },
+  "tag": {
+   "ru": "Волонтёрские проекты страны в одном месте: экология, помощь животным, медицина, образование, события",
+   "kz": "Елдегі еріктілер жобалары бір жерде: экология, жануарларға көмек, медицина, білім беру, іс-шаралар",
+   "en": "Volunteer projects across the country in one place: ecology, animals, medicine, education and events"
+  },
+  "about": {
+   "ru": "Онлайн-платформа, где волонтёрские организации публикуют проекты, а волонтёры на них записываются. 15 направлений — экология, социальная помощь, помощь животным, медицина, образование и другие. Можно смотреть проекты своего региона, в том числе Астаны.\n\nНесовершеннолетним обычно нужно согласие родителей — условия смотри в описании проекта.\n\nКак начать: зарегистрироваться на qazvolunteer.kz по номеру телефона и выбрать проект.",
+   "kz": "Еріктілер ұйымдары жобаларын жариялайтын, ал еріктілер оларға жазылатын онлайн-платформа. 15 бағыт — экология, әлеуметтік көмек, жануарларға көмек, медицина, білім беру және т.б. Өз өңіріңнің, оның ішінде Астананың жобаларын көруге болады.\n\nКәмелетке толмағандарға әдетте ата-ананың келісімі керек — шарттарын жоба сипаттамасынан қара.\n\nҚалай бастау керек: qazvolunteer.kz сайтында телефон нөмірі арқылы тіркеліп, жоба таңда.",
+   "en": "An online platform where volunteer organisations post projects and volunteers sign up. 15 areas, including ecology, social help, animal care, medicine and education, with projects filtered by region, Astana included.\n\nMinors usually need parental consent; check the project description.\n\nHow to start: register on qazvolunteer.kz with your phone number and pick a project."
+  },
+  "age": "14+",
+  "cost": {
+   "ru": "Бесплатно",
+   "kz": "Тегін",
+   "en": "Free"
+  },
+  "sched": {
+   "ru": "У каждого проекта свои даты",
+   "kz": "Әр жобаның өз күндері бар",
+   "en": "Each project has its own dates"
+  },
+  "addr": {
+   "ru": "Онлайн",
+   "kz": "Онлайн",
+   "en": "Online"
+  },
+  "langs": {
+   "ru": "Казахский, русский",
+   "kz": "Қазақ, орыс",
+   "en": "Kazakh, Russian"
+  },
+  "tel": "",
+  "ig": "",
+  "tg": "",
+  "photo": "",
+  "kw": "qazvolunteer волонтер волонтерство еріктілер платформа экология животные приют медицина помощь проекты birgemiz",
+  "free": true,
+  "web": "https://qazvolunteer.kz",
+  "src": [
+   {
+    "n": "qazvolunteer.kz",
+    "u": "https://qazvolunteer.kz/ru"
+   }
+  ]
+ },
+ {
+  "id": "open-society-astana",
+  "cat": "biz",
+  "slug": "society-astana",
+  "verified": false,
+  "open": true,
+  "beginner": true,
+  "featured": false,
+  "checked": "2026-11-04",
+  "name": {
+   "ru": "Society",
+   "kz": "Society",
+   "en": "Society"
+  },
+  "tag": {
+   "ru": "Стартап-сообщество, которое делают сами школьники: хакатоны, инженерные турниры и стартап-баттлы",
+   "kz": "Оқушылардың өздері жасайтын стартап қауымдастығы: хакатондар, инженерлік турнирлер және стартап-баттлдар",
+   "en": "A startup community run by school students: hackathons, engineering tournaments and startup battles"
+  },
+  "about": {
+   "ru": "Некоммерческая экосистема из Астаны по принципу «школьники создают возможности для школьников». Помогает школьникам и студентам показать свои идеи, участвовать в хакатонах и олимпиадах и выходить на инвесторов, экспертов и IT-компании.\n\nМеньше чем за год — пять событий и больше 1 300 участников: хакатон, Astana Innovation Forum, турнир по робототехнике FIRST Scrimmage, GenerativeX в Назарбаев Университете и World Space Olympiad на EXPO. Школьные проекты суммарно привлекли около 4 млн тенге.\n\nВ команду берут новых участников, которые хотят получить первый опыт работы.",
+   "kz": "Астанадағы «оқушылар оқушыларға мүмкіндік жасайды» қағидатымен жұмыс істейтін коммерциялық емес экожүйе. Оқушылар мен студенттерге идеяларын көрсетуге, хакатондар мен олимпиадаларға қатысуға, инвесторлармен, сарапшылармен және IT-компаниялармен байланысуға көмектеседі.\n\nБір жылға жетпей — бес іс-шара және 1 300-ден астам қатысушы: хакатон, Astana Innovation Forum, FIRST Scrimmage робототехника турнирі, Назарбаев Университетіндегі GenerativeX және EXPO-дағы World Space Olympiad. Мектеп жобалары жалпы 4 млн теңгеге жуық инвестиция тартты.\n\nАлғашқы жұмыс тәжірибесін алғысы келетін жаңа қатысушыларды командаға қабылдайды.",
+   "en": "A non-profit ecosystem from Astana built on the idea that \"school students create opportunities for school students\". It helps school and university students pitch ideas, join hackathons and olympiads, and meet investors, experts and tech companies.\n\nIn less than a year: five events and more than 1,300 participants, including a hackathon, the Astana Innovation Forum, the FIRST Scrimmage robotics tournament, GenerativeX at Nazarbayev University and the World Space Olympiad at EXPO. Student projects raised about 4 million tenge in total.\n\nThe team takes new members who want their first work experience."
+  },
+  "age": "12+",
+  "cost": {
+   "ru": "Уточняйте у организаторов",
+   "kz": "Ұйымдастырушылардан нақтылаңыз",
+   "en": "Ask the organisers"
+  },
+  "sched": {
+   "ru": "События — по анонсам",
+   "kz": "Іс-шаралар — хабарландыру бойынша",
+   "en": "Events are announced in advance"
+  },
+  "addr": {
+   "ru": "Астана, место зависит от события",
+   "kz": "Астана, орны іс-шараға байланысты",
+   "en": "Astana, venue depends on the event"
+  },
+  "langs": {
+   "ru": "Казахский, русский, английский",
+   "kz": "Қазақ, орыс, ағылшын",
+   "en": "Kazakh, Russian, English"
+  },
+  "tel": "",
+  "ig": "",
+  "tg": "",
+  "photo": "",
+  "kw": "society стартап startup хакатон hackathon инвестиции питч предпринимательство инженерный турнир робототехника first generativex space olympiad школьники",
+  "also": [
+   "it",
+   "eng"
+  ],
+  "src": [
+   {
+    "n": "Digital Business, 27.07.2026",
+    "u": "https://digitalbusiness.kz/2026-07-27/shkolniki-iz-astani-sozdali-ekosistemu-dlya-podderzhki-podrostkov-kotorie-delayut-it-proekti/"
+   }
+  ]
  }
 ]

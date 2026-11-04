@@ -148,6 +148,8 @@
     tg: '<path d="M20.5 4.5 3.5 11.2l5.6 2 2 6.3 3.2-3.8 4.4 3.3z"/><path d="m9.1 13.2 11.4-8.7"/>',
     yt: '<rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.3v5.4l4.8-2.7z" fill="currentColor" stroke="none"/>',
     tt: '<path d="M14 3.5v11.2a3.6 3.6 0 1 1-3.6-3.6"/><path d="M14 3.5c.5 2.6 2.4 4.4 5.2 4.7"/>',
+    globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.2 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.2-3.6-8.5S9.6 5.8 12 3.5z"/>',
+    sort: '<path d="M7 4v16M3.5 16.5 7 20l3.5-3.5M17 20V4M13.5 7.5 17 4l3.5 3.5"/>',
     photo: '<rect x="3.5" y="5" width="17" height="14" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="m4 17 5-4.5 3.5 3 2.5-2 5 4"/>'
   };
   function icon(name, size) {
@@ -189,7 +191,10 @@
     cat: 'all',
     dist: 'all',
     free: false,         // только бесплатные
-    beg: false,          // только те, что ждут новичков          // выбранный район, 'all' — все
+    beg: false,          // только те, что ждут новичков
+    ok: false,           // только подтверждённые организаторами
+    sort: 'rec',         // 'rec' — сначала подтверждённые, 'az' — по алфавиту
+    view: 'list',        // каталог списком или на карте
     near: null,           // координаты подростка, пока он не ушёл со страницы
     nearState: null,      // null | 'asking' | 'denied'
     mine: load(STORE_KEY, []),
@@ -252,9 +257,23 @@
   function findClub(key) {
     return allClubs().filter(function (c) { return c.slug === key || c.id === key; })[0];
   }
+  // Большой центр (дворец школьников, комплекс) ведёт десятки кружков сразу.
+  // Основная секция у него одна — она задаёт цвет, — а остальные лежат в also,
+  // поэтому дворец находится и в «Робототехнике», и в «Спорте».
+  function alsoOf(c) {
+    return (Array.isArray(c.also) ? c.also : []).filter(function (id) {
+      return id !== c.cat && CATS.some(function (k) { return k.id === id; });
+    });
+  }
+  function inCat(c, cat) {
+    return cat === 'all' || c.cat === cat || alsoOf(c).indexOf(cat) !== -1;
+  }
+  // Карточку собрали мы сами по открытым данным, организатор её ещё не подтвердил.
+  function isOpen(c) { return !!c.open && !c.verified; }
   function hayOf(c) {
     if (!c.__hay) {
       c.__hay = [c.name.ru, c.name.kz, c.name.en, c.kw,
+        alsoOf(c).map(function (id) { return catLabel(id, 'ru') + ' ' + catLabel(id, 'kz') + ' ' + catLabel(id, 'en'); }).join(' '),
         catLabel(c.cat, 'ru'), catLabel(c.cat, 'kz'), catLabel(c.cat, 'en'),
         CAT_HINTS[c.cat] || '',
         c.dist ? distLabel(c.dist, 'ru') + ' ' + distLabel(c.dist, 'kz') + ' ' + distLabel(c.dist, 'en') : '',
@@ -342,10 +361,26 @@
 
   function filtered() {
     var list = allClubs();
-    if (state.cat !== 'all') list = list.filter(function (c) { return c.cat === state.cat; });
+    if (state.cat !== 'all') list = list.filter(function (c) { return inCat(c, state.cat); });
     if (state.dist !== 'all') list = list.filter(function (c) { return c.dist === state.dist; });
     if (state.free) list = list.filter(isFree);
     if (state.beg) list = list.filter(function (c) { return !!c.beginner; });
+    if (state.ok) list = list.filter(function (c) { return !isOpen(c); });
+    // Порядок по умолчанию: сначала карточки, которые подтвердили организаторы,
+    // потом собранные из открытых данных; внутри секции — те, где она основная.
+    if (state.sort === 'az') {
+      list = list.slice().sort(function (a, b) { return a.name[state.lang].localeCompare(b.name[state.lang], state.lang === 'kz' ? 'kk' : state.lang); });
+    } else {
+      list = list.map(function (c, i) { return { c: c, i: i }; }).sort(function (a, b) {
+        var oa = isOpen(a.c) ? 1 : 0, ob = isOpen(b.c) ? 1 : 0;
+        if (oa !== ob) return oa - ob;
+        if (state.cat !== 'all') {
+          var ma = a.c.cat === state.cat ? 0 : 1, mb = b.c.cat === state.cat ? 0 : 1;
+          if (ma !== mb) return ma - mb;
+        }
+        return a.i - b.i;
+      }).map(function (x) { return x.c; });
+    }
     var words = toks(state.q);
     if (words.length) {
       list = list.filter(function (c) {
@@ -383,7 +418,7 @@
     var parts = h.split('/').map(function (p) { try { return decodeURIComponent(p); } catch (e) { return p; } });
     if (parts[0] === 'club' && parts[1]) return { screen: 'club', id: parts[1] };
     if (parts[0] === 'join') return { screen: 'join', id: parts[1] || '' };
-    if (parts[0] === 'about' || parts[0] === 'map' || parts[0] === 'add') return { screen: parts[0] };
+    if (parts[0] === 'about' || parts[0] === 'map' || parts[0] === 'add' || parts[0] === 'catalog') return { screen: parts[0] };
     return { screen: 'home' };
   }
 
@@ -445,8 +480,20 @@
   }
 
   // ---------- views ----------
+  // Обложка без фото. У центра с несколькими направлениями вокруг главного
+  // значка «плавают» значки остальных секций — сразу видно, что там много всего.
   function coverArt(c) {
-    return '<span class="cover-art">' + icon(c.cat, 64) + MARK('mark') + '</span>';
+    var also = alsoOf(c).slice(0, 6);
+    return '<span class="cover-art' + (also.length ? ' multi' : '') + '">' + icon(c.cat, 64) +
+      also.map(function (id, i) { return '<span class="ca-f ca-' + i + '" style="--h:' + hueOf(id) + '">' + icon(id, 22) + '</span>'; }).join('') +
+      MARK('mark') + '</span>';
+  }
+
+  // Адрес для карточки: без «—» и «нет», с обрезкой, чтобы не ломать сетку.
+  function shortAddr(c, L) {
+    var a = String((c.addr && c.addr[L]) || '').trim();
+    if (!a || a === '—' || /^(нет|жоқ|no|none)$/i.test(a)) return '';
+    return a.length > 52 ? a.slice(0, 50).replace(/[\s,]+\S*$/, '') + '…' : a;
   }
 
   // Карточка сообщества. Одна и та же в каталоге, в помощнике и в «похожих»:
@@ -455,22 +502,32 @@
     var photo = photoSrc(c.photo);
     var d = kmTo(c);
     var cost = c.cost[L];
-    return '<a class="club' + (c.featured ? ' featured' : '') + '" href="#/club/' + esc(encodeURIComponent(c.slug)) + '" style="--h:' + hueOf(c.cat) + '">' +
+    var also = alsoOf(c);
+    var addr = shortAddr(c, L);
+    var alsoHTML = also.length && photo
+      ? '<span class="club-also" role="img" aria-label="' + esc(T.also_lbl + ': ' + also.map(function (id) { return catLabel(id, L); }).join(', ')) + '">' +
+        also.slice(0, 5).map(function (id) { return '<i style="--h:' + hueOf(id) + '">' + icon(id, 14) + '</i>'; }).join('') +
+        (also.length > 5 ? '<i class="n">+' + (also.length - 5) + '</i>' : '') + '</span>'
+      : '';
+    return '<a class="club' + (c.featured ? ' featured' : '') + (isOpen(c) ? ' is-open' : '') + '" href="#/club/' + esc(encodeURIComponent(c.slug)) + '" style="--h:' + hueOf(c.cat) + '">' +
       '<span class="club-cover">' +
       (photo ? '<img src="' + esc(photo) + '" alt="" loading="lazy" decoding="async">' : coverArt(c)) +
-      '<span class="club-cat">' + icon(c.cat, 16) + esc(catLabel(c.cat, L)) + '</span>' +
+      '<span class="club-cat">' + icon(c.cat, 16) + esc(catLabel(c.cat, L)) + '</span>' + alsoHTML +
       (c.featured ? '<span class="seal" role="img" aria-label="' + esc(T.featured) + '"></span>' : '') +
       '</span>' +
       '<span class="club-body">' +
       '<span class="club-name">' + esc(c.name[L]) + '</span>' +
       (c.tag[L] ? '<span class="club-tag">' + esc(c.tag[L]) + '</span>' : '') +
+      (addr ? '<span class="club-addr">' + icon('pin', 14) + esc(addr) + '</span>' : '') +
       '<span class="club-meta">' +
       (c.featured ? '<span class="m top">' + STAR + esc(T.featured) + '</span>' : '') +
       (d != null ? '<span class="m km">' + esc(kmText(d, L)) + '</span>' : '') +
       (c.age && c.age !== '—' ? '<span class="m">' + esc(c.age) + '</span>' : '') +
-      (cost && cost !== '—' ? '<span class="m' + (isFree(c) ? ' free' : '') + '">' + esc(cost) + '</span>' : '') +
+      (isFree(c) ? '<span class="m free">' + esc(T.f_free) + '</span>'
+        : cost && cost !== '—' && isPaid(c) ? '<span class="m">' + esc(cost) + '</span>' : '') +
       (c.beginner ? '<span class="m beg">' + esc(T.beginner) + '</span>' : '') +
-      (c.verified ? '<span class="m ok">' + icon('check', 13) + esc(T.verified) + '</span>' : '') +
+      (c.verified ? '<span class="m ok">' + icon('check', 13) + esc(T.verified) + '</span>'
+        : isOpen(c) ? '<span class="m src">' + esc(T.open_badge) + '</span>' : '') +
       '</span>' + (extra || '') +
       '</span></a>';
   }
@@ -479,37 +536,72 @@
   function emptyHTML() {
     var T = STR[state.lang];
     // Выбрана секция, где пока никого нет: говорим это прямо и зовём подсказать.
-    var catEmpty = state.cat !== 'all' && !allClubs().some(function (c) { return c.cat === state.cat; });
+    var catEmpty = state.cat !== 'all' && !allClubs().some(function (c) { return inCat(c, state.cat); });
     return '<div class="empty" style="--h:' + hueOf(state.cat) + '"><span class="ic">' + icon(catEmpty ? state.cat : 'search', 28) + '</span>' +
       '<h2>' + esc(catEmpty ? T.cat_empty_h : T.empty_h) + '</h2><p>' + esc(catEmpty ? T.cat_empty_p : T.empty_p) + '</p>' +
       '<div class="empty-btns">' + (catEmpty ? '<a class="btn-solid" href="#/join">' + icon('plus', 18) + esc(T.cat_empty_b) + '</a>' : '') +
       '<button class="btn-outline" data-action="reset">' + esc(T.empty_cta) + '</button></div></div>';
   }
 
+  function anyFilter() {
+    return !!(state.q.trim() || state.cat !== 'all' || state.dist !== 'all' || state.free || state.beg || state.ok);
+  }
+
+  // Подсказка между подтверждёнными карточками и собранными из открытых данных:
+  // честно говорим, откуда информация, прямо в выдаче, а не мелким шрифтом.
+  function openSepHTML(T) {
+    return '<div class="grid-sep" role="note"><span class="ic">' + icon('shield', 20) + '</span>' +
+      '<div><b>' + esc(T.open_sep_h) + '</b><p>' + esc(T.open_sep_p) + '</p></div></div>';
+  }
+
   function resultsHTML() {
     var L = state.lang, T = STR[L], list = filtered();
     var q = state.q.trim();
-    var head = '<div class="count-row"><span><span class="count" aria-live="polite">' + list.length + ' ' + esc(plural(list.length, L)) + ' ' + esc(T.found) + '</span>' +
-      (q ? '<button class="q-pill" data-action="clear-q" aria-label="' + esc(T.q_clear) + '">«' + esc(q) + '» <i aria-hidden="true">✕</i></button>' : '') + '</span>' +
+    var head = '<div class="count-row"><span class="count-l"><span class="count" aria-live="polite">' + list.length + ' ' + esc(plural(list.length, L)) + ' ' + esc(T.found) + '</span>' +
+      (q ? '<button class="q-pill" data-action="clear-q" aria-label="' + esc(T.q_clear) + '">«' + esc(q) + '» <i aria-hidden="true">✕</i></button>' : '') +
+      (anyFilter() ? '<button class="linkish reset-all" data-action="reset">' + esc(T.reset_all) + '</button>' : '') + '</span>' +
       (lastUpdated() ? '<span class="updated">' + esc(T.updated_pre + ' ' + fmtDate(lastUpdated(), L)) + '</span>' : '') + '</div>';
     if (!list.length) return head + emptyHTML();
+    if (state.view === 'map') return head + catMapHTML(list);
     var shown = list.slice(0, state.shown);
     var rest = list.length - shown.length;
-    return head + '<div class="grid">' + shown.map(function (c) { return cardHTML(c, L, T); }).join('') + '</div>' +
+    var sepAt = -1;
+    if (state.sort === 'rec' && !state.near) {
+      for (var i = 0; i < shown.length; i++) if (isOpen(shown[i]) && !shown[i].featured) { sepAt = i; break; }
+    }
+    return head + '<div class="grid">' + shown.map(function (c, i) {
+      return (i === sepAt ? openSepHTML(T) : '') + cardHTML(c, L, T);
+    }).join('') + '</div>' +
       (rest > 0 ? '<button class="more" data-action="more">' + esc(T.more) + ' (' + rest + ')</button>' : '');
   }
 
-  // Направления — плитки в один ряд, который листается пальцем. Сначала те,
-  // где уже есть сообщества; пустые бледнее и в конце — но на месте.
+  // Каталог на карте: слева список, справа карта (на телефоне — карта сверху).
+  // Сообщества без точки остаются в списке, а под картой сказано, сколько их.
+  function catMapHTML(list) {
+    var L = state.lang, T = STR[L];
+    var noGeo = list.filter(function (c) { return !hasCoords(c); }).length;
+    return '<div class="cs-split"><div class="cs-map"><div id="cat-map" class="cat-map"></div>' +
+      (noGeo ? '<p class="cs-map-note">' + esc(T.map_nogeo.replace('{n}', noGeo)) + '</p>' : '') + '</div>' +
+      '<div class="cs-rows">' + list.map(function (c) {
+        var addr = shortAddr(c, L) || catLabel(c.cat, L);
+        return '<a class="map-item" data-pin="' + esc(c.id) + '" href="#/club/' + esc(encodeURIComponent(c.slug)) + '" style="--h:' + hueOf(c.cat) + '">' +
+          '<span class="ic">' + icon(c.cat, 18) + '</span><b>' + esc(c.name[L]) + '</b><span>' + esc(addr) + '</span></a>';
+      }).join('') + '</div></div>';
+  }
+
+  // Направления — цветные плитки, как полки в магазине приложений: сразу видно,
+  // что это каталог и что в нём есть. Сначала те, где уже есть сообщества.
   function catsHTML() {
     var L = state.lang, T = STR[L], cnt = {}, ALL = allClubs();
-    ALL.forEach(function (c) { cnt[c.cat] = (cnt[c.cat] || 0) + 1; });
+    CATS.forEach(function (k) { cnt[k.id] = ALL.filter(function (c) { return inCat(c, k.id); }).length; });
     var full = [], empty = [];
     CATS.forEach(function (c) { (cnt[c.id] ? full : empty).push(c); });
+    full.sort(function (a, b) { return cnt[b.id] - cnt[a.id]; });
     function tile(id, label, n) {
       return '<button class="cat' + (n ? '' : ' is-empty') + '" data-action="cat" data-id="' + id + '" aria-pressed="' + (state.cat === id) + '" style="--h:' + hueOf(id) + '">' +
+        '<span class="cat-art" aria-hidden="true">' + icon(id, 64) + '</span>' +
         '<span class="ic">' + icon(id, 21) + '</span><span class="cat-txt"><b>' + esc(label) + '</b>' +
-        (n ? '<small>' + n + ' ' + esc(plural(n, L)) + '</small>' : '') + '</span></button>';
+        '<small>' + (n ? n + ' ' + esc(plural(n, L)) : esc(T.cat_none)) + '</small></span></button>';
     }
     return tile('all', T.all, ALL.length) + full.concat(empty).map(function (c) { return tile(c.id, c[L], cnt[c.id] || 0); }).join('');
   }
@@ -531,23 +623,60 @@
     return '<button class="pill near" data-action="near">' + icon('pin', 16) + esc(T.near) + '</button>';
   }
 
-  // «Бесплатно» и «Новичкам» — два самых частых вопроса подростка, поэтому они
-  // всегда на виду. Районы — только если их в каталоге два и больше.
+  // Панель над выдачей: фильтры слева, район, порядок и «список / карта» справа.
+  // Фильтров мало, поэтому они в одну строку, а не в боковой колонке:
+  // так выдача на компьютере получает все три столбца.
   function distRowHTML() {
     var L = state.lang, T = STR[L], ds = districtsInUse();
     if (ds.length < 2) ds = [];
-    var flags = [['free', T.f_free], ['beg', T.f_beg]].map(function (f) {
+    var flags = [['free', T.f_free], ['beg', T.f_beg], ['ok', T.f_ok]].map(function (f) {
       return '<button class="pill" data-action="flag" data-id="' + f[0] + '" aria-pressed="' + !!state[f[0]] + '">' + esc(f[1]) + '</button>';
     }).join('');
     var dist = ds.length
-      ? '<span class="lbl">' + esc(T.f_dist) + '</span>' +
-        [{ id: 'all', label: T.dist_all }].concat(ds.map(function (d) { return { id: d.id, label: d[L] }; })).map(function (d) {
-          return '<button class="pill" data-action="dist" data-id="' + d.id + '" aria-pressed="' + (state.dist === d.id) + '">' + esc(d.label) + '</button>';
-        }).join('')
+      ? '<label class="sel"><span class="sr-only">' + esc(T.f_dist) + '</span>' + icon('map', 16) +
+        '<select data-dist-sel>' + [{ id: 'all', label: T.dist_all }].concat(ds.map(function (d) { return { id: d.id, label: d[L] }; })).map(function (d) {
+          return '<option value="' + d.id + '"' + (state.dist === d.id ? ' selected' : '') + '>' + esc(d.label) + '</option>';
+        }).join('') + '</select></label>'
       : '';
-    return '<div class="filters">' + flags + nearBtnHTML() + dist + '</div>' +
+    var sort = '<label class="sel"><span class="sr-only">' + esc(T.sort_lbl) + '</span>' + icon('sort', 16) +
+      '<select data-sort>' + [['rec', T.sort_rec], ['az', T.sort_az]].map(function (o) {
+        return '<option value="' + o[0] + '"' + (state.sort === o[0] ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
+      }).join('') + '</select></label>';
+    var views = '<div class="seg" role="group" aria-label="' + esc(T.view_lbl) + '">' + [['list', T.view_list, 'all'], ['map', T.view_map, 'map']].map(function (v) {
+      return '<button data-action="view" data-id="' + v[0] + '" aria-pressed="' + (state.view === v[0]) + '">' + icon(v[2], 16) + esc(v[1]) + '</button>';
+    }).join('') + '</div>';
+    return '<div class="cs-bar-in"><div class="filters">' + flags + nearBtnHTML() + '</div>' +
+      '<div class="cs-tools">' + dist + sort + views + '</div></div>' +
       (state.nearState === 'denied' ? '<p class="near-note">' + esc(T.near_no) + '</p>'
         : state.near ? '<p class="near-note">' + esc(T.near_on) + '</p>' : '');
+  }
+
+  // Каталог целиком: своя тёмная шапка с названием, цифрами и поиском, под ней
+  // плитки направлений, липкая панель фильтров и выдача. На главной он стоит
+  // после «как это работает», а по адресу #/catalog открывается отдельно.
+  function catalogHTML(page) {
+    var L = state.lang, T = STR[L], ALL = allClubs();
+    var H = page ? 'h1' : 'h2';
+    var stats = [
+      [ALL.length, plural(ALL.length, L)],
+      [ALL.filter(isFree).length, T.cs_free],
+      [ALL.filter(function (c) { return !isOpen(c); }).length, T.cs_ok]
+    ];
+    return '<section class="catalog' + (page ? ' is-page' : '') + '" id="catalog">' +
+      '<div class="cs-top"><span class="cs-glow" aria-hidden="true"></span>' + MARK('cs-mark') +
+      '<div class="wrap cs-top-in"><div class="cs-title">' +
+      '<p class="cs-kicker">' + icon('all', 15) + esc(T.cat_k) + '</p>' +
+      '<' + H + ' class="cs-h">' + esc(T.catalog_h) + '</' + H + '>' +
+      '<p class="cs-lead">' + esc(T.catalog_lead) + '</p></div>' +
+      '<ul class="cs-stats">' + stats.map(function (s) { return '<li><b data-count="' + s[0] + '">' + s[0] + '</b><span>' + esc(s[1]) + '</span></li>'; }).join('') + '</ul>' +
+      '<form class="cs-search" role="search" data-search>' + icon('search', 20) +
+      '<label class="sr-only" for="cq">' + esc(T.search_label) + '</label>' +
+      '<input id="cq" type="search" autocomplete="off" enterkeyhint="search" value="' + esc(state.q) + '" placeholder="' + esc(T.cs_search_ph) + '"></form>' +
+      '</div></div>' +
+      '<div class="wrap cs-body">' +
+      '<div class="cats" id="chips" role="group" aria-label="' + esc(T.cat_k) + '">' + catsHTML() + '</div>' +
+      '<div class="cs-bar" id="dist-wrap">' + distRowHTML() + '</div>' +
+      '<div id="results">' + resultsHTML() + '</div></div></section>';
   }
 
   // Плитки направлений в бренд-блоке. На компьютере — сетка справа, которая
@@ -587,7 +716,7 @@
 
   function homeView() {
     var L = state.lang, T = STR[L], ALL = allClubs(), cnt = {};
-    ALL.forEach(function (c) { cnt[c.cat] = (cnt[c.cat] || 0) + 1; });
+    CATS.forEach(function (k) { cnt[k.id] = ALL.filter(function (c) { return inCat(c, k.id); }).length; });
     // Быстрые кнопки в бренд-блоке: сначала направления, где уже есть сообщества.
     var quick = CATS.filter(function (c) { return cnt[c.id]; }).sort(function (a, b) { return cnt[b.id] - cnt[a.id]; }).slice(0, 4);
     var stats = [
@@ -625,16 +754,17 @@
 
     var helper = window.QOSYL_HELPER ? window.QOSYL_HELPER.blockHTML() : '';
 
-    var catalog = '<section class="sec wrap" id="catalog">' +
-      '<div class="sec-head"><div><p class="sec-kicker">' + esc(T.cat_k) + '</p><h2 class="sec-h">' + esc(T.cat_h) + '</h2></div>' +
-      '<a class="sec-link" href="#/map">' + icon('map', 18) + esc(T.map_link) + '</a></div>' +
-      '<div class="cats" id="chips" role="group" aria-label="' + esc(T.cat_k) + '">' + catsHTML() + '</div>' +
-      '<div id="dist-wrap">' + distRowHTML() + '</div>' +
-      '<div id="results">' + resultsHTML() + '</div></section>';
+    var catalog = catalogHTML(false);
 
     return '<div class="home">' + hero + how +
       (helper ? '<div class="sec wrap" data-reveal>' + helper + '</div>' : '') +
       catalog + '<div class="sec wrap">' + ownBlock() + '</div></div>';
+  }
+
+  // Каталог отдельной страницей (#/catalog): та же выдача, что на главной,
+  // но без бренд-блока — открыл и сразу выбираешь.
+  function catalogView() {
+    return '<div class="home is-catalog">' + catalogHTML(true) + '<div class="sec wrap">' + ownBlock() + '</div></div>';
   }
 
   // Призыв для организаторов: ведёт на форму прямо на сайте.
@@ -670,7 +800,7 @@
     var media = mediaList(c.media);
     var slug = esc(encodeURIComponent(c.slug));
     var ALL = allClubs();
-    var similar = ALL.filter(function (s) { return s.cat === c.cat && s.id !== c.id; })
+    var similar = ALL.filter(function (s) { return inCat(s, c.cat) && s.id !== c.id; })
       .concat(ALL.filter(function (s) { return s.cat !== c.cat && s.beginner && s.id !== c.id; }))
       .slice(0, 3);
 
@@ -693,8 +823,14 @@
       (c.featured ? '<span class="m top">' + STAR + esc(T.featured) + '</span>' : '') +
       (isFree(c) ? '<span class="m free">' + esc(T.f_free) + '</span>' : '') +
       (c.beginner ? '<span class="m beg">' + esc(T.beginner) + '</span>' : '') +
-      (c.verified ? '<span class="m ok">' + icon('check', 13) + esc(T.verified) + '</span>' : '') +
+      (c.verified ? '<span class="m ok">' + icon('check', 13) + esc(T.verified) + '</span>'
+        : isOpen(c) ? '<span class="m src">' + esc(T.open_badge) + '</span>' : '') +
       '</div></header>';
+
+    // Все направления центра — кнопками: нажал и попал в каталог этой секции.
+    var dirs = alsoOf(c).length ? '<div class="cp-dirs"><h2 class="sr-only">' + esc(T.also_h) + '</h2>' + [c.cat].concat(alsoOf(c)).map(function (id) {
+      return '<button class="dir" data-action="go-cat" data-id="' + id + '" style="--h:' + hueOf(id) + '">' + icon(id, 16) + esc(catLabel(id, L)) + '</button>';
+    }).join('') + '</div>' : '';
 
     var factsHTML = facts.length ? '<dl class="cp-facts">' + facts.map(function (f) {
       return '<div class="cp-fact"><span class="ic">' + icon(f[0], 20) + '</span><div><dt>' + esc(f[1]) + '</dt><dd>' + esc(f[2]) + '</dd></div></div>';
@@ -710,12 +846,31 @@
           '<p>' + esc(T.media_empty_p) + ' <a href="#/join/' + slug + '">' + esc(T.media_empty_b) + ' →</a></p></div>') +
       '</section>';
 
-    var mapSec = geo ? '<section class="cp-sec cp-map-sec"><h2>' + esc(T.where_h) + '</h2><div class="mini-map" id="mini-map"></div>' +
+    // Точки на карте нет, но адрес есть — даём поиск по адресу в 2ГИС и Google.
+    var findQ = encodeURIComponent(c.name.ru + ', ' + (shortAddr(c, 'ru') || '') + ', Астана');
+    var mapSec = !geo && shortAddr(c, L) && !/онлайн|online/i.test(c.addr[L]) ? '<section class="cp-sec cp-map-sec"><h2>' + esc(T.where_h) + '</h2>' +
+      '<div class="maplinks"><a class="maplink" href="https://2gis.kz/astana/search/' + findQ + '" target="_blank" rel="noopener">' + icon('map', 18) + esc(T.twogis_find) + '</a>' +
+      '<a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=' + findQ + '" target="_blank" rel="noopener">' + icon('pin', 18) + esc(T.gmaps) + '</a></div></section>' : '';
+    if (geo) mapSec = '<section class="cp-sec cp-map-sec"><h2>' + esc(T.where_h) + '</h2><div class="mini-map" id="mini-map"></div>' +
       '<div class="maplinks"><a class="maplink" href="https://2gis.kz/astana/geo/' + c.lng + ',' + c.lat + '" target="_blank" rel="noopener">' + icon('map', 18) + esc(T.twogis) + '</a>' +
-      '<a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=' + c.lat + ',' + c.lng + '" target="_blank" rel="noopener">' + icon('pin', 18) + esc(T.gmaps) + '</a></div></section>' : '';
+      '<a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=' + c.lat + ',' + c.lng + '" target="_blank" rel="noopener">' + icon('pin', 18) + esc(T.gmaps) + '</a></div></section>';
 
     var hasContact = tel || c.ig || c.tg;
-    var join = '<div class="join-card"><h2>' + esc(T.join_h) + '</h2>' +
+    var web = safeUrl(c.web);
+    // Карточка из открытых данных: телефонов в ней нет, только ссылка на сайт
+    // организации и честная пометка, откуда взяты сведения.
+    var openNote = isOpen(c) ? '<div class="open-note"><h2>' + icon('shield', 18) + esc(T.open_note_h) + '</h2><p>' + esc(T.open_note_p) + '</p>' +
+      (Array.isArray(c.src) && c.src.length ? '<p class="src-h">' + esc(T.src_h) + '</p><ul class="src-list">' + c.src.filter(function (x) { return x && safeUrl(x.u); }).map(function (x) {
+        return '<li><a href="' + esc(x.u) + '" target="_blank" rel="noopener nofollow">' + esc(x.n || x.u.replace(/^https?:\/\//, '').split('/')[0]) + ' ↗</a></li>';
+      }).join('') + '</ul>' : '') +
+      '<a class="btn-solid claim" href="#/join/' + slug + '">' + icon('check', 18) + esc(T.claim_b) + '</a>' +
+      '<button class="linkish" data-action="remove-req" data-id="' + esc(c.id) + '">' + esc(T.remove_b) + '</button></div>' : '';
+    var join = isOpen(c) && !hasContact
+      ? '<div class="join-card"><h2>' + esc(T.how_h) + '</h2>' +
+        (web ? '<a class="btn-web" href="' + esc(web) + '" target="_blank" rel="noopener" data-track="website">' + icon('globe', 20) + esc(T.web_link) + '</a>' : '') +
+        '<p class="join-note">' + esc(T.open_contact) + '</p>' +
+        (c.beginner ? '<p class="join-note">' + icon('spark', 18) + esc(T.beg_note) + '</p>' : '') + '</div>'
+      : '<div class="join-card"><h2>' + esc(T.join_h) + '</h2>' +
       (tel ? '<a class="btn-wa" data-track="whatsapp" href="https://wa.me/' + tel + '?text=' + encodeURIComponent(T.greet) + '" target="_blank" rel="noopener">' + icon('wa', 22) + 'WhatsApp <small>· ' + esc(T.write) + '</small></a>' : '') +
       (hasContact
         ? '<div class="chat"><p class="chat-lbl">' + esc(T.bubble_lbl) + '</p>' +
@@ -730,7 +885,7 @@
       (c.beginner ? '<p class="join-note">' + icon('spark', 18) + esc(T.beg_note) + '</p>' : '') +
       '</div>';
 
-    var trust = '<div class="trust"><span class="date">' + icon('shield', 18) + esc(T.checked + ': ' + fmtDate(c.checked, L)) + '</span><div class="grow"></div>' +
+    var trust = '<div class="trust"><span class="date">' + icon('shield', 18) + esc((isOpen(c) ? T.collected : T.checked) + ': ' + fmtDate(c.checked, L)) + '</span><div class="grow"></div>' +
       (reported
         ? '<span class="thanks" role="status">' + esc(T.reported) + '</span>'
         : '<button class="linkish" data-action="report" data-id="' + esc(c.id) + '">' + esc(T.report) + '</button>') + '</div>';
@@ -740,13 +895,13 @@
       '<div class="share-actions"><button data-action="copy-link" data-url="' + esc(url) + '">' + esc(state.linkCopied ? T.link_copied : T.copy_link) + '</button>' +
       '<button data-action="qr-dl" data-slug="' + esc(c.slug) + '">' + esc(T.qr_dl) + '</button></div></div></div>';
 
-    var upd = '<a class="upd-link" href="#/join/' + slug + '">' + icon('plus', 16) + esc(T.update_link) + '</a>';
+    var upd = isOpen(c) ? '' : '<a class="upd-link" href="#/join/' + slug + '">' + icon('plus', 16) + esc(T.update_link) + '</a>';
 
     return '<article class="screen tight wrap" style="--h:' + h + '">' +
       '<a class="back" href="#/">' + esc(T.back) + '</a>' +
       '<div class="cp">' + cover +
-      '<div class="cp-main">' + head + factsHTML + about + mediaSec + mapSec + '</div>' +
-      '<aside class="cp-side">' + join + trust + share + upd + '</aside>' +
+      '<div class="cp-main">' + head + dirs + factsHTML + about + mediaSec + mapSec + '</div>' +
+      '<aside class="cp-side">' + openNote + join + trust + share + upd + '</aside>' +
       '</div>' +
       (similar.length ? '<section class="sec" data-reveal><div class="sec-head"><h2 class="sec-h">' + esc(T.similar_h) + '</h2></div>' +
         '<div class="grid">' + similar.map(function (s) { return cardHTML(s, L, T); }).join('') + '</div></section>' : '') +
@@ -795,6 +950,12 @@
 
   // Карточка уже на сайте — открываем форму с её данными, чтобы организатор
   // только дописал недостающее (чаще всего — фото и видео).
+  // Карточку из открытых данных организатор подтверждает без кода: кода у него
+  // ещё нет. Дамир проверяет такую заявку звонком по номеру с сайта организации.
+  function claiming(d) {
+    var c = d.upd && findClub(d.upd);
+    return !!(c && isOpen(c));
+  }
   function joinFromClub(c) {
     var d = blankJoin(), L = 'ru';
     d.upd = c.slug;
@@ -849,7 +1010,7 @@
       // и владелец сайта. Сайт код не проверяет — он лишь передаёт его вместе
       // с заявкой, а сверяет Дамир по своему закрытому списку (в репозиторий
       // список не попадает, иначе его увидел бы любой).
-      body = (d.upd ? jfInput('code', T.j_code, { ph: 'QS-XXXX-XXXX', hint: T.j_code_hint, auto: 'off' }) : '') +
+      body = (d.upd && !claiming(d) ? jfInput('code', T.j_code, { ph: 'QS-XXXX-XXXX', hint: T.j_code_hint, auto: 'off' }) : '') +
         jfInput('name', T.j_name, { ph: T.j_name_ph, auto: 'organization' }) +
         '<div class="jf-f' + (state.joinErr.cat ? ' bad' : '') + '">' + jfLabel(T.j_cat) +
         '<div class="jf-cats" role="group" aria-label="' + esc(T.j_cat) + '">' +
@@ -901,7 +1062,7 @@
       '<span class="wiz-saved">' + esc(T.j_saved) + '</span></div>' +
       '<div class="wiz-bar" aria-hidden="true">' + [0, 1, 2, 3].map(function (i) { return '<i' + (i <= step ? ' class="on"' : '') + '></i>'; }).join('') + '</div>' +
       '<h2 id="wiz-h" tabindex="-1">' + esc(titles[step]) + '</h2>' +
-      (club ? '<p class="upd-banner">' + esc(T.j_update_p.replace('{name}', club.name[L])) + '</p>' : '') +
+      (club ? '<p class="upd-banner">' + esc((isOpen(club) ? T.j_claim_p : T.j_update_p).replace('{name}', club.name[L])) + '</p>' : '') +
       '<div class="jf">' + body + '</div>' +
       (state.joinStatus === 'fail'
         ? '<p class="wiz-fail" role="alert">' + esc(T.j_fail) + (safeUrl(CFG.orgFormUrl) ? ' <a href="' + esc(CFG.orgFormUrl) + '" target="_blank" rel="noopener">' + esc(T.j_fail_alt) + '</a>' : '') + '</p>'
@@ -954,7 +1115,7 @@
   function joinCheck(step) {
     var T = STR[state.lang], d = state.join, e = {};
     function req(k) { if (!String(d[k] || '').trim()) e[k] = T.j_req; }
-    if (step === 0) { if (d.upd && !String(d.code || '').trim()) e.code = T.j_req_code; req('name'); if (!d.cat) e.cat = T.j_req_cat; req('tag'); req('about'); }
+    if (step === 0) { if (d.upd && !claiming(d) && !String(d.code || '').trim()) e.code = T.j_req_code; req('name'); if (!d.cat) e.cat = T.j_req_cat; req('tag'); req('about'); }
     if (step === 1) {
       req('age'); req('cost'); req('sched'); req('addr');
       if (!d.langs.length && !String(d.langOther || '').trim()) e.langs = T.j_req_lang;
@@ -973,7 +1134,8 @@
     var cat = d.cat === 'other' ? 'Другое' : catLabel(d.cat, 'ru');
     head.push('Секция на сайте: ' + cat);
     if (d.dist) head.push('Район: ' + distLabel(d.dist, 'ru'));
-    if (d.upd) head.push('ОБНОВЛЕНИЕ карточки: ' + d.upd + ' · код: ' + (String(d.code || '').trim().toUpperCase() || 'НЕ УКАЗАН'));
+    if (d.upd && claiming(d)) head.push('ПОДТВЕРЖДЕНИЕ карточки из открытых источников: ' + d.upd + ' · перед публикацией позвонить по номеру с официального сайта');
+    else if (d.upd) head.push('ОБНОВЛЕНИЕ карточки: ' + d.upd + ' · код: ' + (String(d.code || '').trim().toUpperCase() || 'НЕ УКАЗАН'));
     var links = mediaLines(d.media);
     var tail = [];
     if (links.length) tail.push('Фото и видео:\n' + links.join('\n'));
@@ -1351,7 +1513,7 @@
   }
 
   // ---------- maps ----------
-  var maps = { view: null, pins: null, pick: null, pickMark: null, mini: null };
+  var maps = { view: null, pins: null, pick: null, pickMark: null, mini: null, cat: null };
 
   // Пин в цвет направления; у добавленных в этом браузере — тёмная обводка.
   function pinIcon(mine, hue) {
@@ -1371,6 +1533,7 @@
     if (maps.view) { maps.view.remove(); maps.view = null; maps.pins = null; }
     if (maps.pick) { maps.pick.remove(); maps.pick = null; maps.pickMark = null; }
     if (maps.mini) { maps.mini.remove(); maps.mini = null; }
+    if (maps.cat) { maps.cat.remove(); maps.cat = null; }
   }
   function drawPins() {
     if (!maps.view) return;
@@ -1402,6 +1565,36 @@
     maps.mini = window.L.map(el, { zoomControl: !mobile, scrollWheelZoom: false, dragging: !mobile, tap: false }).setView([c.lat, c.lng], 14);
     tiles().addTo(maps.mini);
     window.L.marker([c.lat, c.lng], { icon: pinIcon(false, hueOf(c.cat)) }).addTo(maps.mini);
+  }
+  // Карта каталога: точки только тех сообществ, что сейчас в выдаче, и масштаб
+  // подгоняется под них. На телефоне карту двигают двумя пальцами — одним
+  // пальцем страница листается, как обычно.
+  function mountCatMap() {
+    var el = document.getElementById('cat-map');
+    if (!el || !window.L || maps.cat) return;
+    var L = state.lang, T = STR[L];
+    var mobile = window.L.Browser && window.L.Browser.mobile;
+    maps.cat = window.L.map(el, { scrollWheelZoom: false, dragging: !mobile, tap: false }).setView(CENTER, 11);
+    tiles().addTo(maps.cat);
+    var pts = [];
+    filtered().filter(hasCoords).forEach(function (c) {
+      var m = window.L.marker([c.lat, c.lng], { icon: pinIcon(false, hueOf(c.cat)), title: c.name[L] }).addTo(maps.cat);
+      m.bindPopup('<a class="pop" href="#/club/' + esc(encodeURIComponent(c.slug)) + '"><b>' + esc(c.name[L]) + '</b>' +
+        '<span>' + esc(catLabel(c.cat, L)) + ' · ' + esc(T.open) + ' →</span></a>', { closeButton: false });
+      m.on('click', function () { highlightRow(c.id); });
+      pts.push([c.lat, c.lng]);
+    });
+    if (pts.length > 1) maps.cat.fitBounds(pts, { padding: [34, 34], maxZoom: 14 });
+    else if (pts.length === 1) maps.cat.setView(pts[0], 14);
+  }
+  function highlightRow(id) {
+    var rows = document.querySelectorAll('.cs-rows [data-pin]'), hit = null;
+    for (var i = 0; i < rows.length; i++) {
+      var on = rows[i].getAttribute('data-pin') === id;
+      rows[i].classList.toggle('hl', on);
+      if (on) hit = rows[i];
+    }
+    if (hit && window.matchMedia('(min-width: 900px)').matches) hit.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
   function setPickMarker() {
     var f = state.form, lat = Number(f.lat), lng = Number(f.lng);
@@ -1518,9 +1711,22 @@
   function repaintList() {
     var wrap = document.getElementById('dist-wrap'), res = document.getElementById('results');
     if (wrap) wrap.innerHTML = distRowHTML();
-    if (res) { res.innerHTML = resultsHTML(); reveal(res, true); }
+    paintResults();
     var hf = document.getElementById('hero-found');
     if (hf) hf.innerHTML = heroFoundHTML();
+  }
+  // Выдача перерисовывается и при наборе в поиске: карту каталога пересоздаём вместе с ней.
+  function paintResults() {
+    var res = document.getElementById('results');
+    if (!res) return;
+    if (maps.cat) { maps.cat.remove(); maps.cat = null; }
+    res.innerHTML = resultsHTML();
+    reveal(res, true);
+    mountCatMap();
+  }
+  function paintChips() {
+    var ch = document.getElementById('chips');
+    if (ch) ch.innerHTML = catsHTML();
   }
 
   // ---------- chrome (header/footer) ----------
@@ -1532,7 +1738,7 @@
     document.getElementById('foot-mission').textContent = T.foot_mission;
     document.getElementById('foot-creator').textContent = T.creator;
     document.getElementById('foot-creator-note').textContent = T.creator_note;
-    var nav = { 'nav-about': ['about', T.nav_about], 'nav-map': ['map', T.nav_map], 'nav-add': ['join', T.nav_add] };
+    var nav = { 'nav-about': ['about', T.nav_about], 'nav-cat': ['catalog', T.nav_catalog], 'nav-add': ['join', T.nav_add] };
     Object.keys(nav).forEach(function (id) {
       var a = document.getElementById(id);
       if (!a) return;
@@ -1557,9 +1763,10 @@
     if (r.screen === 'club') { var c = findClub(r.id); return c ? c.name[state.lang] + ' — ' + site : site; }
     if (r.screen === 'about') return T.nav_about + ' — ' + site;
     if (r.screen === 'map') return T.map_h1 + ' — ' + site;
+    if (r.screen === 'catalog') return T.title_catalog;
     if (r.screen === 'add') return 'Панель создателя — ' + site;
     if (r.screen === 'join') return T.join_h1 + ' — ' + site;
-    return site + ' — ' + T.h1;
+    return T.title_home;
   }
 
   // ---------- render ----------
@@ -1574,12 +1781,15 @@
     destroyMaps();
     renderChrome(r);
     var app = document.getElementById('app');
-    if (r.screen === 'join' && changedPage) prepareJoin(r.id);
+    // Прямая ссылка «подтвердить/дополнить карточку»: каталог мог догрузиться
+    // уже после первой отрисовки — тогда подставляем данные сообщества сейчас.
+    if (r.screen === 'join' && (changedPage || (r.id && state.join.upd !== r.id && findClub(r.id)))) prepareJoin(r.id);
     var html = r.screen === 'club' ? clubView(r.id)
       : r.screen === 'join' ? joinView()
       : r.screen === 'about' ? aboutView()
       : r.screen === 'map' ? mapView()
       : r.screen === 'add' ? addView()
+      : r.screen === 'catalog' ? catalogView()
       : homeView();
     if (changedPage) app.setAttribute('data-enter', ''); else app.removeAttribute('data-enter');
     app.innerHTML = html;
@@ -1587,10 +1797,11 @@
     if (changedPage) trackPage(r);
 
     if (r.screen === 'map') mountViewMap();
+    if (r.screen === 'home' || r.screen === 'catalog') mountCatMap();
     if (r.screen === 'add') mountPickMap();
     if (r.screen === 'club') { var c = findClub(r.id); if (c) { renderQR(shareUrl(c)); mountMiniMap(c); } }
     reveal(app, !changedPage);
-    if (r.screen === 'home' && changedPage) countUp(app);
+    if ((r.screen === 'home' || r.screen === 'catalog') && changedPage) countUp(app);
 
     if (changedPage && !(opts && opts.keepScroll)) {
       window.scrollTo(0, 0);
@@ -1632,14 +1843,19 @@
       case 'cat':
         state.cat = id;
         state.shown = PAGE;
-        document.getElementById('chips').innerHTML = catsHTML();
+        paintChips();
+        repaintList();
+        break;
+      case 'view':
+        state.view = id === 'map' ? 'map' : 'list';
+        statsSend({ path: 'catalog/' + state.view, title: 'Каталог — ' + (state.view === 'map' ? 'карта' : 'список'), event: true });
         repaintList();
         break;
       case 'go-cat':
         state.cat = id;
         state.shown = PAGE;
-        if (document.getElementById('chips')) { document.getElementById('chips').innerHTML = catsHTML(); repaintList(); }
-        toCatalog();
+        if (document.getElementById('chips')) { paintChips(); repaintList(); toCatalog(); }
+        else window.location.hash = '#/catalog';
         break;
       case 'to-catalog':
         toCatalog();
@@ -1647,8 +1863,7 @@
       case 'clear-q': {
         state.q = '';
         state.shown = PAGE;
-        var qi = document.getElementById('q');
-        if (qi) qi.value = '';
+        syncSearch(null);
         repaintList();
         break;
       }
@@ -1757,11 +1972,18 @@
         repaintList();
         break;
       case 'reset': {
-        state.q = ''; state.cat = 'all'; state.dist = 'all'; state.free = false; state.beg = false; state.shown = PAGE;
-        var qr = document.getElementById('q');
-        if (qr) qr.value = '';
-        if (document.getElementById('chips')) document.getElementById('chips').innerHTML = catsHTML();
+        state.q = ''; state.cat = 'all'; state.dist = 'all'; state.free = false; state.beg = false; state.ok = false; state.shown = PAGE;
+        syncSearch(null);
+        paintChips();
         repaintList();
+        break;
+      }
+      case 'remove-req': {
+        var rc2 = findClub(id);
+        if (CFG.reportEmail && rc2) {
+          window.location.href = 'mailto:' + CFG.reportEmail + '?subject=' + encodeURIComponent('Убрать карточку: ' + rc2.name.ru) +
+            '&body=' + encodeURIComponent(shareUrl(rc2) + '\n\nПрошу убрать карточку. Я представляю организацию: ');
+        }
         break;
       }
       case 'report': {
@@ -1777,8 +1999,7 @@
       }
       case 'more':
         state.shown += PAGE;
-        document.getElementById('results').innerHTML = resultsHTML();
-        reveal(document.getElementById('results'), true);
+        paintResults();
         break;
       case 'more-map':
         state.shown += PAGE;
@@ -1855,15 +2076,28 @@
   });
 
   document.addEventListener('change', function (e) {
-    if (e.target.hasAttribute && e.target.hasAttribute('data-photo')) handlePhotoFile(e.target.files[0]);
+    var t = e.target;
+    if (!t.hasAttribute) return;
+    if (t.hasAttribute('data-photo')) handlePhotoFile(t.files[0]);
+    if (t.hasAttribute('data-sort')) { state.sort = t.value === 'az' ? 'az' : 'rec'; state.shown = PAGE; repaintList(); }
+    if (t.hasAttribute('data-dist-sel')) { state.dist = t.value || 'all'; state.shown = PAGE; repaintList(); }
   });
+
+  // Поиск есть в двух местах — в бренд-блоке и в шапке каталога. Текст держим одинаковым.
+  function syncSearch(from) {
+    ['q', 'cq'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && el !== from && el.value !== state.q) el.value = state.q;
+    });
+  }
 
   document.addEventListener('input', function (e) {
     var t = e.target;
-    if (t.id === 'q') {
+    if (t.id === 'q' || t.id === 'cq') {
       state.q = t.value;
       state.shown = PAGE;
-      document.getElementById('results').innerHTML = resultsHTML();
+      syncSearch(t);
+      paintResults();
       var hf = document.getElementById('hero-found');
       if (hf) hf.innerHTML = heroFoundHTML();
       return;
@@ -1893,7 +2127,7 @@
   document.addEventListener('submit', function (e) {
     if (!e.target.hasAttribute || !e.target.hasAttribute('data-search')) return;
     e.preventDefault();
-    var qi = document.getElementById('q');
+    var qi = e.target.querySelector('input');
     if (qi) qi.blur();
     statsSend({ path: 'search', title: 'Поиск: ' + state.q.trim().slice(0, 40), event: true });
     toCatalog();

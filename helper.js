@@ -76,6 +76,9 @@ window.QOSYL_HELPER = (function () {
 
     var o = opt('what', a.what);
     var w = (o && o.cats[c.cat]) || 0;
+    // У большого центра есть и другие секции (also): они тоже подходят,
+    // но на балл ниже, чтобы клуб, целиком посвящённый теме, стоял выше.
+    if (o && Array.isArray(c.also)) c.also.forEach(function (id) { w = Math.max(w, (o.cats[id] || 0) - 1); });
     s += w;
     if (w >= 4) why.push('cat');
 

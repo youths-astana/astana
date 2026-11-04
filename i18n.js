@@ -25,7 +25,7 @@ const STR = {
       { h: 'С чего началось', p: 'Сообщества города живут в Instagram, WhatsApp, Telegram и в разговорах между друзьями. Единого списка нет: чтобы найти секцию, нужно знать человека, который о ней слышал.' },
       { h: 'Что говорят исследования', p: 'Главная польза таких сообществ — не оценки, а друзья и чувство «я здесь свой». Поэтому мы пишем в первую очередь про то, кто туда ходит и как прийти, а не про достижения.' },
       { h: 'Что мешает прийти', p: 'Подростки называют четыре причины: не знают, что существует; неудобное время или дорога; цена; страх идти одному. Первую причину закрывает каталог, остальные три — поля «когда», «где», «стоимость» и пометка «для новичков».' },
-      { h: 'Как сообщество попадает в список', p: 'Мы связываемся с организатором и публикуем только те контакты, на которые он дал согласие. Личные номера подростков не публикуем никогда.' },
+      { h: 'Как сообщество попадает в список', p: 'Двумя путями. Организатор сам присылает заявку — тогда в карточке только те контакты, на которые он дал согласие. Или мы собираем карточку по открытым официальным данным: городскому реестру кружков qosymsha.kz и сайтам самих организаций. Такие карточки помечены «Открытые данные», телефонов в них нет — только ссылки на источники, — а организатор может подтвердить свою карточку или попросить её убрать. Личные номера подростков не публикуем никогда.' },
       { h: 'Почему стоит дата проверки', p: 'Устаревшие списки — главная причина, по которой такие каталоги перестают работать. Каждое сообщество перепроверяется раз в 60–90 дней, дата видна на его странице, а рядом есть кнопка «информация устарела».' },
       { h: 'Что значит пометка «лучшее»', p: 'Сообщества с пометкой «лучшее» платят за то, чтобы стоять в начале списка. Это единственная платная возможность на сайте. Она не влияет на проверку: такие сообщества проверяются так же, как все остальные, и попадают в каталог по тем же правилам.' },
       { h: 'Кто это делает', p: 'Проект ведёт ученик 10 класса как общественную инициативу. Для посетителей сайт бесплатный, личные данные мы не собираем.' }
@@ -64,7 +64,7 @@ const STR = {
       { h: 'Неден басталды', p: 'Қаладағы қоғамдастықтар Instagram, WhatsApp, Telegram-да және достардың әңгімесінде тұр. Ортақ тізім жоқ: үйірме табу үшін ол туралы естіген адамды білу керек.' },
       { h: 'Зерттеулер не дейді', p: 'Мұндай қоғамдастықтың басты пайдасы — баға емес, дос және «мен осындамын» деген сезім. Сондықтан біз алдымен онда кім жүретінін және қалай келуге болатынын жазамыз.' },
       { h: 'Келуге не кедергі', p: 'Жасөспірімдер төрт себеп айтады: не бар екенін білмеу, уақыт пен жол, ақы, жалғыз баруға қорқу. Біріншісін каталог шешеді, қалғанын «қашан», «қайда», «құны» деген жолдар мен «жаңадан бастаушыларға» белгісі.' },
-      { h: 'Қоғамдастық тізімге қалай түседі', p: 'Ұйымдастырушымен байланысып, тек ол рұқсат берген контактілерді жариялаймыз. Жасөспірімдердің жеке нөмірлерін еш уақытта жарияламаймыз.' },
+      { h: 'Қоғамдастық тізімге қалай түседі', p: 'Екі жолмен. Ұйымдастырушы өтінімді өзі жібереді — сонда карточкада тек ол рұқсат берген байланыстар болады. Немесе біз карточканы ашық ресми деректер бойынша жинаймыз: qosymsha.kz қалалық үйірмелер тізілімі мен ұйымдардың өз сайттары. Мұндай карточкалар «Ашық деректер» деп белгіленеді, оларда телефон жоқ — тек дереккөзге сілтемелер, — ал ұйымдастырушы өз карточкасын растай немесе алып тастауды сұрай алады. Жасөспірімдердің жеке нөмірлерін ешқашан жарияламаймыз.' },
       { h: 'Тексеру күні неге керек', p: 'Ескірген тізім — мұндай каталогтардың істен шығуының басты себебі. Әр қоғамдастық 60–90 күнде бір тексеріледі, күні бетінде көрінеді, қасында «ақпарат ескірген» түймесі бар.' },
       { h: '«Үздік» белгісі нені білдіреді', p: '«Үздік» белгісі бар қоғамдастықтар тізімнің басында тұру үшін ақы төлейді. Бұл — сайттағы жалғыз ақылы мүмкіндік. Ол тексеруге әсер етпейді: мұндай қоғамдастықтар да басқалармен бірдей тексеріледі және каталогқа сол ережелермен енеді.' },
       { h: 'Мұны кім жасайды', p: 'Жобаны 10-сынып оқушысы қоғамдық бастама ретінде жүргізеді. Келушілер үшін сайт тегін, жеке деректерді жинамаймыз.' }
@@ -103,7 +103,7 @@ const STR = {
       { h: 'Where this started', p: 'Communities in the city live on Instagram, WhatsApp, Telegram and in conversations between friends. There is no single list: to find one you have to know someone who has heard of it.' },
       { h: 'What the research says', p: 'The clearest benefit of these communities is not grades but friendships and a sense of belonging. So we lead with who goes there and how to show up, rather than with achievements.' },
       { h: 'What stops teenagers', p: 'Four reasons come up: not knowing what exists, awkward times or travel, cost, and being afraid to go alone. The catalogue answers the first; the When, Where, Cost fields and the beginner-friendly tag answer the rest.' },
-      { h: 'How a community gets listed', p: 'We contact the organiser and publish only the contacts they agreed to share. We never publish teenagers’ personal numbers.' },
+      { h: 'How a community gets listed', p: 'In two ways. The organiser sends an application, and the listing shows only the contacts they agreed to share. Or we compile a listing from open official data: the city club registry qosymsha.kz and the organisations’ own websites. Those listings are marked “Open data”, carry no phone numbers, only links to the sources, and the organiser can confirm the listing or ask us to remove it. We never publish teenagers’ personal numbers.' },
       { h: 'Why every page shows a check date', p: 'Stale listings are the main reason directories like this stop working. Every community is re-checked every 60–90 days, the date sits on its page, and a report button sits next to it.' },
       { h: 'What the Featured mark means', p: 'Communities marked Featured pay to sit at the top of the list. It is the only paid option on the site. It does not affect verification: featured communities are checked like every other one and are listed under the same rules.' },
       { h: 'Who runs it', p: 'The project is run by a 10th-grade student as a community initiative. The site is free for visitors and we collect no personal data.' }
@@ -566,6 +566,83 @@ Object.assign(STR.en, {
   j_ok_b: 'Browse the catalogue', j_ok_more: 'Add another one',
   j_fail: 'Could not send — check your connection and try again.', j_fail_alt: 'Or fill in the Google Form',
   j_update_p: 'You are updating “{name}”. The fields already hold what is on the site — correct or add what is needed, especially photos and videos.'
+});
+
+// Каталог 2.0: отдельная шапка каталога, карта, открытые данные (04.11.2026).
+Object.assign(STR.ru, {
+  nav_catalog: 'Каталог',
+  title_home: 'Кружки и сообщества для подростков в Астане — Qosyl',
+  title_catalog: 'Каталог кружков, секций и клубов Астаны — Qosyl',
+  catalog_h: 'Все сообщества Астаны',
+  catalog_lead: 'Кружки, секции, клубы и волонтёрство для подростков — с адресом, ценой и тем, как записаться.',
+  cs_free: 'бесплатно', cs_ok: 'подтвердили организаторы',
+  cs_search_ph: 'Найти: дебаты, футбол, английский…',
+  cat_none: 'пока пусто', also_lbl: 'Ещё направления', also_h: 'Направления',
+  open_badge: 'Открытые данные',
+  open_sep_h: 'Из открытых источников',
+  open_sep_p: 'Эти карточки мы собрали сами — по городскому реестру кружков qosymsha.kz и официальным сайтам. Организаторы их ещё не подтвердили, поэтому расписание и запись лучше уточнить.',
+  reset_all: 'Сбросить всё',
+  map_nogeo: 'Ещё {n} — без точки на карте: адрес есть в карточке.',
+  f_ok: 'Подтверждено', sort_lbl: 'Порядок', sort_rec: 'Рекомендуем', sort_az: 'По алфавиту',
+  view_lbl: 'Вид каталога', view_list: 'Список', view_map: 'Карта',
+  open_note_h: 'Собрано из открытых источников',
+  open_note_p: 'Эту карточку мы составили сами по официальным данным. Организатор её ещё не подтвердил — перед первым визитом уточните расписание и условия.',
+  src_h: 'Откуда сведения',
+  claim_b: 'Это ваше? Подтвердите карточку', remove_b: 'Попросить убрать карточку',
+  how_h: 'Как записаться', web_link: 'Официальный сайт',
+  open_contact: 'Контакты для записи — на официальном сайте и в источниках выше. Телефоны появятся, когда организатор подтвердит карточку.',
+  twogis_find: 'Найти в 2ГИС', collected: 'Сведения собраны',
+  j_claim_p: 'Вы подтверждаете карточку «{name}», которую мы собрали из открытых источников. Исправьте неточности и оставьте рабочий контакт. Перед публикацией мы позвоним по номеру с официального сайта организации, чтобы убедиться, что карточку подтверждает её представитель.'
+});
+Object.assign(STR.kz, {
+  nav_catalog: 'Каталог',
+  title_home: 'Астанадағы жасөспірімдерге арналған үйірмелер мен қоғамдастықтар — Qosyl',
+  title_catalog: 'Астананың үйірмелері, секциялары мен клубтарының каталогы — Qosyl',
+  catalog_h: 'Астананың барлық қоғамдастықтары',
+  catalog_lead: 'Жасөспірімдерге арналған үйірмелер, секциялар, клубтар және еріктілер — мекенжайы, бағасы және қалай жазылу керегі көрсетілген.',
+  cs_free: 'тегін', cs_ok: 'ұйымдастырушы растаған',
+  cs_search_ph: 'Іздеу: дебат, футбол, ағылшын…',
+  cat_none: 'әзірге бос', also_lbl: 'Басқа бағыттар', also_h: 'Бағыттар',
+  open_badge: 'Ашық деректер',
+  open_sep_h: 'Ашық дереккөздерден',
+  open_sep_p: 'Бұл карточкаларды біз өзіміз жинадық — qosymsha.kz қалалық үйірмелер тізілімі мен ресми сайттар бойынша. Ұйымдастырушылар оларды әлі растаған жоқ, сондықтан кестесі мен жазылу тәртібін нақтылаған жөн.',
+  reset_all: 'Барлығын тазалау',
+  map_nogeo: 'Тағы {n} — картада нүктесі жоқ: мекенжайы карточкада.',
+  f_ok: 'Расталған', sort_lbl: 'Реті', sort_rec: 'Ұсынамыз', sort_az: 'Әліпби бойынша',
+  view_lbl: 'Каталог көрінісі', view_list: 'Тізім', view_map: 'Карта',
+  open_note_h: 'Ашық дереккөздерден жиналған',
+  open_note_p: 'Бұл карточканы біз ресми деректер бойынша өзіміз құрастырдық. Ұйымдастырушы оны әлі растаған жоқ — алғаш барар алдында кестесі мен шарттарын нақтылаңыз.',
+  src_h: 'Мәліметтер қайдан алынды',
+  claim_b: 'Бұл сіздікі ме? Карточканы растаңыз', remove_b: 'Карточканы алып тастауды сұрау',
+  how_h: 'Қалай жазылуға болады', web_link: 'Ресми сайт',
+  open_contact: 'Жазылуға арналған байланыстар — ресми сайтта және жоғарыдағы дереккөздерде. Телефондар ұйымдастырушы карточканы растағанда пайда болады.',
+  twogis_find: '2ГИС-тен табу', collected: 'Мәліметтер жиналды',
+  j_claim_p: 'Сіз ашық дереккөздерден жиналған «{name}» карточкасын растап жатырсыз. Қателерді түзетіп, жұмыс байланысын қалдырыңыз. Жарияламас бұрын карточканы ұйым өкілі растап жатқанына көз жеткізу үшін ұйымның ресми сайтындағы нөмірге қоңырау шаламыз.'
+});
+Object.assign(STR.en, {
+  nav_catalog: 'Catalogue',
+  title_home: 'Clubs and communities for teens in Astana — Qosyl',
+  title_catalog: 'Catalogue of clubs, sports and activities in Astana — Qosyl',
+  catalog_h: 'All Astana communities',
+  catalog_lead: 'Clubs, sports, activities and volunteering for teens, with the address, the price and how to join.',
+  cs_free: 'free', cs_ok: 'confirmed by organisers',
+  cs_search_ph: 'Search: debate, football, English…',
+  cat_none: 'empty for now', also_lbl: 'Also', also_h: 'Directions',
+  open_badge: 'Open data',
+  open_sep_h: 'From open sources',
+  open_sep_p: 'We compiled these listings ourselves from the city club registry qosymsha.kz and official websites. The organisers have not confirmed them yet, so check the schedule and how to join.',
+  reset_all: 'Clear all',
+  map_nogeo: '{n} more have no map pin: the address is in the listing.',
+  f_ok: 'Confirmed', sort_lbl: 'Order', sort_rec: 'Recommended', sort_az: 'A–Z',
+  view_lbl: 'Catalogue view', view_list: 'List', view_map: 'Map',
+  open_note_h: 'Compiled from open sources',
+  open_note_p: 'We put this listing together ourselves from official data. The organiser has not confirmed it yet, so check the schedule and conditions before your first visit.',
+  src_h: 'Where the information comes from',
+  claim_b: 'Is this yours? Confirm the listing', remove_b: 'Ask us to remove it',
+  how_h: 'How to join', web_link: 'Official website',
+  open_contact: 'Contacts for joining are on the official website and in the sources above. Phone numbers will appear once the organiser confirms the listing.',
+  twogis_find: 'Find in 2GIS', collected: 'Information collected',
+  j_claim_p: 'You are confirming “{name}”, which we compiled from open sources. Correct anything that is wrong and leave a work contact. Before publishing, we will call the number on the organisation’s official website to make sure the listing is confirmed by its representative.'
 });
 
   return STR;
