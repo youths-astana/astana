@@ -418,7 +418,7 @@
     var parts = h.split('/').map(function (p) { try { return decodeURIComponent(p); } catch (e) { return p; } });
     if (parts[0] === 'club' && parts[1]) return { screen: 'club', id: parts[1] };
     if (parts[0] === 'join') return { screen: 'join', id: parts[1] || '' };
-    if (parts[0] === 'about' || parts[0] === 'map' || parts[0] === 'add' || parts[0] === 'catalog') return { screen: parts[0] };
+    if (parts[0] === 'about' || parts[0] === 'map' || parts[0] === 'add' || parts[0] === 'catalog' || parts[0] === 'cabinet') return { screen: parts[0] };
     return { screen: 'home' };
   }
 
@@ -760,13 +760,257 @@
 
     return '<div class="home">' + hero + how +
       (helper ? '<div class="sec wrap" data-reveal>' + helper + '</div>' : '') +
-      catalog + '<div class="sec wrap">' + ownBlock() + '</div></div>';
+      catalog + '<div class="sec wrap">' + tgBlock() + ownBlock() + '</div></div>';
   }
 
   // Каталог отдельной страницей (#/catalog): та же выдача, что на главной,
   // но без бренд-блока — открыл и сразу выбираешь.
   function catalogView() {
-    return '<div class="home is-catalog">' + catalogHTML(true) + '<div class="sec wrap">' + ownBlock() + '</div></div>';
+    return '<div class="home is-catalog">' + catalogHTML(true) + '<div class="sec wrap">' + tgBlock() + ownBlock() + '</div></div>';
+  }
+
+  // ---------- Telegram-бот ----------
+  // Имя бота задаётся в config.js. Пока его нет, ссылки на бота не показываем.
+  function tgBot() { return String(CFG.telegramBot || '').replace(/^@/, '').trim(); }
+  function tgLink(payload) { return 'https://t.me/' + tgBot() + (payload ? '?start=' + encodeURIComponent(payload) : ''); }
+  function tgBlock() {
+    if (!tgBot()) return '';
+    var T = STR[state.lang];
+    return '<section class="tgb" data-reveal><span class="tgb-ic">' + icon('tg', 30) + '</span>' +
+      '<div class="tgb-txt"><h2>' + esc(T.tg_h) + '</h2><p>' + esc(T.tg_p) + '</p></div>' +
+      '<a class="tgb-btn" href="' + esc(tgLink('site')) + '" target="_blank" rel="noopener">' + esc(T.tg_b) + ' · @' + esc(tgBot()) + '</a></section>';
+  }
+  function orgWaLink(text) {
+    var n = String(CFG.orgWhatsApp || '77477434947').replace(/\D/g, '');
+    return 'https://wa.me/' + n + (text ? '?text=' + encodeURIComponent(text) : '');
+  }
+
+  // ---------- кабинет организатора (#/cabinet) ----------
+  // Код сообщества знают только организатор и владелец сайта. В communities.json
+  // лежит не сам код, а его отпечаток kh (PBKDF2-SHA256, 150 000 повторов):
+  // по отпечатку код не восстановить, а перебор занял бы годы. Кабинет только
+  // показывает карточку, статистику и подсказки — менять данные по-прежнему
+  // можно лишь через заявку, которую владелец проверяет вручную.
+  var CAB_SALT = 'qosyl.club/cabinet/v1', CAB_ITER = 150000, CAB_KEY = 'qosyl.cab';
+  function normCode(s) { return String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+  function codeHash(code) {
+    var n = normCode(code);
+    if (!n || !window.crypto || !window.crypto.subtle || !window.TextEncoder) return Promise.resolve('');
+    var enc = new TextEncoder();
+    return window.crypto.subtle.importKey('raw', enc.encode(n), 'PBKDF2', false, ['deriveBits'])
+      .then(function (k) { return window.crypto.subtle.deriveBits({ name: 'PBKDF2', salt: enc.encode(CAB_SALT), iterations: CAB_ITER, hash: 'SHA-256' }, k, 128); })
+      .then(function (b) { return Array.prototype.map.call(new Uint8Array(b), function (x) { return ('0' + x.toString(16)).slice(-2); }).join(''); })
+      .catch(function () { return ''; });
+  }
+  // Новый код: 8 знаков без похожих букв (0/O, 1/I) — 32^8 ≈ 10^12 вариантов.
+  function newCode() {
+    var A = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ', r = new Uint8Array(8), out = '';
+    window.crypto.getRandomValues(r);
+    for (var i = 0; i < 8; i++) out += A.charAt(r[i] % 32);
+    return 'QS-' + out.slice(0, 4) + '-' + out.slice(4);
+  }
+  function cabRestore() {
+    if (state.cab) return;
+    state.cab = { slug: '', err: '', busy: false, stats: null, copied: false };
+    try {
+      var v = JSON.parse(window.sessionStorage.getItem(CAB_KEY) || 'null');
+      if (v && v.slug && v.code) { state.cab.slug = v.slug; state.cabCode = v.code; }
+    } catch (e) {}
+  }
+  function cabLogin(code) {
+    var T = STR[state.lang];
+    if (!window.crypto || !window.crypto.subtle) { state.cab.err = T.cab_noweb; render({ keepScroll: true }); return; }
+    state.cab.busy = true; state.cab.err = ''; render({ keepScroll: true });
+    codeHash(code).then(function (h) {
+      var c = h && allClubs().filter(function (x) { return x.kh && x.kh === h; })[0];
+      state.cab.busy = false;
+      if (!c) { state.cab.err = T.cab_bad; statsSend({ path: 'cabinet/fail', title: 'Кабинет — неверный код', event: true }); render({ keepScroll: true }); return; }
+      state.cab.slug = c.slug; state.cabCode = String(code).trim().toUpperCase(); state.cab.stats = null;
+      try { window.sessionStorage.setItem(CAB_KEY, JSON.stringify({ slug: c.slug, code: state.cabCode })); } catch (e) {}
+      statsSend({ path: 'cabinet/in', title: 'Кабинет — вход', event: true });
+      render();
+    });
+  }
+  function cabLogout() {
+    state.cab = { slug: '', err: '', busy: false, stats: null, copied: false }; state.cabCode = '';
+    try { window.sessionStorage.removeItem(CAB_KEY); } catch (e) {}
+    render();
+  }
+  // Счётчики GoatCounter: просмотры страницы карточки и нажатия на контакты.
+  // Нужна галочка «Allow adding visitor counts» в настройках GoatCounter;
+  // без неё запросы вернут ошибку, и кабинет честно напишет, что данных пока нет.
+  var CAB_STATS = [['views', '/club/'], ['wa', 'contact/whatsapp/'], ['ig', 'contact/instagram/'], ['tg', 'contact/telegram/'], ['phone', 'contact/phone/'], ['web', 'contact/website/']];
+  function cabLoadStats(c) {
+    var code = String(CFG.goatcounter || '').trim();
+    if (!code || /^https?:/.test(code)) { state.cab.stats = 'na'; return; }
+    state.cab.stats = 'loading';
+    var base = 'https://' + code + '.goatcounter.com/counter/';
+    Promise.all(CAB_STATS.map(function (k) {
+      return fetch(base + encodeURIComponent(k[1] + c.slug) + '.json')
+        .then(function (r) { return r.ok ? r.json() : (r.status === 404 ? { count: '0' } : Promise.reject(r.status)); })
+        .then(function (j) { return [k[0], String(j && j.count != null ? j.count : '0').replace(/[^\d]/g, '') || '0']; });
+    })).then(function (rows) {
+      var out = {}; rows.forEach(function (r) { out[r[0]] = +r[1]; });
+      state.cab.stats = out;
+      if (route().screen === 'cabinet') paintCabStats();
+    }).catch(function () { state.cab.stats = 'na'; if (route().screen === 'cabinet') paintCabStats(); });
+  }
+  function cabStatsHTML() {
+    var T = STR[state.lang], st = state.cab.stats;
+    if (st === 'loading' || st == null) return '<p class="cab-muted">…</p>';
+    if (st === 'na') return '<p class="cab-muted">' + esc(T.cab_st_na) + '</p>';
+    var lab = { views: T.cab_st_views, wa: T.cab_st_wa, ig: T.cab_st_ig, tg: T.cab_st_tg, phone: T.cab_st_phone, web: T.cab_st_web };
+    var ic = { views: 'search', wa: 'wa', ig: 'ig', tg: 'tg', phone: 'user', web: 'globe' };
+    return '<ul class="cab-stats">' + CAB_STATS.map(function (k) {
+      return '<li class="' + (k[0] === 'views' ? 'big' : '') + '"><span class="ic">' + icon(ic[k[0]], 18) + '</span><b>' + (st[k[0]] || 0).toLocaleString('ru-RU') + '</b><span>' + esc(lab[k[0]]) + '</span></li>';
+    }).join('') + '</ul>';
+  }
+  function paintCabStats() { var b = document.getElementById('cab-stats'); if (b) b.innerHTML = cabStatsHTML(); }
+  function filled(v) {
+    if (v == null) return false;
+    if (typeof v === 'object' && !Array.isArray(v)) v = v.ru || v.kz || v.en || '';
+    var t = String(v).trim();
+    return !!t && !/^(—|-|нет|жоқ|no)$/i.test(t);
+  }
+  function cabChecks(c) {
+    var T = STR[state.lang];
+    return [
+      [T.cab_ck_photo, filled(c.photo)],
+      [T.cab_ck_about, filled(c.about) && String((c.about && c.about.ru) || '').length > 60],
+      [T.cab_ck_sched, filled(c.sched)],
+      [T.cab_ck_addr, filled(c.addr) && !!(c.lat && c.lng)],
+      [T.cab_ck_tel, filled(c.tel)],
+      [T.cab_ck_soc, filled(c.ig) || filled(c.tg)],
+      [T.cab_ck_media, Array.isArray(c.media) && c.media.length > 0],
+      [T.cab_ck_beg, !!c.beginner]
+    ];
+  }
+  function cabHelpHTML(T) {
+    return '<div class="cab-box cab-help"><h2>' + esc(T.cab_forgot_h) + '</h2><p>' + esc(T.cab_forgot_p) + '</p>' +
+      '<a class="cab-wa" href="' + esc(orgWaLink(T.cab_wa_text)) + '" target="_blank" rel="noopener">' + icon('wa', 20) + esc(T.cab_wa) + '</a></div>';
+  }
+  function cabinetView() {
+    cabRestore();
+    var L = state.lang, T = STR[L], cab = state.cab, c = cab.slug && findClub(cab.slug);
+    if (!c) {
+      return '<section class="screen wrap cab"><a class="back" href="#/">' + esc(T.back) + '</a>' +
+        '<div class="cab-login"><p class="sec-kicker">' + esc(T.join_k) + '</p><h1>' + esc(T.cab_h1) + '</h1>' +
+        '<p class="lead">' + esc(T.cab_lead) + '</p>' +
+        '<form class="cab-form" data-cab novalidate><label for="cab-code">' + esc(T.cab_code) + '</label>' +
+        '<div class="cab-row"><input id="cab-code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="QS-XXXX-XXXX" value="">' +
+        '<button class="btn-solid" type="submit"' + (cab.busy ? ' disabled' : '') + '>' + esc(cab.busy ? T.cab_busy : T.cab_go) + '</button></div>' +
+        (cab.err ? '<p class="cab-err" role="alert">' + esc(cab.err) + '</p>' : '') + '</form>' +
+        cabHelpHTML(T) +
+        '<div class="cab-box cab-new"><h2>' + esc(T.cab_new_h) + '</h2><a class="btn-solid" href="#/join">' + icon('plus', 18) + esc(T.cab_new_b) + '</a></div>' +
+        '</div></section>';
+    }
+    var checks = cabChecks(c), done = checks.filter(function (x) { return x[1]; }).length, pct = Math.round(done / checks.length * 100);
+    var url = shareUrl(c);
+    return '<section class="screen wrap cab"><a class="back" href="#/">' + esc(T.back) + '</a>' +
+      '<div class="cab-head"><div><p class="sec-kicker">' + esc(T.cab_hi) + '</p><h1>' + esc(c.name[L]) + '</h1></div>' +
+      '<button class="cab-out" data-action="cab-out">' + esc(T.cab_out) + '</button></div>' +
+      '<div class="cab-grid">' +
+      '<div class="cab-col"><div class="cab-card">' + cardHTML(c, L, T) + '</div>' +
+      '<div class="cab-acts"><a class="btn-solid" href="#/club/' + esc(encodeURIComponent(c.slug)) + '">' + esc(T.cab_open) + '</a>' +
+      '<a class="btn-line" href="#/join/' + esc(encodeURIComponent(c.slug)) + '">' + icon('plus', 16) + esc(T.cab_edit) + '</a></div></div>' +
+      '<div class="cab-col">' +
+      '<div class="cab-box"><h2>' + esc(T.cab_stats_h) + '</h2><p class="cab-muted">' + esc(T.cab_stats_p) + '</p><div id="cab-stats">' + cabStatsHTML() + '</div></div>' +
+      '<div class="cab-box"><h2>' + esc(T.cab_check_h) + '</h2>' +
+      '<div class="cab-bar"><i style="width:' + pct + '%"></i></div><p class="cab-pct"><b>' + pct + '%</b> ' + esc(T.cab_full) + '</p>' +
+      '<ul class="cab-checks">' + checks.map(function (x) {
+        return '<li class="' + (x[1] ? 'ok' : 'no') + '"><span class="ic">' + icon(x[1] ? 'check' : 'plus', 15) + '</span><span>' + esc(x[0]) + '</span>' +
+          (x[1] ? '' : '<a href="#/join/' + esc(encodeURIComponent(c.slug)) + '">' + esc(T.cab_add) + '</a>') + '</li>';
+      }).join('') + '</ul></div>' +
+      '<div class="cab-box"><h2>' + esc(T.cab_promo_h) + '</h2><p class="cab-muted">' + esc(T.cab_promo_p) + '</p>' +
+      '<div class="cab-promo"><div class="qr" id="qr" aria-hidden="true"></div><div class="cab-promo-b">' +
+      '<p class="share-url">' + esc(url.replace(/^https?:\/\//, '')) + '</p>' +
+      '<button class="btn-line" data-action="cab-copy" data-url="' + esc(url) + '">' + esc(cab.copied ? T.cab_linked : T.cab_link) + '</button>' +
+      '<button class="btn-line" data-action="qr-dl" data-slug="' + esc(c.slug) + '">' + esc(T.cab_qr) + '</button>' +
+      '<button class="btn-line" data-action="cab-story">' + esc(T.cab_story) + '</button></div></div></div>' +
+      '<div class="cab-box cab-help"><h2>' + esc(T.cab_help_h) + '</h2><p>' + esc(T.cab_help_p) + '</p>' +
+      '<a class="cab-wa" href="' + esc(orgWaLink(T.cab_wa_text)) + '" target="_blank" rel="noopener">' + icon('wa', 20) + esc(T.cab_wa) + '</a></div>' +
+      '</div></div></section>';
+  }
+  function mountCabinet(changedPage) {
+    var c = state.cab && state.cab.slug && findClub(state.cab.slug);
+    if (!c) { var inp = document.getElementById('cab-code'); if (inp && changedPage) inp.focus({ preventScroll: true }); return; }
+    renderQR(shareUrl(c));
+    if (state.cab.stats == null) cabLoadStats(c);
+  }
+  // Картинка 1080×1920 для сторис: знак, «Мы на Qosyl», название и QR на карточку.
+  function cabStory() {
+    var c = state.cab && findClub(state.cab.slug);
+    if (!c || typeof window.qrcode !== 'function') return;
+    var T = STR[state.lang], L = state.lang;
+    var cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1920;
+    var x = cv.getContext('2d');
+    var g = x.createLinearGradient(0, 0, 1080, 1920); g.addColorStop(0, '#1B3790'); g.addColorStop(.55, '#10225C'); g.addColorStop(1, '#0B1840');
+    x.fillStyle = g; x.fillRect(0, 0, 1080, 1920);
+    var rg = x.createRadialGradient(860, 260, 0, 860, 260, 700); rg.addColorStop(0, 'rgba(64,110,240,.55)'); rg.addColorStop(1, 'rgba(64,110,240,0)');
+    x.fillStyle = rg; x.fillRect(0, 0, 1080, 1920);
+    var font = function (w, px) { return w + ' ' + px + 'px "Unbounded", "Golos Text", sans-serif'; };
+    var wrap = function (text, maxW, px, w) {
+      x.font = font(w, px); var words = String(text).split(/\s+/), lines = [], line = '';
+      words.forEach(function (wd) { var t = line ? line + ' ' + wd : wd; if (x.measureText(t).width > maxW && line) { lines.push(line); line = wd; } else line = t; });
+      if (line) lines.push(line); return lines.slice(0, 4);
+    };
+    var img = new Image();
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 32 32" fill="none">' +
+      '<path d="M16 4 L28 16 L16 28 L4 16 Z" stroke="#A9C1FF" stroke-opacity=".7" stroke-width="1.2"/>' +
+      '<path d="M10 16 C10 12 13 10.5 16 13 C19 10.5 22 12 22 16 C22 19.5 19 21.5 16 24 C13 21.5 10 19.5 10 16 Z" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/>' +
+      '<circle cx="16" cy="8.5" r="2" fill="#fff"/><circle cx="23.5" cy="16" r="2" fill="#fff"/><circle cx="8.5" cy="16" r="2" fill="#fff"/></svg>';
+    var draw = function (ok) {
+      if (ok) x.drawImage(img, 430, 250, 220, 220);
+      x.fillStyle = '#fff'; x.textAlign = 'center';
+      x.font = font(700, 92); x.fillText(T.cab_story_t, 540, 640);
+      x.fillStyle = '#AFC0FF';
+      wrap(c.name[L], 900, 62, 600).forEach(function (ln, i) { x.font = font(600, 62); x.fillText(ln, 540, 760 + i * 78); });
+      var qr = window.qrcode(0, 'M'); qr.addData(shareUrl(c)); qr.make();
+      var n = qr.getModuleCount(), size = 600, cell = Math.floor(size / n), qs = cell * n, ox = 540 - qs / 2, oy = 1030;
+      x.fillStyle = '#fff'; var pad = 44;
+      if (x.roundRect) { x.beginPath(); x.roundRect(ox - pad, oy - pad, qs + pad * 2, qs + pad * 2, 48); x.fill(); } else x.fillRect(ox - pad, oy - pad, qs + pad * 2, qs + pad * 2);
+      x.fillStyle = '#0E1530';
+      for (var r = 0; r < n; r++) for (var k = 0; k < n; k++) if (qr.isDark(r, k)) x.fillRect(ox + k * cell, oy + r * cell, cell, cell);
+      x.fillStyle = '#C9D3FF'; x.font = '600 40px "Golos Text", sans-serif'; x.fillText(T.cab_story_s, 540, oy + qs + 130);
+      x.fillStyle = '#fff'; x.font = font(700, 56); x.fillText('qosyl.club', 540, oy + qs + 220);
+      cv.toBlob(function (b) {
+        var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'qosyl-story-' + c.slug + '.png'; a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+      }, 'image/png');
+      statsSend({ path: 'cabinet/story', title: 'Кабинет — сторис', event: true });
+    };
+    img.onload = function () { draw(true); };
+    img.onerror = function () { draw(false); };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
+
+  // Панель создателя: коды для кабинета. Код выдаётся организатору, в каталог
+  // попадает только отпечаток kh. Сам список кодов держи у себя, вне репозитория.
+  function codesHTML() {
+    var cs = state.codes || {};
+    return '<div class="codes"><p class="label">Коды для кабинета организатора</p>' +
+      '<p class="intro" style="margin-top:0">Нажми «Новый код» у сообщества, отправь код организатору (лучше в WhatsApp) и сохрани его у себя. ' +
+      'Потом скачай каталог с отпечатками и замени им communities.json — без этого код не заработает. Если код уже выдан раньше — впиши его в поле.</p>' +
+      '<ul class="codes-list">' + allClubs().map(function (c) {
+        var v = cs[c.slug] || {};
+        return '<li><span class="nm">' + esc(c.name.ru) + (c.kh ? ' <em class="has">есть код</em>' : '') + '</span>' +
+          '<input data-code-slug="' + esc(c.slug) + '" value="' + esc(v.code || '') + '" placeholder="QS-XXXX-XXXX" autocomplete="off">' +
+          '<button data-action="code-gen" data-id="' + esc(c.slug) + '">Новый код</button>' +
+          (v.kh ? '<span class="kh">отпечаток готов</span>' : '') + '</li>';
+      }).join('') + '</ul>' +
+      '<button class="btn-solid" data-action="codes-dl">Скачать communities.json с отпечатками</button></div>';
+  }
+  function codeSet(slug, code) {
+    state.codes = state.codes || {};
+    state.codes[slug] = { code: code, kh: '' };
+    return codeHash(code).then(function (h) { state.codes[slug].kh = h; var box = document.getElementById('codes'); if (box) box.innerHTML = codesHTML(); });
+  }
+  function codesDownload() {
+    var cs = state.codes || {};
+    var list = JSON.parse(catalogueFile()).map(function (c) { if (cs[c.slug] && cs[c.slug].kh) c.kh = cs[c.slug].kh; return c; });
+    var blob = new Blob([JSON.stringify(list, null, 1)], { type: 'application/json' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'communities.json'; a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
   }
 
   // Призыв для организаторов: ведёт на форму прямо на сайте.
@@ -774,7 +1018,8 @@
     var T = STR[state.lang];
     return '<section class="own" data-reveal>' + MARK('mark') +
       '<div class="own-txt"><h2>' + esc(T.own_h) + '</h2><p>' + esc(T.own_p) + '</p>' +
-      '<a class="own-btn" href="#/join">' + icon('plus', 20) + esc(T.own_b) + '</a></div>' +
+      '<div class="own-acts"><a class="own-btn" href="#/join">' + icon('plus', 20) + esc(T.own_b) + '</a>' +
+      '<a class="own-cab" href="#/cabinet">' + icon('user', 18) + esc(T.cab_nav) + '</a></div></div>' +
       '<ul class="perks">' + [T.perk1, T.perk2, T.perk3, T.perk4].map(function (p) {
         return '<li><span class="ok-ic">' + icon('check', 16) + '</span>' + esc(p) + '</li>';
       }).join('') + '</ul></section>';
@@ -895,7 +1140,9 @@
     var share = '<div class="share"><div class="qr" id="qr" aria-hidden="true"></div><div style="min-width:0">' +
       '<h2>' + esc(T.share_h) + '</h2><p class="share-url">' + esc(url.replace(/^https?:\/\//, '')) + '</p>' +
       '<div class="share-actions"><button data-action="copy-link" data-url="' + esc(url) + '">' + esc(state.linkCopied ? T.link_copied : T.copy_link) + '</button>' +
-      '<button data-action="qr-dl" data-slug="' + esc(c.slug) + '">' + esc(T.qr_dl) + '</button></div></div></div>';
+      '<button data-action="qr-dl" data-slug="' + esc(c.slug) + '">' + esc(T.qr_dl) + '</button>' +
+      (tgBot() ? '<a class="share-tg" href="' + esc(tgLink('c_' + c.slug)) + '" target="_blank" rel="noopener">' + icon('tg', 16) + esc(T.tg_club) + '</a>' : '') +
+      '</div></div></div>';
 
     var upd = isOpen(c) ? '' : '<a class="upd-link" href="#/join/' + slug + '">' + icon('plus', 16) + esc(T.update_link) + '</a>';
 
@@ -1012,7 +1259,8 @@
       // и владелец сайта. Сайт код не проверяет — он лишь передаёт его вместе
       // с заявкой, а сверяет Дамир по своему закрытому списку (в репозиторий
       // список не попадает, иначе его увидел бы любой).
-      body = (d.upd && !claiming(d) ? jfInput('code', T.j_code, { ph: 'QS-XXXX-XXXX', hint: T.j_code_hint, auto: 'off' }) : '') +
+      body = (d.upd && !claiming(d) ? jfInput('code', T.j_code, { ph: 'QS-XXXX-XXXX', hint: T.j_code_hint, auto: 'off',
+        after: '<a class="cab-wa sm" href="' + esc(orgWaLink(T.cab_wa_text)) + '" target="_blank" rel="noopener">' + icon('wa', 18) + esc(T.j_code_wa) + '</a>' }) : '') +
         jfInput('name', T.j_name, { ph: T.j_name_ph, auto: 'organization' }) +
         '<div class="jf-f' + (state.joinErr.cat ? ' bad' : '') + '">' + jfLabel(T.j_cat) +
         '<div class="jf-cats" role="group" aria-label="' + esc(T.j_cat) + '">' +
@@ -1511,6 +1759,7 @@
         '<button class="btn-small" data-action="download-catalogue">Скачать communities.json</button>' +
         '<div class="json-head" style="margin-top:22px"><p>Или скопировать код вручную</p><button data-action="copy-json">' + (state.copied ? 'Скопировано' : 'Скопировать') + '</button></div>' +
         '<textarea class="json" readonly rows="8">' + esc(jsonOut()) + '</textarea></div>' : '') +
+      '<div class="block" id="codes">' + codesHTML() + '</div>' +
       '</section>';
   }
 
@@ -1756,6 +2005,10 @@
     document.getElementById('foot-about').textContent = T.nav_about;
     document.getElementById('foot-map').textContent = T.nav_map;
     document.getElementById('foot-priv').textContent = T.foot_priv;
+    var fc = document.getElementById('foot-cab');
+    if (fc) fc.textContent = T.cab_nav;
+    var ft = document.getElementById('foot-tg');
+    if (ft) { ft.hidden = !tgBot(); if (tgBot()) { ft.href = tgLink(); ft.textContent = T.tg_foot; } }
     // The creator panel is for the site owner, so its link is hidden unless config says otherwise.
     document.getElementById('foot-add').hidden = !CFG.creatorLink;
   }
@@ -1768,6 +2021,7 @@
     if (r.screen === 'catalog') return T.title_catalog;
     if (r.screen === 'add') return 'Панель создателя — ' + site;
     if (r.screen === 'join') return T.join_h1 + ' — ' + site;
+    if (r.screen === 'cabinet') return T.cab_h1 + ' — ' + site;
     return T.title_home;
   }
 
@@ -1792,6 +2046,7 @@
       : r.screen === 'map' ? mapView()
       : r.screen === 'add' ? addView()
       : r.screen === 'catalog' ? catalogView()
+      : r.screen === 'cabinet' ? cabinetView()
       : homeView();
     if (changedPage) app.setAttribute('data-enter', ''); else app.removeAttribute('data-enter');
     app.innerHTML = html;
@@ -1802,6 +2057,7 @@
     if (r.screen === 'home' || r.screen === 'catalog') mountCatMap();
     if (r.screen === 'add') mountPickMap();
     if (r.screen === 'club') { var c = findClub(r.id); if (c) { renderQR(shareUrl(c)); mountMiniMap(c); } }
+    if (r.screen === 'cabinet') mountCabinet(changedPage);
     reveal(app, !changedPage);
     if ((r.screen === 'home' || r.screen === 'catalog') && changedPage) countUp(app);
 
@@ -1818,6 +2074,7 @@
     if (state.joinStatus !== 'sending') state.joinStatus = '';
     var c = slug && findClub(slug);
     if (c && state.join.upd !== c.slug) { state.join = joinFromClub(c); state.joinStep = 0; saveDraft(); }
+    if (c && state.cabCode && state.cab && state.cab.slug === c.slug) { state.join.code = state.cabCode; }
     else if (!slug && state.join.upd) { state.join = blankJoin(); state.joinStep = 0; saveDraft(); }
   }
 
@@ -2027,6 +2284,27 @@
       case 'qr-dl':
         downloadQR(el.getAttribute('data-slug'));
         break;
+      case 'cab-out':
+        cabLogout();
+        break;
+      case 'cab-copy':
+        copyText(el.getAttribute('data-url'));
+        state.cab.copied = true;
+        el.textContent = STR[state.lang].cab_linked;
+        statsSend({ path: 'cabinet/copy', title: 'Кабинет — ссылка', event: true });
+        break;
+      case 'cab-story':
+        cabStory();
+        break;
+      case 'code-gen':
+        var cin = document.querySelector('[data-code-slug="' + id + '"]');
+        var nc = newCode();
+        if (cin) cin.value = nc;
+        codeSet(id, nc);
+        break;
+      case 'codes-dl':
+        codesDownload();
+        break;
       case 'form-cat':
         state.form.cat = id; state.formErr = '';
         updateGuess();
@@ -2083,6 +2361,7 @@
     if (t.hasAttribute('data-photo')) handlePhotoFile(t.files[0]);
     if (t.hasAttribute('data-sort')) { state.sort = t.value === 'az' ? 'az' : 'rec'; state.shown = PAGE; repaintList(); }
     if (t.hasAttribute('data-dist-sel')) { state.dist = t.value || 'all'; state.shown = PAGE; repaintList(); }
+    if (t.hasAttribute('data-code-slug')) { if (normCode(t.value).length >= 6) codeSet(t.getAttribute('data-code-slug'), t.value.trim().toUpperCase()); }
   });
 
   // Поиск есть в двух местах — в бренд-блоке и в шапке каталога. Текст держим одинаковым.
@@ -2127,6 +2406,12 @@
 
   // Поиск в бренд-блоке: Enter прокручивает к найденному и прячет клавиатуру телефона.
   document.addEventListener('submit', function (e) {
+    if (e.target.hasAttribute && e.target.hasAttribute('data-cab')) {
+      e.preventDefault();
+      var ci = document.getElementById('cab-code');
+      if (ci && ci.value.trim() && !state.cab.busy) cabLogin(ci.value);
+      return;
+    }
     if (!e.target.hasAttribute || !e.target.hasAttribute('data-search')) return;
     e.preventDefault();
     var qi = e.target.querySelector('input');

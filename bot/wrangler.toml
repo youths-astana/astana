@@ -1,0 +1,18 @@
+# Настройки для деплоя через Wrangler (необязательно — можно всё сделать в панели Cloudflare).
+name = "qosyl-bot"
+main = "worker.js"
+compatibility_date = "2024-09-01"
+
+[[kv_namespaces]]
+binding = "DB"
+id = "ВСТАВЬТЕ_ID_KV"   # wrangler kv namespace create DB
+
+[triggers]
+crons = ["*/10 * * * *"]
+
+[vars]
+SITE_URL = "https://qosyl.club/"
+# ADMIN_IDS = "123456789"          # ваш Telegram ID (узнать: /myid в боте)
+# Секреты задаются командами, не здесь:
+#   wrangler secret put BOT_TOKEN
+#   wrangler secret put WEBHOOK_SECRET

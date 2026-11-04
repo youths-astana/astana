@@ -1,0 +1,7 @@
+{
+  "name": "qosyl-bot",
+  "private": true,
+  "type": "module",
+  "description": "Telegram-бот каталога Qosyl. Инструкция: README.md",
+  "scripts": { "start": "node node.js", "sync": "node sync-data.mjs" }
+}

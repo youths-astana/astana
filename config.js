@@ -10,6 +10,11 @@ window.QOSYL_CONFIG = {
   // GoatCounter code for anonymous visit statistics (no cookies, no personal data), e.g. 'youths-astana'
   // from https://youths-astana.goatcounter.com. Empty = statistics are off.
   goatcounter: 'youths-astana',
+  // Telegram-бот Qosyl: имя без @, например 'qosyl_club_bot'. Пока пусто — блоки
+  // «У нас есть Telegram-бот» на сайте не показываются (чтобы не вести в пустоту).
+  telegramBot: '',
+  // WhatsApp для организаторов: кабинет, «забыли код», вопросы. Только цифры.
+  orgWhatsApp: '77477434947',
   // Show the "+ Панель создателя" link in the footer to every visitor.
   // false = the link is hidden; the panel still opens at <site>#/add
   creatorLink: false,

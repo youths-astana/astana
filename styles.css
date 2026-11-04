@@ -828,3 +828,72 @@ header.top { position: sticky; top: 0; z-index: 1000; background: rgb(255 255 25
 .cs-bar .pill { padding: 0 13px }
 .cs-bar .sel { padding-right: 26px }
 .cs-bar .sel::after { right: 11px }
+
+/* ---------- Telegram-бот ---------- */
+.tgb { display: grid; gap: 16px; align-items: center; margin-bottom: 18px; padding: 22px 24px; border-radius: var(--r-xl); background: var(--card); border: 1px solid var(--line); box-shadow: var(--sh-2) }
+@media (min-width: 760px) { .tgb { grid-template-columns: auto minmax(0, 1fr) auto; gap: 22px; padding: 24px 30px } }
+.tgb-ic { display: grid; place-items: center; width: 60px; height: 60px; border-radius: 18px; background: #2AABEE; color: #fff }
+.tgb h2 { margin: 0 0 6px; font-family: var(--display); font-weight: 600; font-size: clamp(19px, 3vw, 24px); letter-spacing: -0.03em }
+.tgb p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.5 }
+.tgb-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 0 22px; border-radius: 14px; background: #2AABEE; color: #fff; font-weight: 700; font-size: 15px; white-space: nowrap }
+.tgb-btn:hover { background: #1E96D4; color: #fff }
+.share-tg { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 11px; background: #E7F5FD; color: #1683BF; font-size: 13.5px; font-weight: 700 }
+.own-acts { display: flex; flex-wrap: wrap; gap: 10px; align-items: center }
+.own-cab { display: inline-flex; align-items: center; gap: 8px; min-height: 54px; padding: 0 18px; border-radius: 16px; border: 1.5px solid rgb(255 255 255 / .35); color: #fff; font-size: 15px; font-weight: 600 }
+.own-cab:hover { color: #fff; background: rgb(255 255 255 / .08) }
+
+/* ---------- кабинет организатора ---------- */
+.btn-line { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 46px; padding: 0 16px; border: 1.5px solid var(--line); border-radius: 13px; background: var(--card); color: var(--ink); font-size: 14.5px; font-weight: 600; cursor: pointer }
+.btn-line:hover { border-color: var(--accent); color: var(--accent-dk) }
+.cab-login { max-width: 640px }
+.cab-login h1, .cab-head h1 { margin: 6px 0 12px; font-family: var(--display); font-weight: 700; font-size: clamp(27px, 4.8vw, 40px); line-height: 1.07; letter-spacing: -0.04em }
+.cab-login .lead { margin: 0 0 22px; font-size: 16.5px; line-height: 1.55; color: var(--muted) }
+.cab-form { display: grid; gap: 8px; margin-bottom: 18px; padding: 20px; border: 1px solid var(--line); border-radius: var(--r-l); background: var(--card); box-shadow: var(--sh-2) }
+.cab-form label { font-weight: 600; font-size: 14px }
+.cab-row { display: flex; gap: 10px; flex-wrap: wrap }
+.cab-row input { flex: 1 1 220px; min-height: 50px; padding: 0 16px; border: 1.5px solid var(--field); border-radius: 13px; background: #fff; font-family: var(--mono); font-size: 17px; letter-spacing: .06em; text-transform: uppercase }
+.cab-row input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgb(47 107 255 / .15) }
+.cab-err { margin: 4px 0 0; color: var(--err); font-weight: 600; font-size: 14px }
+.cab-box { margin-bottom: 16px; padding: 20px; border: 1px solid var(--line); border-radius: var(--r-l); background: var(--card); box-shadow: var(--sh-2) }
+.cab-box h2 { margin: 0 0 8px; font-family: var(--display); font-weight: 600; font-size: 19px; letter-spacing: -0.03em }
+.cab-box p { margin: 0 0 14px; color: var(--muted); font-size: 14.5px; line-height: 1.5 }
+.cab-muted { color: var(--muted); font-size: 14px }
+.cab-wa { display: inline-flex; align-items: center; gap: 9px; min-height: 50px; padding: 0 20px; border-radius: 14px; background: var(--wa); color: #fff; font-weight: 700; font-size: 15px }
+.cab-wa:hover { background: var(--wa-dk); color: #fff }
+.cab-wa.sm { min-height: 42px; margin-top: 8px; padding: 0 14px; border-radius: 12px; font-size: 13.5px; justify-self: start }
+.cab-new .btn-solid { margin-top: 2px }
+.cab-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 18px }
+.cab-out { min-height: 42px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--card); font-weight: 600; color: var(--muted); cursor: pointer }
+.cab-grid { display: grid; gap: 18px }
+@media (min-width: 940px) { .cab-grid { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 28px; align-items: start } .cab-grid > .cab-col:first-child { position: sticky; top: 90px } }
+.cab-card .club { max-width: 420px }
+.cab-acts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px }
+.cab-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none }
+@media (min-width: 560px) { .cab-stats { grid-template-columns: repeat(3, minmax(0, 1fr)) } }
+.cab-stats li { display: grid; gap: 2px; padding: 14px; border-radius: 16px; background: var(--paper) }
+.cab-stats li.big { grid-column: 1 / -1; background: var(--accent-bg) }
+.cab-stats .ic { color: var(--accent) }
+.cab-stats b { font-family: var(--display); font-size: 26px; letter-spacing: -0.03em }
+.cab-stats li.big b { font-size: 36px }
+.cab-stats span:last-child { font-size: 13px; color: var(--muted); font-weight: 600 }
+.cab-bar { height: 10px; border-radius: 5px; background: var(--line-2); overflow: hidden }
+.cab-bar i { display: block; height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--accent), #5B8CFF) }
+.cab-pct { margin: 8px 0 12px !important; color: var(--ink) !important }
+.cab-checks { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none }
+.cab-checks li { display: flex; align-items: center; gap: 10px; font-size: 14.5px; font-weight: 500 }
+.cab-checks li span:nth-child(2) { flex: 1 }
+.cab-checks .ic { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--chip); color: var(--soft) }
+.cab-checks li.ok .ic { background: var(--ok-bg); color: var(--ok) }
+.cab-checks li.no { color: var(--muted) }
+.cab-checks a { font-size: 13.5px; font-weight: 700 }
+.cab-promo { display: flex; gap: 16px; align-items: center; flex-wrap: wrap }
+.cab-promo .qr { width: 120px; height: 120px; flex: none }
+.cab-promo-b { display: flex; flex-wrap: wrap; gap: 8px; flex: 1 1 220px }
+.cab-promo-b .share-url { width: 100%; margin: 0 0 4px; font-family: var(--mono); font-size: 13px; color: var(--soft); word-break: break-all }
+.codes .codes-list { display: grid; gap: 8px; margin: 10px 0 16px; padding: 0; list-style: none }
+.codes .codes-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px }
+.codes .nm { flex: 1 1 220px; font-weight: 600 }
+.codes .nm .has { font-style: normal; font-size: 12px; color: var(--ok); margin-left: 6px }
+.codes input { width: 170px; min-height: 40px; padding: 0 10px; border: 1.5px solid var(--field); border-radius: 10px; font-family: var(--mono); text-transform: uppercase }
+.codes button { min-height: 40px; padding: 0 12px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--card); font-weight: 600; cursor: pointer }
+.codes .kh { font-size: 12.5px; color: var(--ok); font-weight: 700 }
