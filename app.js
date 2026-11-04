@@ -664,9 +664,11 @@
     ];
     return '<section class="catalog' + (page ? ' is-page' : '') + '" id="catalog">' +
       '<div class="cs-top"><span class="cs-glow" aria-hidden="true"></span>' + MARK('cs-mark') +
-      '<div class="wrap cs-top-in"><div class="cs-title">' +
-      '<p class="cs-kicker">' + icon('all', 15) + esc(T.cat_k) + '</p>' +
-      '<' + H + ' class="cs-h">' + esc(T.catalog_h) + '</' + H + '>' +
+      // Слово «Каталог» — самое крупное на экране: так с первого взгляда ясно, где ты.
+      '<div class="wrap cs-top-in">' +
+      '<' + H + ' class="cs-h' + (T.cs_word.length > 7 ? ' long' : '') + '"><span class="cs-word">' + esc(T.cs_word) + '</span>' +
+      '<span class="cs-n" aria-label="' + esc(ALL.length + ' ' + plural(ALL.length, L)) + '">' + ALL.length + '</span></' + H + '>' +
+      '<div class="cs-title"><p class="cs-sub">' + esc(T.catalog_h) + '</p>' +
       '<p class="cs-lead">' + esc(T.catalog_lead) + '</p></div>' +
       '<ul class="cs-stats">' + stats.map(function (s) { return '<li><b data-count="' + s[0] + '">' + s[0] + '</b><span>' + esc(s[1]) + '</span></li>'; }).join('') + '</ul>' +
       '<form class="cs-search" role="search" data-search>' + icon('search', 20) +
