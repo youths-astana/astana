@@ -72,14 +72,37 @@ img { max-width: 100% }
 @keyframes scr { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
 #app[data-enter] > * { animation: scr .28s var(--ease) both }
 
-/* Появление при прокрутке. Класс js-reveal ставит app.js, только если браузер
-   умеет IntersectionObserver, — без него всё видно сразу. */
-.js-reveal [data-reveal] { opacity: 0; transform: translateY(18px); transition: opacity .6s var(--ease), transform .6s var(--ease) }
+/* Появление при прокрутке, как AnimatedContent из React Bits: блок выезжает
+   снизу на --rise и проявляется за .8 с (кривая power3.out). Класс js-reveal
+   ставит app.js, только если браузер умеет IntersectionObserver, — без него
+   всё видно сразу. [data-kids] — дети по очереди (--k × 80 мс),
+   [data-items] — каждая карточка сама, когда доходит до экрана. */
+:root { --rise: 100px; --out3: cubic-bezier(.215, .61, .355, 1) }
+@media (max-width: 759px) { :root { --rise: 60px } }
+.js-reveal [data-reveal] { opacity: 0; transform: translateY(calc(var(--rise) * .5)); transition: opacity .8s var(--out3), transform .8s var(--out3) }
 .js-reveal [data-reveal].in { opacity: 1; transform: none }
+.js-reveal [data-kids]:not(.done) > * { transition: opacity .8s var(--out3), transform .8s var(--out3); transition-delay: calc(var(--k, 0) * 80ms) }
+.js-reveal [data-kids]:not(.in) > * { opacity: 0; transform: translateY(var(--rise)) }
+.js-reveal [data-items] > :not(.done) { transition: opacity .8s var(--out3), transform .8s var(--out3) }
+.js-reveal [data-items] > :not(.in) { opacity: 0; transform: translateY(var(--rise)) }
 @media (prefers-reduced-motion: reduce) {
-  .js-reveal [data-reveal] { opacity: 1; transform: none; transition: none }
+  .js-reveal [data-reveal], .js-reveal [data-kids] > *, .js-reveal [data-items] > * { opacity: 1; transform: none; transition: none }
   #app[data-enter] > * { animation: none }
 }
+
+/* Складывающиеся буквы (FoldText): каждая буква висит на петле по верхнему
+   краю и раскрывается по очереди (--i × 45 мс). Пока буква сложена, на сгибе
+   тень. После раскрытия буквы рядом с курсором слегка приподнимаются (--r). */
+/* Двойной класс — чтобы перебить правила вроде «.hero-h span { display: block }». */
+.fx .fx-w { display: inline-block; white-space: nowrap }
+.fx .fx-s { display: inline-block; perspective: 700px; vertical-align: baseline }
+.fx .fx-p { display: inline-block; padding: .1em 0 .14em; margin: -.1em 0 -.14em; transform-origin: 50% 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  -webkit-background-clip: text; background-clip: text; background-repeat: no-repeat;
+  transform: rotateX(calc(var(--r, 0) * -45deg)); filter: brightness(calc(1 - var(--r, 0) * .35));
+  transition: transform .65s var(--out3), opacity .65s var(--out3), filter .65s var(--out3); transition-delay: calc(var(--i, 0) * 45ms) }
+.fx:not(.fx-in) .fx-p { transform: rotateX(-92deg); opacity: 0; filter: brightness(.45) }
+.fx-done .fx-p { transition-duration: .35s; transition-delay: 0s }
+@media (prefers-reduced-motion: reduce) { .fx .fx-p { transform: none !important; filter: none !important; opacity: 1 !important; transition: none } }
 
 /* ---------- шапка ---------- */
 /* Только шапка сайта: у значка «Лучшее» раньше был тот же класс top,
@@ -142,48 +165,43 @@ header.top { position: sticky; top: 0; z-index: 1000; background: rgb(255 255 25
 .hero-stats b { display: block; font-family: var(--display); font-size: clamp(26px, 4.4vw, 38px); font-weight: 600; line-height: 1; letter-spacing: -0.04em }
 .hero-stats span { display: block; margin-top: 7px; font-size: 13px; color: #9FAEDF }
 
-/* Направления, которые парят справа в бренд-блоке. Это украшение-дубль
-   ряда направлений ниже, поэтому оно скрыто от экранных дикторов. */
-.hero-art { display: none }
-@media (min-width: 940px) {
-  .hero-art { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; justify-self: end; width: min(100%, 480px) }
-  .hero-art::before { content: ""; position: absolute; inset: 4% 2%; border-radius: 50%; background: radial-gradient(circle, rgb(110 150 255 / .38) 0%, rgb(110 150 255 / 0) 70%); filter: blur(22px) }
-  .hero-art .float-tile:nth-child(2n) { margin-top: 26px; animation-delay: -1.5s }
-  .hero-art .float-tile:nth-child(3n) { animation-delay: -3s }
-  .hero-art .float-tile:nth-child(5n) { animation-delay: -4.5s }
-}
+/* Кольцо направлений (CircularCarousel): плитки стоят по кругу и вращаются,
+   кольцо можно раскрутить пальцем. Геометрию считает motion.js — здесь только
+   оформление. --rw — сторона плитки, --fade — насколько плитка ушла назад:
+   дальние темнеют в цвет бренд-блока. Это украшение-дубль ряда направлений
+   в каталоге, поэтому скрыто от экранных дикторов. */
+.hero-ring { position: relative; height: 230px; margin: -6px -18px -16px; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; cursor: grab }
+.hero-ring::before { content: ""; position: absolute; left: 12%; right: 12%; top: 18%; bottom: 10%; border-radius: 50%; background: radial-gradient(closest-side, rgb(110 150 255 / .34), rgb(110 150 255 / 0)); filter: blur(18px); pointer-events: none }
+.hero-ring.dragging { cursor: grabbing }
+@media (min-width: 940px) { .hero-ring { height: 430px; margin: -20px -10px -20px 0 } }
+.ring-stage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center }
+.ring-cam, .ring-spin, .ring-card { width: 0; height: 0; transform-style: preserve-3d }
+.ring-cam { position: relative }
+.ring-spin, .ring-card { position: absolute; left: 0; top: 0 }
+.ring-card .float-tile, .ring-back { position: absolute; left: calc(var(--rw, 100px) / -2); top: calc(var(--rw, 100px) / -2); width: var(--rw, 100px); height: var(--rw, 100px); backface-visibility: hidden; -webkit-backface-visibility: hidden }
+.ring-card .float-tile { border-radius: calc(var(--rw, 100px) * .26); animation: none; transform: none; transition: scale .25s var(--ease), box-shadow .25s }
+.ring-card .float-tile::before { content: ""; position: absolute; inset: 0; z-index: 2; background: var(--navy); opacity: var(--fade, 0); pointer-events: none }
+.ring-card .float-tile:hover { rotate: none }
+.ring-back { transform: rotateY(180deg); border-radius: calc(var(--rw, 100px) * .26); border: 1px solid rgb(255 255 255 / .08); background: linear-gradient(155deg, oklch(0.34 0.1 var(--h)) 0%, oklch(0.2 0.07 var(--h)) 100%); opacity: .55; pointer-events: none }
+.hero-ring.dragging .float-tile { pointer-events: none }
 /* Плитка — «стеклянная конфета»: блик сверху слева, тень изнутри снизу,
-   по ней раз в несколько секунд пробегает отблеск. Смещение за мышкой —
-   через transform, покачивание — через translate, наведение — через scale,
-   поэтому все три движения складываются, а не перебивают друг друга. */
+   по ней раз в несколько секунд пробегает отблеск. */
 .float-tile { position: relative; overflow: hidden; display: grid; grid-template-columns: 100%; justify-items: center; align-content: center; gap: 6px; aspect-ratio: 1; border: 1px solid rgb(255 255 255 / .18); border-radius: 26px;
   background: radial-gradient(120% 90% at 22% 12%, oklch(0.64 0.16 var(--h) / .95) 0%, rgb(0 0 0 / 0) 58%),
               linear-gradient(155deg, oklch(0.45 0.13 var(--h)) 0%, oklch(0.27 0.09 var(--h)) 100%);
   color: oklch(0.94 0.07 var(--h));
   box-shadow: inset 0 1px 0 rgb(255 255 255 / .3), inset 0 -16px 26px rgb(0 0 0 / .24), 0 16px 34px rgb(0 0 0 / .32);
   cursor: pointer;
-  transform: translate3d(calc(var(--px, 0) * var(--d, 10px) * -2), calc(var(--py, 0) * var(--d, 10px) * -2), 0);
-  animation: bob 6s ease-in-out infinite;
-  transition: transform .5s var(--ease), scale .25s var(--ease), rotate .25s var(--ease), box-shadow .25s }
+  transition: scale .25s var(--ease), rotate .25s var(--ease), box-shadow .25s }
 .float-tile .ic-svg { position: relative; width: 46%; height: auto; aspect-ratio: 1; stroke-width: 1.9; filter: drop-shadow(0 4px 10px rgb(0 0 0 / .28)) }
 .float-tile b { position: relative; max-width: 92%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; font-weight: 700; letter-spacing: .01em; color: #fff; opacity: .92 }
 .float-tile::after { content: ""; position: absolute; inset: -50%; background: linear-gradient(115deg, rgb(255 255 255 / 0) 42%, rgb(255 255 255 / .3) 50%, rgb(255 255 255 / 0) 58%); translate: -70% 0; animation: shine 7s ease-in-out infinite; animation-delay: var(--sd, 0s); pointer-events: none }
 .float-tile .n { position: absolute; top: 9px; right: 9px; z-index: 1; display: grid; place-items: center; min-width: 24px; height: 24px; padding: 0 7px; border-radius: 999px; background: #fff; color: oklch(0.4 0.15 var(--h)); font-size: 12.5px; font-weight: 800; box-shadow: 0 4px 10px rgb(0 0 0 / .28) }
 .float-tile:hover { scale: 1.08; rotate: -3deg; box-shadow: inset 0 1px 0 rgb(255 255 255 / .35), inset 0 -16px 26px rgb(0 0 0 / .2), 0 0 0 2px oklch(0.78 0.13 var(--h) / .7), 0 22px 46px rgb(0 0 0 / .42) }
-@keyframes bob { 0%, 100% { translate: 0 0 } 50% { translate: 0 -8px } }
 @keyframes shine { 0%, 72% { translate: -70% 0 } 100% { translate: 70% 0 } }
 
-/* Телефон: те же плитки бегущей лентой под цифрами; палец её останавливает. */
-.hero-strip { position: relative; overflow: hidden; padding: 4px 0 30px; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%) }
-.hero-strip-in { display: flex; gap: 12px; width: max-content; animation: marquee 40s linear infinite }
-.hero-strip:hover .hero-strip-in, .hero-strip:active .hero-strip-in { animation-play-state: paused }
-.hero-strip .float-tile { flex: none; width: 96px; border-radius: 24px; animation: none; transform: none }
-.hero-strip .float-tile:nth-child(odd) { margin-top: 10px }
-@keyframes marquee { to { transform: translateX(-50%) } }
-@media (min-width: 940px) { .hero-strip { display: none } }
 @media (prefers-reduced-motion: reduce) {
-  .float-tile, .float-tile::after, .hero-mark, .pulse::after, .hero-strip-in { animation: none }
-  .hero-strip { overflow-x: auto }
+  .float-tile::after, .hero-mark, .pulse::after { animation: none }
 }
 
 /* ---------- секции главной ---------- */
@@ -254,6 +272,9 @@ header.top { position: sticky; top: 0; z-index: 1000; background: rgb(255 255 25
    и поиском, а плитки направлений заходят на её нижний край. Так с первого
    взгляда понятно, что дальше идёт сам каталог, а не ещё один блок главной. */
 .catalog { position: relative; margin-top: 52px; scroll-margin-top: 62px }
+/* На главной каталог идёт сразу за бренд-блоком — без светлой щели между двумя тёмными. */
+.hero + .catalog { margin-top: 0 }
+.hero + .catalog .cs-top { border-top: 1px solid rgb(255 255 255 / .08) }
 .home.is-catalog .catalog { margin-top: 0 }
 .cs-top { position: relative; overflow: hidden; padding: 40px 0 96px; color: #fff;
   background: radial-gradient(55% 90% at 100% 0%, oklch(0.52 0.17 285 / .6) 0%, rgb(0 0 0 / 0) 62%),
@@ -285,7 +306,19 @@ header.top { position: sticky; top: 0; z-index: 1000; background: rgb(255 255 25
 .cs-search:focus-within { box-shadow: 0 0 0 3px rgb(47 107 255 / .55), 0 14px 36px rgb(0 0 0 / .28) }
 .cs-search input { flex: 1; min-width: 0; min-height: 54px; border: 0; outline: none; background: transparent; font-size: 16.5px; color: var(--ink) }
 .cs-search input::-webkit-search-cancel-button { cursor: pointer }
-.cs-body { position: relative; margin-top: -70px }
+/* Выдача лежит на «живом» градиенте (Grainient). Холст размером с экран
+   прилипает к верху, пока листаешь список, — так он не растёт вместе
+   с выдачей. Сверху и снизу градиент растворяется в фоне страницы. Пока
+   WebGL не нарисовал первый кадр (или его нет), виден обычный CSS-градиент. */
+.cs-stage { position: relative; margin-top: -70px }
+.cs-body { position: relative }
+.cs-bg { position: absolute; left: 0; right: 0; top: 70px; bottom: 0; clip-path: inset(0); pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 140px, #000 calc(100% - 180px), transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 140px, #000 calc(100% - 180px), transparent 100%) }
+.cs-bg-in { position: sticky; top: 0; height: 100vh; background: linear-gradient(56deg, #FFFAFA 20%, #1B52DA 120%) }
+.grain-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100% }
+/* Подписи прямо на градиенте — на светлой подложке, чтобы читались и на синем. */
+.cs-body .count-l, .cs-body .updated { padding: 5px 12px; border-radius: 999px; background: rgb(255 255 255 / .72); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px) }
+.cs-body .updated { color: var(--soft) }
 
 /* ---------- каталог: плитки направлений ----------
    Цветные плитки, как полки в магазине приложений: у каждой секции свой цвет
@@ -331,11 +364,12 @@ header.top { position: sticky; top: 0; z-index: 1000; background: rgb(255 255 25
 .cs-bar-in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px }
 .cs-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px }
 @media (max-width: 759px) {
-  .cs-bar .filters { flex-wrap: nowrap; overflow-x: auto; margin: 0 -18px; padding: 2px 18px 4px; scrollbar-width: none }
-  .cs-bar .filters::-webkit-scrollbar { display: none }
-  .cs-bar .pill { flex: none }
-  .cs-tools { width: 100% }
-  .cs-tools .seg { margin-left: auto }
+  /* Телефон: «Фильтры» и «Список / Карта» в первой строке, порядок — под ними. */
+  .cs-bar-in { display: grid; grid-template-columns: auto auto; justify-content: space-between; column-gap: 8px }
+  .cs-bar .seg button { padding: 0 11px }
+  .cs-tools { display: contents }
+  .cs-tools .seg { grid-column: 2; grid-row: 1 }
+  .cs-tools .sel { grid-column: 1 / -1; justify-self: start }
 }
 .sel { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 30px 0 12px; border: 1.5px solid var(--line); border-radius: 999px; background: #fff; color: var(--soft); transition: border-color .15s }
 .sel:hover, .sel:focus-within { border-color: var(--field) }
@@ -828,3 +862,77 @@ header.top { position: sticky; top: 0; z-index: 1000; background: rgb(255 255 25
 .cs-bar .pill { padding: 0 13px }
 .cs-bar .sel { padding-right: 26px }
 .cs-bar .sel::after { right: 11px }
+
+/* ---------- слой фильтров ----------
+   Как BubbleMenu из React Bits, но в цветах Qosyl. Кнопка «Фильтры» над
+   выдачей открывает матовый слой, и пузыри-кнопки выпрыгивают по очереди
+   (scale 0 → 1 с перелётом, задержка --dl у каждого своя), а подписи
+   выезжают снизу. На компьютере пузыри стоят с наклоном --rot, по три в ряд. */
+.fbtn { display: inline-flex; align-items: center; gap: 9px; min-height: 42px; padding: 0 16px 0 14px; border: 1.5px solid var(--accent); border-radius: 999px; background: var(--accent-bg); font-size: 14px; font-weight: 700; color: var(--accent-dk); box-shadow: 0 4px 14px rgb(47 107 255 / .18); transition: background .15s, color .15s, scale .15s }
+.fbtn:hover { background: #E2ECFF }
+.fbtn:active { scale: .96 }
+.fbtn.on { background: var(--accent); color: #fff }
+.fbtn-ic { display: grid; gap: 4px; width: 16px }
+.fbtn .menu-line { display: block; width: 16px; height: 2px; border-radius: 2px; background: currentColor }
+.fbtn .menu-line.short { width: 10px }
+.fbtn-n { display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; background: #fff; color: var(--accent-dk); font-size: 12.5px; font-weight: 800 }
+
+html.sheet-open { overflow: hidden }
+.fsheet { position: fixed; inset: 0; z-index: 1200; display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 26px; overflow-y: auto; overscroll-behavior: contain; padding: 84px 0 28px;
+  background: rgb(245 247 252 / .88); -webkit-backdrop-filter: saturate(1.3) blur(18px); backdrop-filter: saturate(1.3) blur(18px); opacity: 0; transition: opacity .22s ease }
+.fsheet.open { opacity: 1 }
+.fsheet.closing { opacity: 0; transition-delay: .08s }
+.fs-head { position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; gap: 14px; min-height: 76px }
+.fs-title { font-family: var(--display); font-weight: 700; font-size: 22px; letter-spacing: -0.035em; color: var(--ink) }
+.fs-reset { margin-left: auto }
+.fs-x { position: relative; flex: none; display: grid; place-items: center; width: 52px; height: 52px; margin-left: auto; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 4px 16px rgb(16 34 92 / .14) }
+.fs-reset:not([hidden]) + .fs-x { margin-left: 4px }
+.fs-x .menu-line { position: absolute; width: 22px; height: 2px; border-radius: 2px; background: var(--ink); transition: transform .3s ease }
+.fs-x .menu-line:first-child { transform: translateY(-4px) }
+.fs-x .menu-line:last-child { transform: translateY(4px) }
+.fsheet.open .fs-x .menu-line:first-child { transform: rotate(45deg) }
+.fsheet.open .fs-x .menu-line:last-child { transform: rotate(-45deg) }
+
+.fs-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 0; width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 18px; list-style: none }
+.fs-list li { display: flex; flex: 0 0 100%; min-width: 0; justify-content: center }
+.fs-pill { --hb: var(--chip); --hc: var(--navy); --on: var(--navy);
+  position: relative; display: flex; align-items: center; justify-content: center; width: 100%; min-width: 0; min-height: 76px; padding: 0 28px; border: 1.5px solid var(--line); border-radius: 999px; background: #fff;
+  font-family: var(--display); font-weight: 600; font-size: clamp(19px, 2.3vw, 30px); letter-spacing: -0.03em; color: var(--ink); text-align: center;
+  box-shadow: 0 4px 14px rgb(16 34 92 / .1); cursor: pointer; transition: background .3s ease, color .3s ease, border-color .3s ease, scale .3s ease }
+.fs-pill:hover { scale: 1.06; background: var(--hb); border-color: var(--hb); color: var(--hc) }
+.fs-pill:active { scale: .94 }
+.fs-pill[disabled] { cursor: progress; opacity: .7 }
+.fs-pill[aria-pressed="true"], .fs-sel.on { background: var(--on); border-color: var(--on); color: #fff }
+.fs-pill[aria-pressed="true"] .fs-l::after { content: "✓"; margin-left: .35em; font-size: .8em }
+.fs-l { display: inline-flex; align-items: center; justify-content: center; gap: .4em; min-width: 0; line-height: 1.2 }
+.fs-l .ic-svg { width: .9em; height: .9em }
+.tone-free, .tone-ok { --hb: var(--ok-bg); --hc: var(--ok); --on: var(--ok) }
+.tone-beg { --hb: var(--accent-bg); --hc: var(--accent-dk); --on: var(--accent) }
+.fs-sel select { -webkit-appearance: none; appearance: none; min-width: 0; max-width: 100%; padding: 0 1.1em 0 0; border: 0; outline: none; background: transparent; font: inherit; letter-spacing: inherit; color: inherit; text-overflow: ellipsis; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%); background-position: right .35em center, right .05em center; background-size: .3em .3em; background-repeat: no-repeat }
+.fs-sel select option { color: var(--ink); font-family: "Golos Text", system-ui, sans-serif; font-size: 16px }
+.fs-sel:focus-within { outline: 2.5px solid var(--accent); outline-offset: 3px }
+.fs-foot { display: flex; justify-content: center; padding: 0 18px }
+.fs-show { min-height: 56px; padding: 0 28px; border: 0; border-radius: 999px; background: var(--accent); color: #fff; font-size: 16px; font-weight: 700; box-shadow: 0 12px 30px rgb(47 107 255 / .35); transition: background .15s }
+.fs-show:hover { background: var(--accent-dk) }
+
+@keyframes fs-pop { from { scale: 0 } to { scale: 1 } }
+@keyframes fs-lbl { from { opacity: 0; translate: 0 24px } to { opacity: 1; translate: 0 0 } }
+@keyframes fs-out { to { scale: 0 } }
+@keyframes fs-fade { from { opacity: 0; translate: 0 12px } }
+.fsheet.open .fs-pill { animation: fs-pop .5s cubic-bezier(.34, 1.56, .64, 1) var(--dl, 0s) backwards }
+.fsheet.open .fs-l { animation: fs-lbl .5s var(--out3) calc(var(--dl, 0s) + .05s) backwards }
+.fsheet.open .fs-show { animation: fs-fade .4s var(--out3) .45s backwards }
+.fsheet.closing .fs-pill { animation: fs-out .2s cubic-bezier(.55, .055, .675, .19) forwards }
+
+@media (min-width: 900px) {
+  .fs-list { gap: 8px 0; padding: 0 24px }
+  .fs-list li { flex: 0 0 calc(100% / 3); padding: 0 6px }
+  .fs-list li:nth-child(4):nth-last-child(2) { margin-left: calc(100% / 6) }
+  .fs-list li:nth-child(4):last-child { margin-left: calc(100% / 3) }
+  .fs-pill { min-height: 132px; rotate: var(--rot, 0deg) }
+  .fs-title { font-size: 26px }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fsheet, .fsheet.open .fs-pill, .fsheet.open .fs-l, .fsheet.open .fs-show, .fsheet.closing .fs-pill { animation: none; transition: none }
+}

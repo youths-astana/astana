@@ -648,5 +648,10 @@ Object.assign(STR.en, {
   j_claim_p: 'You are confirming “{name}”, which we compiled from open sources. Correct anything that is wrong and leave a work contact. Before publishing, we will call the number on the organisation’s official website to make sure the listing is confirmed by its representative.'
 });
 
+// Слой фильтров (кнопка «Фильтры» над выдачей).
+Object.assign(STR.ru, { filters: 'Фильтры', fs_show: 'Показать {n}', fs_none: 'Ничего не нашлось — сними пару фильтров', fs_reset: 'Сбросить' });
+Object.assign(STR.kz, { filters: 'Сүзгілер', fs_show: 'Көрсету: {n}', fs_none: 'Ештеңе табылмады — бірнеше сүзгіні алып таста', fs_reset: 'Тазалау' });
+Object.assign(STR.en, { filters: 'Filters', fs_show: 'Show {n}', fs_none: 'Nothing found — remove a filter or two', fs_reset: 'Reset' });
+
   return STR;
 })();

@@ -569,7 +569,7 @@
     if (state.sort === 'rec' && !state.near) {
       for (var i = 0; i < shown.length; i++) if (isOpen(shown[i]) && !shown[i].featured) { sepAt = i; break; }
     }
-    return head + '<div class="grid">' + shown.map(function (c, i) {
+    return head + '<div class="grid" data-items>' + shown.map(function (c, i) {
       return (i === sepAt ? openSepHTML(T) : '') + cardHTML(c, L, T);
     }).join('') + '</div>' +
       (rest > 0 ? '<button class="more" data-action="more">' + esc(T.more) + ' (' + rest + ')</button>' : '');
@@ -615,29 +615,22 @@
     return DISTRICTS.filter(function (d) { return seen[d.id]; });
   }
 
-  function nearBtnHTML() {
-    var T = STR[state.lang];
-    if (!navigator.geolocation || !allClubs().some(hasCoords)) return '';
-    if (state.nearState === 'asking') return '<span class="pill wait">' + esc(T.near_wait) + '</span>';
-    if (state.near) return '<button class="pill near on" data-action="near-off">' + icon('pin', 16) + esc(T.near_off) + '</button>';
-    return '<button class="pill near" data-action="near">' + icon('pin', 16) + esc(T.near) + '</button>';
+  function canNear() {
+    return !!navigator.geolocation && allClubs().some(hasCoords);
   }
 
-  // Панель над выдачей: фильтры слева, район, порядок и «список / карта» справа.
-  // Фильтров мало, поэтому они в одну строку, а не в боковой колонке:
-  // так выдача на компьютере получает все три столбца.
+  // Сколько фильтров из панели включено — эта цифра стоит на кнопке «Фильтры».
+  function activeFlags() {
+    return ['free', 'beg', 'ok'].filter(function (k) { return state[k]; }).length + (state.near ? 1 : 0) + (state.dist !== 'all' ? 1 : 0);
+  }
+
+  // Панель над выдачей: кнопка «Фильтры» слева, порядок и «список / карта» справа.
+  // Сами фильтры открываются отдельным слоем — см. sheetHTML.
   function distRowHTML() {
-    var L = state.lang, T = STR[L], ds = districtsInUse();
-    if (ds.length < 2) ds = [];
-    var flags = [['free', T.f_free], ['beg', T.f_beg], ['ok', T.f_ok]].map(function (f) {
-      return '<button class="pill" data-action="flag" data-id="' + f[0] + '" aria-pressed="' + !!state[f[0]] + '">' + esc(f[1]) + '</button>';
-    }).join('');
-    var dist = ds.length
-      ? '<label class="sel"><span class="sr-only">' + esc(T.f_dist) + '</span>' + icon('map', 16) +
-        '<select data-dist-sel>' + [{ id: 'all', label: T.dist_all }].concat(ds.map(function (d) { return { id: d.id, label: d[L] }; })).map(function (d) {
-          return '<option value="' + d.id + '"' + (state.dist === d.id ? ' selected' : '') + '>' + esc(d.label) + '</option>';
-        }).join('') + '</select></label>'
-      : '';
+    var L = state.lang, T = STR[L], on = activeFlags();
+    var flags = '<button class="fbtn' + (on ? ' on' : '') + '" data-action="sheet" aria-haspopup="dialog" aria-expanded="' + sheetOpen + '">' +
+      '<span class="fbtn-ic" aria-hidden="true"><span class="menu-line"></span><span class="menu-line short"></span></span>' + esc(T.filters) +
+      (on ? '<span class="fbtn-n">' + on + '</span>' : '') + '</button>';
     var sort = '<label class="sel"><span class="sr-only">' + esc(T.sort_lbl) + '</span>' + icon('sort', 16) +
       '<select data-sort>' + [['rec', T.sort_rec], ['az', T.sort_az]].map(function (o) {
         return '<option value="' + o[0] + '"' + (state.sort === o[0] ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
@@ -645,15 +638,130 @@
     var views = '<div class="seg" role="group" aria-label="' + esc(T.view_lbl) + '">' + [['list', T.view_list, 'all'], ['map', T.view_map, 'map']].map(function (v) {
       return '<button data-action="view" data-id="' + v[0] + '" aria-pressed="' + (state.view === v[0]) + '">' + icon(v[2], 16) + esc(v[1]) + '</button>';
     }).join('') + '</div>';
-    return '<div class="cs-bar-in"><div class="filters">' + flags + nearBtnHTML() + '</div>' +
-      '<div class="cs-tools">' + dist + sort + views + '</div></div>' +
+    return '<div class="cs-bar-in"><div class="filters">' + flags + '</div>' +
+      '<div class="cs-tools">' + sort + views + '</div></div>' +
       (state.nearState === 'denied' ? '<p class="near-note">' + esc(T.near_no) + '</p>'
         : state.near ? '<p class="near-note">' + esc(T.near_on) + '</p>' : '');
   }
 
+  // ---------- слой фильтров ----------
+  // Как BubbleMenu из React Bits: по нажатию «Фильтры» экран затягивается
+  // матовым стеклом, и крупные кнопки-пузыри выпрыгивают по очереди.
+  // Выдача за слоем обновляется сразу, а внизу видно, сколько нашлось.
+  // Слой живёт в body, вне #app: перерисовка выдачи его не трогает.
+  var sheetOpen = false, sheetFrom = null, sheetTimer = 0;
+
+  function nearPillState() {
+    var T = STR[state.lang];
+    if (state.nearState === 'asking') return { act: '', label: T.near_wait, on: false, wait: true };
+    if (state.near) return { act: 'near-off', label: T.near, on: true };
+    return { act: 'near', label: T.near, on: false };
+  }
+
+  function sheetShowText() {
+    var L = state.lang, T = STR[L], n = filtered().length;
+    return n ? T.fs_show.replace('{n}', n + ' ' + plural(n, L)) : T.fs_none;
+  }
+
+  function sheetHTML() {
+    var L = state.lang, T = STR[L], ds = districtsInUse();
+    // Наклон пузырей — как в оригинале: соседи смотрят в разные стороны.
+    var pills = [['free', T.f_free, -8], ['beg', T.f_beg, 8], ['ok', T.f_ok, 8]].map(function (f) {
+      return '<li><button class="fs-pill tone-' + f[0] + '" data-action="flag" data-id="' + f[0] + '" aria-pressed="' + !!state[f[0]] + '" style="--rot:' + f[2] + 'deg">' +
+        '<span class="fs-l">' + esc(f[1]) + '</span></button></li>';
+    });
+    if (canNear()) {
+      var np = nearPillState();
+      pills.push('<li><button class="fs-pill tone-near" data-near data-action="' + np.act + '" aria-pressed="' + np.on + '"' + (np.wait ? ' disabled' : '') + ' style="--rot:-8deg">' +
+        '<span class="fs-l">' + icon('pin', 22) + '<span data-near-l>' + esc(np.label) + '</span></span></button></li>');
+    }
+    if (ds.length >= 2) {
+      pills.push('<li><label class="fs-pill fs-sel tone-dist' + (state.dist !== 'all' ? ' on' : '') + '" style="--rot:8deg"><span class="fs-l">' + icon('map', 22) +
+        '<select data-dist-sel aria-label="' + esc(T.f_dist) + '">' + [{ id: 'all', label: T.dist_all }].concat(ds.map(function (d) { return { id: d.id, label: d[L] }; })).map(function (d) {
+          return '<option value="' + d.id + '"' + (state.dist === d.id ? ' selected' : '') + '>' + esc(d.label) + '</option>';
+        }).join('') + '</select></span></label></li>');
+    }
+    return '<div class="fs-head wrap"><span class="fs-title">' + esc(T.filters) + '</span>' +
+      '<button class="fs-reset linkish" data-action="reset-flags"' + (activeFlags() ? '' : ' hidden') + '>' + esc(T.fs_reset) + '</button>' +
+      '<button class="fs-x" data-action="sheet-close" aria-label="' + esc(T.close) + '"><span class="menu-line"></span><span class="menu-line"></span></button></div>' +
+      '<ul class="fs-list">' + pills.join('') + '</ul>' +
+      '<div class="fs-foot"><button class="fs-show" data-action="sheet-close" data-fs-show>' + esc(sheetShowText()) + '</button></div>';
+  }
+
+  function openSheet(from) {
+    var sh = document.getElementById('fsheet');
+    if (!sh) {
+      sh = document.createElement('div');
+      sh.id = 'fsheet';
+      sh.className = 'fsheet';
+      sh.setAttribute('role', 'dialog');
+      sh.setAttribute('aria-modal', 'true');
+      sh.addEventListener('click', function (e) { if (e.target === sh || e.target.classList.contains('fs-list')) closeSheet(); });
+      document.body.appendChild(sh);
+    }
+    clearTimeout(sheetTimer);
+    sh.setAttribute('aria-label', STR[state.lang].filters);
+    sh.innerHTML = sheetHTML();
+    // Задержка у каждого пузыря своя, с лёгким разбросом — чтобы не маршировали строем.
+    Array.prototype.forEach.call(sh.querySelectorAll('.fs-pill'), function (p, i) {
+      p.style.setProperty('--dl', Math.max(0, i * 0.12 + (Math.random() - 0.5) * 0.1).toFixed(3) + 's');
+    });
+    sh.classList.remove('closing');
+    sh.hidden = false;
+    sheetOpen = true;
+    sheetFrom = from || null;
+    document.documentElement.classList.add('sheet-open');
+    window.requestAnimationFrame(function () { sh.classList.add('open'); });
+    var first = sh.querySelector('.fs-pill');
+    if (first) first.focus({ preventScroll: true });
+    syncSheetBtn();
+  }
+
+  function closeSheet(now) {
+    var sh = document.getElementById('fsheet');
+    if (!sh || !sheetOpen) return;
+    sheetOpen = false;
+    document.documentElement.classList.remove('sheet-open');
+    sh.classList.remove('open');
+    if (now || (window.QOSYL_FX && window.QOSYL_FX.reduced)) { sh.hidden = true; }
+    else {
+      sh.classList.add('closing');
+      sheetTimer = setTimeout(function () { sh.hidden = true; sh.classList.remove('closing'); }, 240);
+    }
+    syncSheetBtn();
+    if (!now && sheetFrom && document.body.contains(sheetFrom)) sheetFrom.focus({ preventScroll: true });
+    else if (!now) { var b = document.querySelector('.fbtn'); if (b) b.focus({ preventScroll: true }); }
+  }
+
+  function syncSheetBtn() {
+    var b = document.querySelector('.fbtn');
+    if (b) b.setAttribute('aria-expanded', String(sheetOpen));
+  }
+
+  // Фильтр переключили — обновляем пузыри на месте, без повторной анимации.
+  function updateSheet() {
+    var sh = document.getElementById('fsheet');
+    if (!sh || !sheetOpen) return;
+    Array.prototype.forEach.call(sh.querySelectorAll('[data-action="flag"]'), function (b) {
+      b.setAttribute('aria-pressed', String(!!state[b.getAttribute('data-id')]));
+    });
+    var nb = sh.querySelector('[data-near]');
+    if (nb) {
+      var np = nearPillState();
+      nb.setAttribute('data-action', np.act);
+      nb.setAttribute('aria-pressed', String(np.on));
+      nb.disabled = !!np.wait;
+      nb.querySelector('[data-near-l]').textContent = np.label;
+    }
+    var sel = sh.querySelector('[data-dist-sel]');
+    if (sel) { sel.value = state.dist; sel.closest('.fs-sel').classList.toggle('on', state.dist !== 'all'); }
+    sh.querySelector('.fs-reset').hidden = !activeFlags();
+    sh.querySelector('[data-fs-show]').textContent = sheetShowText();
+  }
+
   // Каталог целиком: своя тёмная шапка с названием, цифрами и поиском, под ней
-  // плитки направлений, липкая панель фильтров и выдача. На главной он стоит
-  // после «как это работает», а по адресу #/catalog открывается отдельно.
+  // плитки направлений, липкая панель фильтров и выдача на «живом» градиенте.
+  // На главной он идёт сразу за бренд-блоком, а по адресу #/catalog открывается отдельно.
   function catalogHTML(page) {
     var L = state.lang, T = STR[L], ALL = allClubs();
     var H = page ? 'h1' : 'h2';
@@ -665,7 +773,7 @@
     return '<section class="catalog' + (page ? ' is-page' : '') + '" id="catalog">' +
       '<div class="cs-top"><span class="cs-glow" aria-hidden="true"></span>' + MARK('cs-mark') +
       // Слово «Каталог» — самое крупное на экране: так с первого взгляда ясно, где ты.
-      '<div class="wrap cs-top-in">' +
+      '<div class="wrap cs-top-in" data-kids>' +
       '<' + H + ' class="cs-h' + (T.cs_word.length > 7 ? ' long' : '') + '"><span class="cs-word">' + esc(T.cs_word) + '</span>' +
       '<span class="cs-n" aria-label="' + esc(ALL.length + ' ' + plural(ALL.length, L)) + '">' + ALL.length + '</span></' + H + '>' +
       '<div class="cs-title"><p class="cs-sub">' + esc(T.catalog_h) + '</p>' +
@@ -675,40 +783,26 @@
       '<label class="sr-only" for="cq">' + esc(T.search_label) + '</label>' +
       '<input id="cq" type="search" autocomplete="off" enterkeyhint="search" value="' + esc(state.q) + '" placeholder="' + esc(T.cs_search_ph) + '"></form>' +
       '</div></div>' +
+      '<div class="cs-stage"><div class="cs-bg" aria-hidden="true"><div class="cs-bg-in" data-grain></div></div>' +
       '<div class="wrap cs-body">' +
-      '<div class="cats" id="chips" role="group" aria-label="' + esc(T.cat_k) + '">' + catsHTML() + '</div>' +
+      '<div class="cats" id="chips" role="group" aria-label="' + esc(T.cat_k) + '" data-kids>' + catsHTML() + '</div>' +
       '<div class="cs-bar" id="dist-wrap">' + distRowHTML() + '</div>' +
-      '<div id="results">' + resultsHTML() + '</div></div></section>';
+      '<div id="results">' + resultsHTML() + '</div></div></div></section>';
   }
 
-  // Плитки направлений в бренд-блоке. На компьютере — сетка справа, которая
-  // чуть сдвигается вслед за мышкой; на телефоне — бегущая лента под цифрами.
+  // Плитки направлений в бренд-блоке стоят по кругу и вращаются (motion.js → ring).
+  // На компьютере кольцо справа от текста, на телефоне — под цифрами.
   // Это украшение-дубль ряда направлений в каталоге, поэтому скрыто от дикторов.
-  function heroTiles(L, T, cnt, kind, limit) {
+  function heroRing(L, T, cnt) {
     var list = CATS.filter(function (c) { return cnt[c.id]; }).concat(CATS.filter(function (c) { return !cnt[c.id]; }));
-    if (limit) list = list.slice(0, limit);
     var short = T.cat_short || {};
-    var tiles = list.map(function (c, i) {
-      return '<span class="float-tile" data-action="go-cat" data-id="' + c.id + '" style="--h:' + hueOf(c.id) + ';--d:' + (6 + (i * 5) % 14) + 'px;--sd:' + (i * 0.9).toFixed(1) + 's" title="' + esc(c[L]) + '">' +
-        (cnt[c.id] ? '<span class="n">' + cnt[c.id] + '</span>' : '') + icon(c.id, 48) + '<b>' + esc(short[c.id] || c[L]) + '</b></span>';
-    }).join('');
-    if (kind === 'hero-strip') return '<div class="hero-strip" aria-hidden="true"><div class="hero-strip-in">' + tiles + tiles + '</div></div>';
-    return '<div class="hero-art" aria-hidden="true">' + tiles + '</div>';
+    return '<div class="hero-ring" data-ring aria-hidden="true"><div class="ring-stage"><div class="ring-cam"><div class="ring-spin">' +
+      list.map(function (c, i) {
+        return '<span class="ring-card" data-action="go-cat" data-id="' + c.id + '" style="--h:' + hueOf(c.id) + ';--sd:' + (i * 0.9).toFixed(1) + 's" title="' + esc(c[L]) + '">' +
+          '<span class="float-tile">' + (cnt[c.id] ? '<span class="n">' + cnt[c.id] + '</span>' : '') + icon(c.id, 48) + '<b>' + esc(short[c.id] || c[L]) + '</b></span>' +
+          '<span class="ring-back"></span></span>';
+      }).join('') + '</div></div></div></div>';
   }
-
-  // Параллакс: плитки смещаются вслед за мышкой, каждая на свою глубину (--d).
-  var parallaxRAF = 0;
-  document.addEventListener('mousemove', function (e) {
-    var art = document.querySelector('.hero-art');
-    if (!art || parallaxRAF || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
-    parallaxRAF = window.requestAnimationFrame(function () {
-      parallaxRAF = 0;
-      var hero = art.closest('.hero'), r = hero && hero.getBoundingClientRect();
-      if (!r || e.clientY < r.top || e.clientY > r.bottom) { art.style.setProperty('--px', 0); art.style.setProperty('--py', 0); return; }
-      art.style.setProperty('--px', ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
-      art.style.setProperty('--py', ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
-    });
-  });
 
   function heroFoundHTML() {
     var T = STR[state.lang];
@@ -727,7 +821,7 @@
       [ALL.filter(function (c) { return c.beginner; }).length, T.st_new]
     ];
     var hero = '<section class="hero">' + MARK('hero-mark') +
-      '<div class="wrap hero-in"><div class="hero-copy">' +
+      '<div class="wrap hero-in"><div class="hero-copy" data-kids>' +
       '<p class="hero-kicker"><span class="pulse"></span>' + esc(T.hero_kicker) + '</p>' +
       '<h1 class="hero-h"><span>' + esc(T.hero_a) + '</span> <em>' + esc(T.hero_b) + '</em></h1>' +
       '<p class="hero-lead">' + esc(T.lead) + '</p>' +
@@ -744,11 +838,11 @@
       '</div>' +
       '<ul class="hero-stats">' + stats.map(function (s) { return '<li><b data-count="' + s[0] + '">' + s[0] + '</b><span>' + esc(s[1]) + '</span></li>'; }).join('') + '</ul>' +
       '</div>' +
-      heroTiles(L, T, cnt, 'hero-art', 8) +
-      '</div>' + heroTiles(L, T, cnt, 'hero-strip', 0) + '</section>';
+      heroRing(L, T, cnt) +
+      '</div></section>';
 
     var how = '<section class="sec wrap" data-reveal><div class="sec-head"><div><p class="sec-kicker">' + esc(T.how_k) + '</p>' +
-      '<h2 class="sec-h">' + esc(T.how_h) + '</h2></div></div><div class="steps">' +
+      '<h2 class="sec-h">' + esc(T.how_h) + '</h2></div></div><div class="steps" data-kids>' +
       [['spark', 262, T.how_1h, T.how_1p], ['wa', 150, T.how_2h, T.how_2p], ['door', 40, T.how_3h, T.how_3p]].map(function (st, i) {
         return '<div class="step" style="--h:' + st[1] + '"><span class="step-n" aria-hidden="true">0' + (i + 1) + '</span>' +
           '<span class="step-ic">' + icon(st[0], 26) + '</span><h3>' + esc(st[2]) + '</h3><p>' + esc(st[3]) + '</p></div>';
@@ -758,9 +852,11 @@
 
     var catalog = catalogHTML(false);
 
-    return '<div class="home">' + hero + how +
+    // Сначала сам каталог, потом подбор и «как это работает»: за списком приходят,
+    // а объяснения нужны тем, кто уже долистал до конца.
+    return '<div class="home">' + hero + catalog +
       (helper ? '<div class="sec wrap" data-reveal>' + helper + '</div>' : '') +
-      catalog + '<div class="sec wrap">' + ownBlock() + '</div></div>';
+      how + '<div class="sec wrap">' + ownBlock() + '</div></div>';
   }
 
   // Каталог отдельной страницей (#/catalog): та же выдача, что на главной,
@@ -1195,19 +1291,53 @@
   // ---------- оживление ----------
   // Плавное появление блоков при прокрутке. instant — для частичных перерисовок
   // (поиск, фильтры), где анимация на каждое нажатие клавиши только мешала бы.
-  var revealIO = null;
+  // Как AnimatedContent из React Bits: блок выезжает снизу и проявляется.
+  // [data-kids] — дети контейнера появляются по очереди, с шагом 80 мс, когда
+  // до экрана доходит сам контейнер. [data-items] — каждый ребёнок появляется
+  // сам, когда доходит до экрана (длинная выдача), а вошедшие вместе — по очереди.
+  var revealIO = null, itemIO = null, STAGGER = 80, RISE_MS = 800;
+  function settle(el, delay) {
+    setTimeout(function () { el.classList.add('done'); if (el.style) el.style.transitionDelay = ''; }, RISE_MS + delay + 40);
+  }
+  function showKids(box) {
+    Array.prototype.forEach.call(box.children, function (k, i) { k.style.setProperty('--k', i); });
+    box.classList.add('in');
+    settle(box, (box.children.length - 1) * STAGGER);
+  }
   function reveal(root, instant) {
     if (!root) return;
-    var els = root.querySelectorAll('[data-reveal]:not(.in)');
-    if (instant || !revealIO) { for (var i = 0; i < els.length; i++) els[i].classList.add('in'); return; }
+    var els = root.querySelectorAll('[data-reveal]:not(.in), [data-kids]:not(.in)');
+    var items = root.querySelectorAll('[data-items] > :not(.in)');
+    if (instant || !revealIO) {
+      for (var i = 0; i < els.length; i++) els[i].classList.add('in', 'done');
+      for (var k = 0; k < items.length; k++) items[k].classList.add('in', 'done');
+      return;
+    }
     for (var j = 0; j < els.length; j++) revealIO.observe(els[j]);
+    for (var m = 0; m < items.length; m++) itemIO.observe(items[m]);
   }
   if ('IntersectionObserver' in window && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
     revealIO = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
-        if (en.isIntersecting) { en.target.classList.add('in'); revealIO.unobserve(en.target); }
+        if (!en.isIntersecting) return;
+        revealIO.unobserve(en.target);
+        if (en.target.hasAttribute('data-kids')) showKids(en.target);
+        else en.target.classList.add('in');
       });
     }, { rootMargin: '0px 0px -6% 0px', threshold: 0.06 });
+    // Карточка до появления сдвинута вниз на --rise, а наблюдатель смотрит на сдвинутую.
+    // Запас снизу возвращает срабатывание туда, где карточка встанет на место.
+    itemIO = new IntersectionObserver(function (entries) {
+      var n = 0;
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        itemIO.unobserve(en.target);
+        var d = n++ * STAGGER;
+        en.target.style.transitionDelay = d + 'ms';
+        en.target.classList.add('in');
+        settle(en.target, d);
+      });
+    }, { rootMargin: '0px 0px 40px 0px' });
     document.documentElement.classList.add('js-reveal');
     window.addEventListener('beforeprint', function () { reveal(document, true); });
   }
@@ -1714,6 +1844,7 @@
     var wrap = document.getElementById('dist-wrap'), res = document.getElementById('results');
     if (wrap) wrap.innerHTML = distRowHTML();
     paintResults();
+    updateSheet();
     var hf = document.getElementById('hero-found');
     if (hf) hf.innerHTML = heroFoundHTML();
   }
@@ -1771,6 +1902,37 @@
     return T.title_home;
   }
 
+  // ---------- движение (motion.js) ----------
+  // intro — страница открылась заново: плитки выезжают, буквы раскладываются,
+  // градиент распускается. При перерисовке той же страницы (смена языка) всё
+  // появляется сразу, а кольцо продолжает с того же угла.
+  var FX = window.QOSYL_FX || null;
+  // Цвета и настройки градиента — те, что Дамир подобрал в React Bits.
+  var GRAIN = { colors: ['#FFFAFA', '#1b52da'], angle: 56, flow: 0, silk: 1, grainAmount: 0, scale: 0.6, speed: 0, grainSize: 0.5, stir: 1.2, grainAnimated: false };
+  var fxLoading = false;
+  function mountFX(app, intro) {
+    FX = FX || window.QOSYL_FX || null;
+    if (!FX) {
+      // Браузер мог взять старую index.html из кэша, где ещё нет motion.js, — догружаем сами.
+      if (!fxLoading) {
+        fxLoading = true;
+        var s = document.createElement('script');
+        s.src = 'motion.js';
+        s.onload = function () { FX = window.QOSYL_FX || null; if (FX) mountFX(document.getElementById('app'), intro); };
+        document.head.appendChild(s);
+      }
+      return;
+    }
+    var ringEl = app.querySelector('[data-ring]');
+    if (ringEl) FX.ring(ringEl, { intro: intro });
+    var hero = app.querySelector('.hero-h');
+    if (hero) FX.fold(hero, { instant: !intro });
+    var word = app.querySelector('.cs-word');
+    if (word) FX.fold(word, { trigger: 'scroll', instant: !intro });
+    var g = app.querySelector('[data-grain]');
+    if (g) FX.grain(g, Object.assign({ intro: intro }, GRAIN));
+  }
+
   // ---------- render ----------
   var lastKey = null;
   function render(opts) {
@@ -1781,6 +1943,8 @@
     if (changedPage) { state.pin = null; state.linkCopied = false; state.shown = PAGE; if (r.screen !== 'add') state.justSaved = null; }
 
     destroyMaps();
+    if (FX) FX.reset();
+    if (changedPage) closeSheet(true); else updateSheet();
     renderChrome(r);
     var app = document.getElementById('app');
     // Прямая ссылка «подтвердить/дополнить карточку»: каталог мог догрузиться
@@ -1804,6 +1968,7 @@
     if (r.screen === 'club') { var c = findClub(r.id); if (c) { renderQR(shareUrl(c)); mountMiniMap(c); } }
     reveal(app, !changedPage);
     if ((r.screen === 'home' || r.screen === 'catalog') && changedPage) countUp(app);
+    mountFX(app, changedPage);
 
     if (changedPage && !(opts && opts.keepScroll)) {
       window.scrollTo(0, 0);
@@ -1964,6 +2129,17 @@
       case 'flag':
         state[id] = !state[id];
         state.shown = PAGE;
+        repaintList();
+        break;
+      case 'sheet':
+        if (sheetOpen) closeSheet(); else openSheet(el);
+        break;
+      case 'sheet-close':
+        closeSheet();
+        break;
+      case 'reset-flags':
+        state.free = false; state.beg = false; state.ok = false; state.dist = 'all';
+        state.near = null; state.nearState = null; state.shown = PAGE;
         repaintList();
         break;
       case 'near':
@@ -2135,7 +2311,7 @@
     toCatalog();
   });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'Escape') { closeLightbox(); closeSheet(); }
   });
 
   function showFormErr() {
@@ -2230,6 +2406,10 @@
   };
 
   loadStats();
-  render();
-  loadCatalogue().then(function () { render({ keepScroll: true }); });
+  // Первую отрисовку ждём до загрузки каталога (но не дольше 1,5 с): иначе
+  // страница появится пустой и тут же перерисуется, и плавного появления не будет.
+  var painted = false;
+  function firstPaint() { if (!painted) { painted = true; render(); } }
+  loadCatalogue().then(function () { if (painted) render({ keepScroll: true }); else firstPaint(); });
+  setTimeout(firstPaint, 1500);
 })();
