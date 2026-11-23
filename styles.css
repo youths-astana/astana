@@ -84,6 +84,9 @@ img { max-width: 100% }
 .js-reveal [data-kids]:not(.done) > * { transition: opacity .8s var(--out3), transform .8s var(--out3); transition-delay: calc(var(--k, 0) * 80ms) }
 .js-reveal [data-kids]:not(.in) > * { opacity: 0; transform: translateY(var(--rise)) }
 .js-reveal [data-items] > :not(.done) { transition: opacity .8s var(--out3), transform .8s var(--out3) }
+/* Большие заголовки появляются складывающимися буквами (FoldText) и сами
+   снизу не выезжают: два движения сразу и давали тот «рывок». */
+.js-reveal [data-kids]:not(.in) > :is(.hero-h, .cs-h, .ct-h) { transform: none }
 .js-reveal [data-items] > :not(.in) { opacity: 0; transform: translateY(var(--rise)) }
 @media (prefers-reduced-motion: reduce) {
   .js-reveal [data-reveal], .js-reveal [data-kids] > *, .js-reveal [data-items] > * { opacity: 1; transform: none; transition: none }
@@ -984,17 +987,21 @@ html.sheet-open { overflow: hidden }
 @media (max-width: 359px) { .pnav-b { --pn-x: 12px; --pn-font: 14px } }
 
 /* ---------- переход между разделами ----------
-   Браузер снимает «фото» старой страницы и плавно меняет его на новую:
-   старая уходит в сторону и размывается, новая въезжает с другой стороны.
+   Браузер снимает «фото» старой страницы: оно уходит в сторону и гаснет
+   в тёмно-синий, а новая страница проступает из того же синего с другой
+   стороны — дальше её блоки выезжают сами. Синий «занавес» под снимками
+   нужен, чтобы между двумя синими страницами не мигал светлый фон.
+   Без размытия: blur на весь экран поверх живого холста давал рывки.
    Направление — по порядку в меню. Шапка и нижнее меню не двигаются. */
-html.vt-fwd { --vt-x: 48px }
-html.vt-back { --vt-x: -48px }
-::view-transition-old(root) { animation: vt-out .28s cubic-bezier(.4, 0, 1, 1) both; mix-blend-mode: normal }
-::view-transition-new(root) { animation: vt-in .62s var(--out3) both; mix-blend-mode: normal }
+html.vt-fwd { --vt-x: 28px }
+html.vt-back { --vt-x: -28px }
+::view-transition { background-color: #0A1638 }
+::view-transition-old(root) { animation: vt-out .22s cubic-bezier(.4, 0, 1, 1) both }
+::view-transition-new(root) { animation: vt-in .42s var(--out3) .08s both }
 ::view-transition-old(qtop), ::view-transition-old(qnav) { display: none }
 ::view-transition-new(qtop), ::view-transition-new(qnav) { animation: none }
-@keyframes vt-out { to { opacity: 0; transform: translateX(calc(var(--vt-x, 48px) * -1)) scale(.985); filter: blur(3px) } }
-@keyframes vt-in { from { opacity: 0; transform: translateX(var(--vt-x, 48px)) scale(.985); filter: blur(6px) } }
+@keyframes vt-out { to { opacity: 0; transform: translateX(calc(var(--vt-x, 28px) * -1)) } }
+@keyframes vt-in { from { opacity: 0; transform: translateX(var(--vt-x, 28px)) } }
 
 /* ---------- стеклянные значки направлений ----------
    Как GlassIcons: значок на матовом стекле, за ним — наклонная пластинка
@@ -1058,6 +1065,9 @@ html.vt-back { --vt-x: -48px }
    Карточки белые и компактные: вид, место, условия и главное — дедлайн
    с обратным отсчётом (красный — меньше недели, жёлтый — меньше трёх). */
 html[data-screen="contests"] .foot { margin-top: 0 }
+/* Фон страницы — тот же синий: если браузер не умеет View Transitions,
+   страница проявляется из синего, а не из светлого. */
+html[data-screen="contests"] body { background: #0A1638 }
 .ct { position: relative; padding-bottom: 72px; color: #fff;
   background: radial-gradient(60% 50% at 100% 0%, oklch(0.52 0.17 285 / .45) 0%, rgb(0 0 0 / 0) 62%),
               radial-gradient(50% 40% at 0% 30%, oklch(0.55 0.13 212 / .28) 0%, rgb(0 0 0 / 0) 66%),
@@ -1078,10 +1088,11 @@ html[data-screen="contests"] .foot { margin-top: 0 }
 .ct-types { display: flex; gap: 8px; overflow-x: auto; margin: 0 -18px; padding: 4px 18px 10px; scrollbar-width: none }
 .ct-types::-webkit-scrollbar { display: none }
 @media (min-width: 760px) { .ct-types { flex-wrap: wrap; overflow: visible; margin: 0; padding: 4px 0 10px } }
-.ct-chip { display: inline-flex; align-items: center; gap: 7px; flex: none; min-height: 42px; padding: 0 8px 0 13px; border: 1px solid rgb(255 255 255 / .16); border-radius: 999px; background: rgb(255 255 255 / .07);
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: #DCE6FF; font-size: 14px; font-weight: 600; white-space: nowrap; transition: background .2s, color .2s, border-color .2s, scale .15s }
+/* Без backdrop-filter: под кнопками живой холст с точками, и размытие
+   пересчитывалось бы каждый кадр. Плотная подложка выглядит так же. */
+.ct-chip { display: inline-flex; align-items: center; gap: 7px; flex: none; min-height: 42px; padding: 0 8px 0 13px; border: 1px solid rgb(255 255 255 / .16); border-radius: 999px; background: rgb(22 40 104 / .85); color: #DCE6FF; font-size: 14px; font-weight: 600; white-space: nowrap; transition: background .2s, color .2s, border-color .2s, scale .15s }
 .ct-chip span { display: grid; place-items: center; min-width: 24px; height: 24px; padding: 0 7px; border-radius: 999px; background: rgb(255 255 255 / .12); font-size: 12.5px; font-weight: 700 }
-.ct-chip:hover { background: rgb(255 255 255 / .13) }
+.ct-chip:hover { background: rgb(36 58 132 / .92) }
 .ct-chip:active { scale: .96 }
 .ct-chip[aria-pressed="true"] { background: #fff; border-color: #fff; color: var(--navy) }
 .ct-chip[aria-pressed="true"] span { background: oklch(0.55 0.17 var(--h)); color: #fff }
@@ -1125,7 +1136,7 @@ html[data-screen="contests"] .foot { margin-top: 0 }
 .ct-note { display: flex; align-items: flex-start; gap: 10px; max-width: 60em; margin: 30px 0 0; font-size: 13.5px; line-height: 1.5; color: rgb(255 255 255 / .68) }
 .ct-note .ic-svg { flex: none; margin-top: 1px; color: #8FB0FF }
 .ct-note a { color: #CFE0FF; text-decoration: underline; text-underline-offset: 2px }
-.ct-suggest { display: grid; gap: 16px; margin-top: 26px; padding: 24px; border-radius: var(--r-xl); border: 1px solid rgb(255 255 255 / .14); background: rgb(255 255 255 / .06); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px) }
+.ct-suggest { display: grid; gap: 16px; margin-top: 26px; padding: 24px; border-radius: var(--r-xl); border: 1px solid rgb(255 255 255 / .14); background: rgb(22 40 104 / .88) }
 @media (min-width: 760px) { .ct-suggest { grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding: 28px 32px } }
 .ct-suggest h2 { margin: 0 0 6px; font-family: var(--display); font-weight: 600; font-size: clamp(20px, 3vw, 26px); letter-spacing: -0.03em }
 .ct-suggest p { margin: 0; color: rgb(255 255 255 / .72) }

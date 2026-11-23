@@ -496,7 +496,7 @@ window.QOSYL_FX = (function () {
     var o = Object.assign({
       dotSize: 5, gap: 18, baseColor: '#3a3446', activeColor: '#ffffff', proximity: 140, strength: 1,
       bounce: 0.6, tension: 0.4, returnDuration: 0.8, shockRadius: 320, shockStrength: 5,
-      swell: 0.8, stretch: 0.5, glow: 0.5, fade: 0, opacity: 1, intro: true
+      swell: 0.8, stretch: 0.5, glow: 0.5, fade: 0, opacity: 1, intro: true, introDelay: 0
     }, opts || {});
     var canvas = document.createElement('canvas');
     canvas.className = 'dot-canvas';
@@ -750,7 +750,8 @@ window.QOSYL_FX = (function () {
     function frame(now) {
       raf = 0;
       if (!alive || !visible) return;
-      if (introStart !== null && introStart < 0) introStart = now;
+      // Пока идёт задержка, «возраст» появления отрицательный — точки ещё не видны.
+      if (introStart !== null && introStart < 0) introStart = now + Math.max(0, o.introDelay);
       var dt = Math.min(0.05, (now - last) / 1000 || 0);
       last = now;
       step(dt, now);

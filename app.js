@@ -1918,7 +1918,8 @@
   var FX = window.QOSYL_FX || null;
   // Поле точек за «Конкурсами» — в цветах бренд-блока: тусклые синие точки
   // на тёмно-синем, у курсора и в волне светлеют почти до белого.
-  var DOTS = { dotSize: 4, gap: 20, baseColor: '#2C4290', activeColor: '#CFE0FF', proximity: 140, strength: 1, bounce: 0.6, tension: 0.4, returnDuration: 0.8, shockRadius: 320, shockStrength: 5, swell: 0.8, stretch: 0.5, glow: 0.5, fade: 0 };
+  // introDelay — точки начинают выпрыгивать, когда страница уже проступила из синего.
+  var DOTS = { introDelay: 140, dotSize: 4, gap: 20, baseColor: '#2C4290', activeColor: '#CFE0FF', proximity: 140, strength: 1, bounce: 0.6, tension: 0.4, returnDuration: 0.8, shockRadius: 320, shockStrength: 5, swell: 0.8, stretch: 0.5, glow: 0.5, fade: 0 };
   var fxLoading = false;
   var barIO = null;
   function mountFX(app, intro) {
@@ -2659,18 +2660,31 @@
   // Переход по меню разделов: старая страница уезжает в одну сторону, новая
   // въезжает с другой (View Transitions API). Шапка и нижнее меню стоят на месте.
   // Где браузер так не умеет, остаётся обычное мягкое появление.
+  // Список конкурсов ждём до перехода (обычно он уже загружен заранее):
+  // иначе страница сначала появится пустой, а потом резко перерисуется.
   window.addEventListener('hashchange', function () {
     var dir = navDir;
     navDir = 0;
     var go = function () { render({ focus: true }); };
-    if (!dir || !document.startViewTransition || (FX && FX.reduced)) { go(); return; }
-    var html = document.documentElement;
-    var done = function () { html.classList.remove('vt', 'vt-fwd', 'vt-back'); };
-    html.classList.add('vt', dir > 0 ? 'vt-fwd' : 'vt-back');
-    try {
-      var t = document.startViewTransition(go);
-      t.finished.then(done, done);
-    } catch (e) { done(); go(); }
+    var start = function () {
+      if (!dir || !document.startViewTransition || (FX && FX.reduced)) { go(); return; }
+      var html = document.documentElement;
+      var done = function () { html.classList.remove('vt', 'vt-fwd', 'vt-back'); };
+      html.classList.add('vt', dir > 0 ? 'vt-fwd' : 'vt-back');
+      try {
+        var t = document.startViewTransition(go);
+        // Браузер может прервать переход (вкладку свернули на середине) —
+        // страница всё равно перерисуется, просто без анимации. Не шумим в консоль.
+        if (t.ready) t.ready.catch(function () {});
+        if (t.updateCallbackDone) t.updateCallbackDone.catch(function () {});
+        t.finished.then(done, done);
+      } catch (e) { done(); go(); }
+    };
+    if (route().screen === 'contests' && !CONTESTS) {
+      var fired = false, once = function () { if (!fired) { fired = true; start(); } };
+      loadContests().then(once, once);
+      setTimeout(once, 1200);
+    } else start();
   });
   window.addEventListener('storage', function (e) {
     if (e.key === STORE_KEY) { state.mine = load(STORE_KEY, []); render({ keepScroll: true }); }
@@ -2740,7 +2754,12 @@
   if (route().screen === 'contests') boot.push(loadContests());
   Promise.all(boot).then(function () { if (painted) render({ keepScroll: true }); else firstPaint(); });
   setTimeout(firstPaint, 1500);
-  setTimeout(loadContests, 2500);
+  setTimeout(loadContests, 700);
+  // Навели на «Конкурсы» в меню — начинаем грузить список, если ещё нет.
+  ['pnav-h', 'pnav-b'].forEach(function (id) {
+    var nav = document.getElementById(id);
+    if (nav) nav.addEventListener('pointerover', function (e) { if (e.target.closest('[data-nav="2"]')) loadContests(); });
+  });
 
   // Знак Qosyl в шапке делает оборот, когда на него наводишь мышку (как логотип в PillNav).
   var brandEl = document.querySelector('[data-logo]');
