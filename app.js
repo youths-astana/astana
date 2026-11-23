@@ -913,8 +913,12 @@
 
     // Фото от организаторов бывают любых пропорций и часто это логотип: показываем
     // картинку целиком, а пустые поля заполняем её же размытой копией.
+    // fit: "cover" — обложку-логотип с запасом полей растягиваем на всю ширину без
+    // размытой подложки: тёмный логотип на белом размывался бы в серые полосы.
     var cover = '<div class="cp-cover" data-reveal>' + (photo
-      ? '<img class="cp-bg" src="' + esc(photo) + '" alt="" aria-hidden="true"><img class="cp-img" src="' + esc(photo) + '" alt="' + esc(c.name[L]) + '">'
+      ? (c.fit === 'cover'
+        ? '<img class="cp-img fill" src="' + esc(photo) + '" alt="' + esc(c.name[L]) + '">'
+        : '<img class="cp-bg" src="' + esc(photo) + '" alt="" aria-hidden="true"><img class="cp-img" src="' + esc(photo) + '" alt="' + esc(c.name[L]) + '">')
       : coverArt(c)) +
       (c.featured ? '<span class="seal lg" role="img" aria-label="' + esc(T.featured) + '"></span>' : '') + '</div>';
 

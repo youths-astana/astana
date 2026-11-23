@@ -575,6 +575,7 @@ header.top { position: sticky; top: 0; z-index: 1000; background: rgb(255 255 25
 @media (min-width: 920px) { .cp-cover { aspect-ratio: 5 / 2 } }
 .cp-bg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; filter: blur(30px) saturate(1.15); transform: scale(1.4) }
 .cp-img { position: relative; display: block; width: 100%; height: 100%; object-fit: contain }
+.cp-img.fill { object-fit: cover }
 .cp-cover .cover-art .ic-svg { width: 16% }
 .cp-head { display: grid; gap: 12px }
 .cp-cat { justify-self: start; display: inline-flex; align-items: center; gap: 7px; padding: 6px 13px 6px 8px; border-radius: 999px; background: oklch(0.95 0.045 var(--h)); font-size: 13px; font-weight: 700; color: oklch(0.42 0.14 var(--h)) }
