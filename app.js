@@ -1972,7 +1972,7 @@
   // экрана). Строим один раз на язык, дальше только двигаем точку (motion.js → pills).
   var NAV = [['#/', 'nav_home'], ['#/catalog', 'nav_catalog'], ['#/contests', 'nav_contests']];
   var NAV_SCREENS = ['home', 'catalog', 'contests'];
-  var navLang = null, navCtl = [null, null], navDir = 0;
+  var navLang = null, navCtl = [null, null];
   function navIndex(r) {
     if (r.screen === 'home') return 0;
     if (r.screen === 'catalog' || r.screen === 'club' || r.screen === 'map') return 1;
@@ -2231,10 +2231,7 @@
       : r.screen === 'catalog' ? catalogView()
       : r.screen === 'contests' ? contestsView()
       : homeView();
-    // Переход через меню разделов анимирует браузер целиком (View Transitions) —
-    // тогда своё «въезжание» страницы не нужно, иначе оно сыграет дважды.
-    var vt = document.documentElement.classList.contains('vt');
-    if (changedPage && !vt) app.setAttribute('data-enter', ''); else app.removeAttribute('data-enter');
+    if (changedPage) app.setAttribute('data-enter', ''); else app.removeAttribute('data-enter');
     app.innerHTML = html;
     document.title = pageTitle(r);
     if (changedPage) trackPage(r);
@@ -2277,17 +2274,15 @@
         copyText(T2.greet).then(function () { toast(T2.greet_copied); }, function () {});
       }
     }
-    // Меню разделов: запоминаем направление для анимации перехода.
-    // Нажали на раздел, где уже стоишь, — просто плавно наверх.
+    // Меню разделов: нажали на раздел, где уже стоишь, — просто плавно наверх.
     var nv = e.target.closest('[data-nav]');
     if (nv && !e.metaKey && !e.ctrlKey && !e.shiftKey) {
-      var to = +nv.getAttribute('data-nav'), cur = route(), from = navIndex(cur);
+      var to = +nv.getAttribute('data-nav'), cur = route();
       if (cur.screen === NAV_SCREENS[to]) {
         e.preventDefault();
         window.scrollTo({ top: 0, behavior: FX && FX.reduced ? 'auto' : 'smooth' });
         return;
       }
-      navDir = from < 0 || to >= from ? 1 : -1;
       return;
     }
     var el = e.target.closest('[data-action]');
@@ -2657,34 +2652,19 @@
     window.scrollTo(0, 0);
   }
 
-  // Переход по меню разделов: старая страница уезжает в одну сторону, новая
-  // въезжает с другой (View Transitions API). Шапка и нижнее меню стоят на месте.
-  // Где браузер так не умеет, остаётся обычное мягкое появление.
+  // Переход по меню разделов — ровно как при открытии сайта: новая страница
+  // рисуется сразу, а её блоки выезжают своей анимацией. Отдельную анимацию
+  // смены страницы (View Transitions) убрали: браузер снимал «фото» обеих
+  // страниц, и на слабых устройствах переход шёл рывками.
   // Список конкурсов ждём до перехода (обычно он уже загружен заранее):
   // иначе страница сначала появится пустой, а потом резко перерисуется.
   window.addEventListener('hashchange', function () {
-    var dir = navDir;
-    navDir = 0;
     var go = function () { render({ focus: true }); };
-    var start = function () {
-      if (!dir || !document.startViewTransition || (FX && FX.reduced)) { go(); return; }
-      var html = document.documentElement;
-      var done = function () { html.classList.remove('vt', 'vt-fwd', 'vt-back'); };
-      html.classList.add('vt', dir > 0 ? 'vt-fwd' : 'vt-back');
-      try {
-        var t = document.startViewTransition(go);
-        // Браузер может прервать переход (вкладку свернули на середине) —
-        // страница всё равно перерисуется, просто без анимации. Не шумим в консоль.
-        if (t.ready) t.ready.catch(function () {});
-        if (t.updateCallbackDone) t.updateCallbackDone.catch(function () {});
-        t.finished.then(done, done);
-      } catch (e) { done(); go(); }
-    };
     if (route().screen === 'contests' && !CONTESTS) {
-      var fired = false, once = function () { if (!fired) { fired = true; start(); } };
+      var fired = false, once = function () { if (!fired) { fired = true; go(); } };
       loadContests().then(once, once);
       setTimeout(once, 1200);
-    } else start();
+    } else go();
   });
   window.addEventListener('storage', function (e) {
     if (e.key === STORE_KEY) { state.mine = load(STORE_KEY, []); render({ keepScroll: true }); }
