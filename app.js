@@ -150,7 +150,8 @@
     tt: '<path d="M14 3.5v11.2a3.6 3.6 0 1 1-3.6-3.6"/><path d="M14 3.5c.5 2.6 2.4 4.4 5.2 4.7"/>',
     globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.2 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.2-3.6-8.5S9.6 5.8 12 3.5z"/>',
     sort: '<path d="M7 4v16M3.5 16.5 7 20l3.5-3.5M17 20V4M13.5 7.5 17 4l3.5 3.5"/>',
-    photo: '<rect x="3.5" y="5" width="17" height="14" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="m4 17 5-4.5 3.5 3 2.5-2 5 4"/>'
+    photo: '<rect x="3.5" y="5" width="17" height="14" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="m4 17 5-4.5 3.5 3 2.5-2 5 4"/>',
+    cal: '<rect x="4" y="5.5" width="16" height="15" rx="3"/><path d="M4 10.5h16M8.5 3.5v4M15.5 3.5v4"/><path d="M12 13.5v4M10 15.5h4"/>'
   };
   function icon(name, size) {
     var s = size || 22;
@@ -193,8 +194,9 @@
     free: false,         // только бесплатные
     beg: false,          // только те, что ждут новичков
     ok: false,           // только подтверждённые организаторами
-    sort: 'rec',         // 'rec' — сначала подтверждённые, 'az' — по алфавиту
+    sort: 'rec',         // сначала «Лучшее» и подтверждённые (кнопку «по алфавиту» убрали)
     view: 'list',        // каталог списком или на карте
+    ctType: 'all',       // вид конкурсов на странице «Конкурсы»
     near: null,           // координаты подростка, пока он не ушёл со страницы
     nearState: null,      // null | 'asking' | 'denied'
     mine: load(STORE_KEY, []),
@@ -418,7 +420,7 @@
     var parts = h.split('/').map(function (p) { try { return decodeURIComponent(p); } catch (e) { return p; } });
     if (parts[0] === 'club' && parts[1]) return { screen: 'club', id: parts[1] };
     if (parts[0] === 'join') return { screen: 'join', id: parts[1] || '' };
-    if (parts[0] === 'about' || parts[0] === 'map' || parts[0] === 'add' || parts[0] === 'catalog') return { screen: parts[0] };
+    if (parts[0] === 'about' || parts[0] === 'map' || parts[0] === 'add' || parts[0] === 'catalog' || parts[0] === 'contests') return { screen: parts[0] };
     return { screen: 'home' };
   }
 
@@ -597,10 +599,12 @@
     var full = [], empty = [];
     CATS.forEach(function (c) { (cnt[c.id] ? full : empty).push(c); });
     full.sort(function (a, b) { return cnt[b.id] - cnt[a.id]; });
+    // Значок — на матовом стекле, за ним наклонная цветная пластинка (как GlassIcons).
     function tile(id, label, n) {
       return '<button class="cat' + (n ? '' : ' is-empty') + '" data-action="cat" data-id="' + id + '" aria-pressed="' + (state.cat === id) + '" style="--h:' + hueOf(id) + '">' +
         '<span class="cat-art" aria-hidden="true">' + icon(id, 64) + '</span>' +
-        '<span class="ic">' + icon(id, 21) + '</span><span class="cat-txt"><b>' + esc(label) + '</b>' +
+        '<span class="gi" aria-hidden="true"><span class="gi-plate"></span><span class="gi-glass"></span><span class="gi-face">' + icon(id, 26) + '</span></span>' +
+        '<span class="cat-txt"><b>' + esc(label) + '</b>' +
         '<small>' + (n ? n + ' ' + esc(plural(n, L)) : esc(T.cat_none)) + '</small></span></button>';
     }
     return tile('all', T.all, ALL.length) + full.concat(empty).map(function (c) { return tile(c.id, c[L], cnt[c.id] || 0); }).join('');
@@ -624,22 +628,21 @@
     return ['free', 'beg', 'ok'].filter(function (k) { return state[k]; }).length + (state.near ? 1 : 0) + (state.dist !== 'all' ? 1 : 0);
   }
 
-  // Панель над выдачей: кнопка «Фильтры» слева, порядок и «список / карта» справа.
-  // Сами фильтры открываются отдельным слоем — см. sheetHTML.
+  // Панель над выдачей: «Фильтры» и «Добавить сообщество» слева, «список / карта»
+  // справа. Сами фильтры открываются отдельным слоем — см. sheetHTML.
+  // «Добавить сообщество» прокручивает к карточке для организаторов внизу
+  // страницы: многие сами до неё не долистывают.
   function distRowHTML() {
     var L = state.lang, T = STR[L], on = activeFlags();
     var flags = '<button class="fbtn' + (on ? ' on' : '') + '" data-action="sheet" aria-haspopup="dialog" aria-expanded="' + sheetOpen + '">' +
       '<span class="fbtn-ic" aria-hidden="true"><span class="menu-line"></span><span class="menu-line short"></span></span>' + esc(T.filters) +
       (on ? '<span class="fbtn-n">' + on + '</span>' : '') + '</button>';
-    var sort = '<label class="sel"><span class="sr-only">' + esc(T.sort_lbl) + '</span>' + icon('sort', 16) +
-      '<select data-sort>' + [['rec', T.sort_rec], ['az', T.sort_az]].map(function (o) {
-        return '<option value="' + o[0] + '"' + (state.sort === o[0] ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
-      }).join('') + '</select></label>';
+    var add = '<button class="addbtn" data-action="to-own">' + icon('plus', 17) + esc(T.nav_add) + '</button>';
     var views = '<div class="seg" role="group" aria-label="' + esc(T.view_lbl) + '">' + [['list', T.view_list, 'all'], ['map', T.view_map, 'map']].map(function (v) {
       return '<button data-action="view" data-id="' + v[0] + '" aria-pressed="' + (state.view === v[0]) + '">' + icon(v[2], 16) + esc(v[1]) + '</button>';
     }).join('') + '</div>';
     return '<div class="cs-bar-in"><div class="filters">' + flags + '</div>' +
-      '<div class="cs-tools">' + sort + views + '</div></div>' +
+      '<div class="cs-tools">' + add + views + '</div></div>' +
       (state.nearState === 'denied' ? '<p class="near-note">' + esc(T.near_no) + '</p>'
         : state.near ? '<p class="near-note">' + esc(T.near_on) + '</p>' : '');
   }
@@ -759,9 +762,10 @@
     sh.querySelector('[data-fs-show]').textContent = sheetShowText();
   }
 
-  // Каталог целиком: своя тёмная шапка с названием, цифрами и поиском, под ней
-  // плитки направлений, липкая панель фильтров и выдача на «живом» градиенте.
-  // На главной он идёт сразу за бренд-блоком, а по адресу #/catalog открывается отдельно.
+  // Каталог целиком: своя тёмная шапка с названием, цифрами, поиском и плитками
+  // направлений (тёмно-синий тянется до самой выдачи), под ней панель фильтров
+  // и выдача. На главной он идёт сразу за бренд-блоком, а по адресу #/catalog
+  // открывается отдельно.
   function catalogHTML(page) {
     var L = state.lang, T = STR[L], ALL = allClubs();
     var H = page ? 'h1' : 'h2';
@@ -782,12 +786,12 @@
       '<form class="cs-search" role="search" data-search>' + icon('search', 20) +
       '<label class="sr-only" for="cq">' + esc(T.search_label) + '</label>' +
       '<input id="cq" type="search" autocomplete="off" enterkeyhint="search" value="' + esc(state.q) + '" placeholder="' + esc(T.cs_search_ph) + '"></form>' +
-      '</div></div>' +
-      '<div class="cs-stage"><div class="cs-bg" aria-hidden="true"><div class="cs-bg-in" data-grain></div></div>' +
+      '</div>' +
+      '<div class="wrap"><div class="cats" id="chips" role="group" aria-label="' + esc(T.cat_k) + '" data-kids>' + catsHTML() + '</div></div></div>' +
       '<div class="wrap cs-body">' +
-      '<div class="cats" id="chips" role="group" aria-label="' + esc(T.cat_k) + '" data-kids>' + catsHTML() + '</div>' +
+      '<div class="cs-sent" aria-hidden="true"></div>' +
       '<div class="cs-bar" id="dist-wrap">' + distRowHTML() + '</div>' +
-      '<div id="results">' + resultsHTML() + '</div></div></div></section>';
+      '<div id="results">' + resultsHTML() + '</div></div></section>';
   }
 
   // Плитки направлений в бренд-блоке стоят по кругу и вращаются (motion.js → ring).
@@ -868,7 +872,7 @@
   // Призыв для организаторов: ведёт на форму прямо на сайте.
   function ownBlock() {
     var T = STR[state.lang];
-    return '<section class="own" data-reveal>' + MARK('mark') +
+    return '<section class="own" id="own" data-reveal>' + MARK('mark') +
       '<div class="own-txt"><h2>' + esc(T.own_h) + '</h2><p>' + esc(T.own_p) + '</p>' +
       '<a class="own-btn" href="#/join">' + icon('plus', 20) + esc(T.own_b) + '</a></div>' +
       '<ul class="perks">' + [T.perk1, T.perk2, T.perk3, T.perk4].map(function (p) {
@@ -909,7 +913,7 @@
 
     // Фото от организаторов бывают любых пропорций и часто это логотип: показываем
     // картинку целиком, а пустые поля заполняем её же размытой копией.
-    var cover = '<div class="cp-cover">' + (photo
+    var cover = '<div class="cp-cover" data-reveal>' + (photo
       ? '<img class="cp-bg" src="' + esc(photo) + '" alt="" aria-hidden="true"><img class="cp-img" src="' + esc(photo) + '" alt="' + esc(c.name[L]) + '">'
       : coverArt(c)) +
       (c.featured ? '<span class="seal lg" role="img" aria-label="' + esc(T.featured) + '"></span>' : '') + '</div>';
@@ -998,11 +1002,14 @@
     return '<article class="screen tight wrap" style="--h:' + h + '">' +
       '<a class="back" href="#/">' + esc(T.back) + '</a>' +
       '<div class="cp">' + cover +
-      '<div class="cp-main">' + head + dirs + factsHTML + about + mediaSec + mapSec + '</div>' +
-      '<aside class="cp-side">' + openNote + join + trust + share + upd + '</aside>' +
+      // Блоки страницы выезжают по очереди, каждый — когда доходит до экрана.
+      // Именно data-items, а не data-kids: на телефоне у колонок display: contents,
+      // и следить можно только за самими блоками.
+      '<div class="cp-main" data-items>' + head + dirs + factsHTML + about + mediaSec + mapSec + '</div>' +
+      '<aside class="cp-side" data-items>' + openNote + join + trust + share + upd + '</aside>' +
       '</div>' +
-      (similar.length ? '<section class="sec" data-reveal><div class="sec-head"><h2 class="sec-h">' + esc(T.similar_h) + '</h2></div>' +
-        '<div class="grid">' + similar.map(function (s) { return cardHTML(s, L, T); }).join('') + '</div></section>' : '') +
+      (similar.length ? '<section class="sec"><div class="sec-head" data-reveal><h2 class="sec-h">' + esc(T.similar_h) + '</h2></div>' +
+        '<div class="grid" data-items>' + similar.map(function (s) { return cardHTML(s, L, T); }).join('') + '</div></section>' : '') +
       '</article>';
   }
 
@@ -1335,7 +1342,8 @@
         var d = n++ * STAGGER;
         en.target.style.transitionDelay = d + 'ms';
         en.target.classList.add('in');
-        settle(en.target, d);
+        // Внутри карточки обложка и строки появляются ещё ~0,6 с — ждём и их.
+        settle(en.target, d + 600);
       });
     }, { rootMargin: '0px 0px 40px 0px' });
     document.documentElement.classList.add('js-reveal');
@@ -1871,7 +1879,7 @@
     document.getElementById('foot-mission').textContent = T.foot_mission;
     document.getElementById('foot-creator').textContent = T.creator;
     document.getElementById('foot-creator-note').textContent = T.creator_note;
-    var nav = { 'nav-about': ['about', T.nav_about], 'nav-cat': ['catalog', T.nav_catalog], 'nav-add': ['join', T.nav_add] };
+    var nav = { 'nav-about': ['about', T.nav_about], 'nav-add': ['join', T.nav_add] };
     Object.keys(nav).forEach(function (id) {
       var a = document.getElementById(id);
       if (!a) return;
@@ -1897,6 +1905,7 @@
     if (r.screen === 'about') return T.nav_about + ' — ' + site;
     if (r.screen === 'map') return T.map_h1 + ' — ' + site;
     if (r.screen === 'catalog') return T.title_catalog;
+    if (r.screen === 'contests') return T.title_contests;
     if (r.screen === 'add') return 'Панель создателя — ' + site;
     if (r.screen === 'join') return T.join_h1 + ' — ' + site;
     return T.title_home;
@@ -1904,12 +1913,14 @@
 
   // ---------- движение (motion.js) ----------
   // intro — страница открылась заново: плитки выезжают, буквы раскладываются,
-  // градиент распускается. При перерисовке той же страницы (смена языка) всё
+  // точки выпрыгивают. При перерисовке той же страницы (смена языка) всё
   // появляется сразу, а кольцо продолжает с того же угла.
   var FX = window.QOSYL_FX || null;
-  // Цвета и настройки градиента — те, что Дамир подобрал в React Bits.
-  var GRAIN = { colors: ['#FFFAFA', '#1b52da'], angle: 56, flow: 0, silk: 1, grainAmount: 0, scale: 0.6, speed: 0, grainSize: 0.5, stir: 1.2, grainAnimated: false };
+  // Поле точек за «Конкурсами» — в цветах бренд-блока: тусклые синие точки
+  // на тёмно-синем, у курсора и в волне светлеют почти до белого.
+  var DOTS = { dotSize: 4, gap: 20, baseColor: '#2C4290', activeColor: '#CFE0FF', proximity: 140, strength: 1, bounce: 0.6, tension: 0.4, returnDuration: 0.8, shockRadius: 320, shockStrength: 5, swell: 0.8, stretch: 0.5, glow: 0.5, fade: 0 };
   var fxLoading = false;
+  var barIO = null;
   function mountFX(app, intro) {
     FX = FX || window.QOSYL_FX || null;
     if (!FX) {
@@ -1929,8 +1940,267 @@
     if (hero) FX.fold(hero, { instant: !intro });
     var word = app.querySelector('.cs-word');
     if (word) FX.fold(word, { trigger: 'scroll', instant: !intro });
-    var g = app.querySelector('[data-grain]');
-    if (g) FX.grain(g, Object.assign({ intro: intro }, GRAIN));
+    var ctWord = app.querySelector('.ct-word');
+    if (ctWord) FX.fold(ctWord, { instant: !intro });
+    var chips = app.querySelector('#chips');
+    if (chips && FX.glass) FX.glass(chips);
+    var d = app.querySelector('[data-dots]');
+    if (d && FX.dots) FX.dots(d, Object.assign({ intro: intro }, DOTS));
+  }
+
+  // Панель фильтров на компьютере прилипает под шапкой. Пока она на своём
+  // месте, у неё нет фона; прилипла — кнопки собираются в стеклянную капсулу.
+  // Следим прокруткой, а не IntersectionObserver: тот пропускает быстрые
+  // прыжки (кнопка «к каталогу», возврат назад) — метка перелетает экран целиком.
+  function watchBar(app) {
+    if (barIO) { window.removeEventListener('scroll', barIO); barIO = null; }
+    var sent = app.querySelector('.cs-sent'), bar = app.querySelector('.cs-bar');
+    if (!sent || !bar) return;
+    var queued = false;
+    function check() {
+      queued = false;
+      bar.classList.toggle('stuck', sent.getBoundingClientRect().top < 71 && window.innerWidth >= 760);
+    }
+    barIO = function () { if (!queued) { queued = true; window.requestAnimationFrame(check); } };
+    window.addEventListener('scroll', barIO, { passive: true });
+    check();
+  }
+
+  // ---------- меню разделов ----------
+  // «Главная · Каталог · Конкурсы» — таблетки в шапке (на телефоне — внизу
+  // экрана). Строим один раз на язык, дальше только двигаем точку (motion.js → pills).
+  var NAV = [['#/', 'nav_home'], ['#/catalog', 'nav_catalog'], ['#/contests', 'nav_contests']];
+  var NAV_SCREENS = ['home', 'catalog', 'contests'];
+  var navLang = null, navCtl = [null, null], navDir = 0;
+  function navIndex(r) {
+    if (r.screen === 'home') return 0;
+    if (r.screen === 'catalog' || r.screen === 'club' || r.screen === 'map') return 1;
+    if (r.screen === 'contests') return 2;
+    return -1;
+  }
+  function navHTML(T, idx) {
+    return '<div class="pn-bar"><div class="pn-track"><ul class="pn-list">' + NAV.map(function (n, i) {
+      var lbl = esc(T[n[1]]);
+      return '<li class="pn-slot"><a class="pn-item" href="' + n[0] + '" data-nav="' + i + '"' + (i === idx ? ' aria-current="page"' : '') + '>' +
+        '<span class="pn-fill" aria-hidden="true"></span><span class="pn-face">' + lbl + '</span>' +
+        '<span class="pn-face-alt" aria-hidden="true">' + lbl + '</span></a></li>';
+    }).join('') + '</ul><span class="pn-dot" aria-hidden="true"></span></div></div>';
+  }
+  function syncNav(r) {
+    var T = STR[state.lang], idx = navIndex(r), first = navLang === null;
+    FX = FX || window.QOSYL_FX || null;
+    ['pnav-h', 'pnav-b'].forEach(function (id, k) {
+      var nav = document.getElementById(id);
+      if (!nav) return;
+      nav.setAttribute('aria-label', T.nav_label);
+      if (navLang !== state.lang || !navCtl[k]) {
+        if (navCtl[k]) navCtl[k].destroy();
+        nav.innerHTML = navHTML(T, idx);
+        navCtl[k] = FX && FX.pills ? FX.pills(nav, { active: idx, intro: first }) : null;
+      } else {
+        Array.prototype.forEach.call(nav.querySelectorAll('[data-nav]'), function (a, i) {
+          if (i === idx) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+        });
+        navCtl[k].set(idx);
+      }
+    });
+    navLang = state.lang;
+  }
+
+  // ---------- конкурсы ----------
+  // Олимпиады, стартап-батлы, конференции и программы на ближайшие месяцы.
+  // Список лежит в contests.json; прошедшие конкурсы прячутся сами по дате.
+  var CONTESTS = null, contestsLoading = null;
+  var CT_TYPES = { biz: [82, 'biz'], sci: [212, 'stem'], olymp: [262, 'trophy'], it: [285, 'it'], social: [174, 'vol'], program: [20, 'globe'] };
+  function loadContests() {
+    if (contestsLoading) return contestsLoading;
+    contestsLoading = fetch('contests.json', { cache: 'no-cache' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) { CONTESTS = data && Array.isArray(data.items) ? data : { updated: '', items: [] }; })
+      .catch(function () { CONTESTS = { updated: '', items: [] }; });
+    return contestsLoading;
+  }
+  function tr(v, L) { return v == null ? '' : typeof v === 'string' ? v : (v[L] || v.ru || ''); }
+  function dayStart(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; }
+  function daysTo(iso) {
+    var d = dayStart(iso), now = new Date();
+    if (!d) return null;
+    var t = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return Math.round((d - t) / 86400000);
+  }
+  // Казахские месяцы — своим списком: часть браузеров не знает их и пишет «M12».
+  var KZ_MONTHS = ['қаңтар', 'ақпан', 'наурыз', 'сәуір', 'мамыр', 'маусым', 'шілде', 'тамыз', 'қыркүйек', 'қазан', 'қараша', 'желтоқсан'];
+  function monthName(d, L) {
+    if (L === 'kz') return KZ_MONTHS[d.getMonth()];
+    try { return d.toLocaleDateString(L === 'en' ? 'en-GB' : 'ru-RU', { month: 'long' }); } catch (e) { return String(d.getMonth() + 1); }
+  }
+  function longDate(iso, L, withYear) {
+    var d = dayStart(iso);
+    if (!d) return iso || '';
+    if (L === 'kz') return d.getDate() + ' ' + KZ_MONTHS[d.getMonth()] + (withYear ? ' ' + d.getFullYear() : '');
+    var o = { day: 'numeric', month: 'long' };
+    if (withYear) o.year = 'numeric';
+    try { return d.toLocaleDateString({ ru: 'ru-RU', kz: 'kk-KZ', en: 'en-GB' }[L], o).replace(/\s?г\.$/, ''); }
+    catch (e) { return fmtDate(iso, L); }
+  }
+  function leftText(n, L) {
+    var T = STR[L];
+    if (n === 0) return T.ct_today;
+    if (n === 1) return T.ct_tomorrow;
+    if (!pluralRules[L]) pluralRules[L] = new Intl.PluralRules({ ru: 'ru', kz: 'kk', en: 'en' }[L]);
+    return T.ct_in.replace('{n}', n).replace('{d}', T['ct_d_' + pluralRules[L].select(n)] || T.ct_d_many);
+  }
+  // Главная дата карточки — ближайший ещё не прошедший дедлайн. Если приём
+  // закрыт, а само событие впереди — показываем событие с пометкой «приём закрыт».
+  function ctMain(c) {
+    var ds = c.dates || [], i;
+    for (i = 0; i < ds.length; i++) if ((ds[i].k === 'reg' || ds[i].k === 'sub') && daysTo(ds[i].d) >= 0) return { k: ds[i].k, d: ds[i].d, n: daysTo(ds[i].d) };
+    for (i = 0; i < ds.length; i++) {
+      var end = ds[i].to || ds[i].d;
+      if ((ds[i].k === 'event' || ds[i].k === 'final') && daysTo(end) >= 0) {
+        var closed = ds.some(function (x) { return x.k === 'reg' || x.k === 'sub'; });
+        return { k: ds[i].k, d: ds[i].d, to: ds[i].to, n: daysTo(ds[i].d), closed: closed };
+      }
+    }
+    return null;
+  }
+  function liveContests() {
+    if (!CONTESTS) return [];
+    return CONTESTS.items.map(function (c) { return { c: c, m: ctMain(c) }; })
+      .filter(function (x) { return x.m; })
+      .sort(function (a, b) { return (a.m.closed ? 1 : 0) - (b.m.closed ? 1 : 0) || a.m.d.localeCompare(b.m.d); });
+  }
+  function ctCardHTML(x, L, T) {
+    var c = x.c, m = x.m, t = CT_TYPES[c.type] || CT_TYPES.biz;
+    var hot = m.closed ? 'closed' : m.n <= 7 ? 'hot' : m.n <= 21 ? 'warm' : 'calm';
+    var when = longDate(m.d, L) + (m.to ? ' – ' + longDate(m.to, L) : '');
+    var others = (c.dates || []).filter(function (d) { return !(d.k === m.k && d.d === m.d) && daysTo(d.to || d.d) >= 0; }).map(function (d) {
+      return T['ct_k_' + d.k] + ' ' + longDate(d.d, L) + (d.to ? ' – ' + longDate(d.to, L) : '');
+    });
+    var meta = [];
+    if (c.who) meta.push('<li>' + icon('users', 15) + esc(tr(c.who, L)) + '</li>');
+    if (c.free) meta.push('<li class="free">' + esc(T.f_free) + '</li>');
+    else if (c.cost) meta.push('<li>' + icon('tenge', 15) + esc(tr(c.cost, L)) + '</li>');
+    if (c.prize) meta.push('<li class="prize">' + icon('trophy', 15) + esc(tr(c.prize, L)) + '</li>');
+    var url = safeUrl(c.url);
+    return '<article class="ct-card" style="--h:' + t[0] + '">' +
+      '<div class="ct-card-top"><span class="ct-type">' + icon(t[1], 15) + esc(T['ct_t_' + c.type] || '') + '</span>' +
+      (c.where ? '<span class="ct-where">' + icon(/^(онлайн|online)/i.test(tr(c.where, 'ru')) ? 'globe' : 'pin', 14) + esc(tr(c.where, L)) + '</span>' : '') + '</div>' +
+      '<h3 class="ct-name">' + esc(tr(c.name, L)) + '</h3>' +
+      '<p class="ct-desc">' + esc(tr(c.desc, L)) + '</p>' +
+      (meta.length ? '<ul class="ct-meta">' + meta.join('') + '</ul>' : '') +
+      (others.length || c.note ? '<p class="ct-extra">' + esc(others.join(' · ')) + (others.length && c.note ? ' · ' : '') + esc(tr(c.note, L)) + '</p>' : '') +
+      '<div class="ct-foot"><div class="ct-due due-' + hot + '">' +
+      '<span class="ct-due-l">' + esc(m.closed ? T.ct_closed + ' · ' + T['ct_k_' + m.k] : T['ct_k_' + m.k]) + '</span>' +
+      '<b>' + esc(when) + '</b>' +
+      (m.n >= 0 && !(m.to && m.n < 0) ? '<span class="ct-left">' + esc(leftText(Math.max(0, m.n), L)) + '</span>' : '') + '</div>' +
+      '<div class="ct-acts">' +
+      (url ? '<a class="ct-go" href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(T.ct_site) + icon('arrow', 15) + '</a>' : '') +
+      '<button class="ct-cal" data-action="ct-cal" data-id="' + esc(c.id) + '" aria-label="' + esc(T.ct_cal + ': ' + tr(c.name, L)) + '" title="' + esc(T.ct_cal) + '">' + icon('cal', 19) + '</button>' +
+      '</div></div></article>';
+  }
+  function ctListHTML() {
+    var L = state.lang, T = STR[L];
+    if (!CONTESTS) return '<div class="ct-wait" role="status">' + esc(T.ct_loading) + '</div>';
+    var list = liveContests().filter(function (x) { return state.ctType === 'all' || x.c.type === state.ctType; });
+    if (!list.length) return '<div class="ct-wait">' + esc(T.ct_none) + '</div>';
+    // Делим по месяцам главной даты: «Декабрь», «Январь 2027» — так видно, что горит.
+    var groups = [], cur = null, nowY = new Date().getFullYear();
+    list.forEach(function (x) {
+      var key = x.m.closed ? 'closed' : x.m.d.slice(0, 7);
+      if (!cur || cur.key !== key) { cur = { key: key, items: [] }; groups.push(cur); }
+      cur.items.push(x);
+    });
+    return groups.map(function (g) {
+      var head;
+      if (g.key === 'closed') head = T.ct_closed_h;
+      else {
+        var d = dayStart(g.key + '-01');
+        head = monthName(d, L);
+        head = head.charAt(0).toUpperCase() + head.slice(1) + (d.getFullYear() !== nowY ? ' ' + d.getFullYear() : '');
+      }
+      return '<section class="ct-month"><h2 class="ct-month-h" data-reveal>' + esc(head) + '<span>' + g.items.length + '</span></h2>' +
+        '<div class="ct-grid" data-items>' + g.items.map(function (x) { return ctCardHTML(x, L, T); }).join('') + '</div></section>';
+    }).join('');
+  }
+  function ctTypesHTML() {
+    var L = state.lang, T = STR[L], live = liveContests(), cnt = {};
+    live.forEach(function (x) { cnt[x.c.type] = (cnt[x.c.type] || 0) + 1; });
+    var ids = Object.keys(CT_TYPES).filter(function (k) { return cnt[k]; });
+    if (state.ctType !== 'all' && !cnt[state.ctType]) state.ctType = 'all';
+    return [['all', T.all, live.length, 262, 'all']].concat(ids.map(function (k) { return [k, T['ct_t_' + k], cnt[k], CT_TYPES[k][0], CT_TYPES[k][1]]; })).map(function (t) {
+      return '<button class="ct-chip" data-action="ct-type" data-id="' + t[0] + '" aria-pressed="' + (state.ctType === t[0]) + '" style="--h:' + t[3] + '">' +
+        icon(t[4], 16) + esc(t[1]) + '<span>' + t[2] + '</span></button>';
+    }).join('');
+  }
+  function contestsView() {
+    var L = state.lang, T = STR[L];
+    if (!CONTESTS) loadContests().then(function () { if (route().screen === 'contests') render({ keepScroll: true }); });
+    var live = liveContests();
+    var open = live.filter(function (x) { return !x.m.closed; });
+    var next = open.length ? open.reduce(function (a, b) { return a.m.n <= b.m.n ? a : b; }) : null;
+    var free = live.filter(function (x) { return x.c.free; }).length;
+    var stats = CONTESTS ? [
+      [open.length, T.ct_st_open],
+      [next ? next.m.n : '—', next ? T.ct_st_next : T.ct_st_next0],
+      [free, T.ct_st_free]
+    ] : [];
+    return '<div class="ct">' +
+      '<div class="ct-bg" aria-hidden="true"><div class="ct-bg-in" data-dots></div></div>' +
+      '<section class="ct-top wrap" data-kids>' +
+      '<p class="hero-kicker"><span class="pulse"></span>' + esc(CONTESTS && CONTESTS.updated ? T.ct_kicker.replace('{d}', longDate(CONTESTS.updated, L)) : T.ct_kicker0) + '</p>' +
+      '<h1 class="ct-h' + (T.ct_word.length > 8 ? ' long' : '') + '"><span class="ct-word">' + esc(T.ct_word) + '</span>' + (CONTESTS ? '<span class="cs-n">' + open.length + '</span>' : '') + '</h1>' +
+      '<p class="ct-lead">' + esc(T.ct_lead) + '</p>' +
+      (stats.length ? '<ul class="cs-stats ct-stats">' + stats.map(function (s) { return '<li><b>' + s[0] + '</b><span>' + esc(s[1]) + '</span></li>'; }).join('') + '</ul>' : '') +
+      '</section>' +
+      '<div class="wrap ct-body">' +
+      (CONTESTS ? '<div class="ct-types" id="ct-types" role="group" aria-label="' + esc(T.ct_types_lbl) + '" data-kids>' + ctTypesHTML() + '</div>' : '') +
+      '<div id="ct-list">' + ctListHTML() + '</div>' +
+      '<p class="ct-note">' + icon('shield', 18) + '<span>' + esc(T.ct_note) + ' ' +
+      '<a href="https://instagram.com/botagoz07_89" target="_blank" rel="noopener">BalaMap (@botagoz07_89)</a>.</span></p>' +
+      '<section class="ct-suggest" data-reveal><div><h2>' + esc(T.ct_sug_h) + '</h2><p>' + esc(T.ct_sug_p) + '</p></div>' +
+      '<a class="own-btn" href="https://instagram.com/_zhagaparov_" target="_blank" rel="noopener">' + icon('ig', 20) + esc(T.ct_sug_b) + '</a></section>' +
+      '</div></div>';
+  }
+  function repaintContests() {
+    var box = document.getElementById('ct-list'), types = document.getElementById('ct-types');
+    if (types) types.innerHTML = ctTypesHTML();
+    if (!box) return;
+    box.innerHTML = ctListHTML();
+    reveal(box);
+  }
+  // «В календарь»: файл .ics с напоминанием за два дня — его понимают
+  // и iPhone, и Android, и Google Календарь.
+  function contestICS(id) {
+    var c = CONTESTS && CONTESTS.items.filter(function (x) { return x.id === id; })[0];
+    if (!c) return;
+    var L = state.lang, T = STR[L], m = ctMain(c);
+    if (!m) return;
+    function icsText(s) { return String(s).replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/([,;])/g, '\\$1'); }
+    function ymd(iso) { return iso.replace(/-/g, ''); }
+    var endIso = m.to || m.d, end = dayStart(endIso);
+    end.setDate(end.getDate() + 1);
+    var p = function (n) { return n < 10 ? '0' + n : '' + n; };
+    var endStr = end.getFullYear() + p(end.getMonth() + 1) + p(end.getDate());
+    var title = (m.k === 'event' || m.k === 'final' ? '' : T.ct_dl + ': ') + tr(c.name, L);
+    var lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Qosyl//Contests//RU', 'CALSCALE:GREGORIAN', 'BEGIN:VEVENT',
+      'UID:' + c.id + '-' + ymd(m.d) + '@qosyl.club',
+      'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z'),
+      'DTSTART;VALUE=DATE:' + ymd(m.d), 'DTEND;VALUE=DATE:' + endStr,
+      'SUMMARY:' + icsText(title),
+      'DESCRIPTION:' + icsText(tr(c.desc, L) + (c.note ? '\n' + tr(c.note, L) : '') + (c.url ? '\n' + c.url : '')),
+      (safeUrl(c.url) ? 'URL:' + c.url : ''),
+      'BEGIN:VALARM', 'TRIGGER:-P2D', 'ACTION:DISPLAY', 'DESCRIPTION:' + icsText(title), 'END:VALARM',
+      'END:VEVENT', 'END:VCALENDAR'].filter(Boolean);
+    var blob = new Blob([lines.join('\r\n') + '\r\n'], { type: 'text/calendar;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'qosyl-' + c.id + '.ics';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    statsSend({ path: 'contests/calendar/' + c.id, title: 'Конкурсы — в календарь: ' + tr(c.name, 'ru'), event: true });
   }
 
   // ---------- render ----------
@@ -1946,6 +2216,8 @@
     if (FX) FX.reset();
     if (changedPage) closeSheet(true); else updateSheet();
     renderChrome(r);
+    syncNav(r);
+    document.documentElement.setAttribute('data-screen', r.screen);
     var app = document.getElementById('app');
     // Прямая ссылка «подтвердить/дополнить карточку»: каталог мог догрузиться
     // уже после первой отрисовки — тогда подставляем данные сообщества сейчас.
@@ -1956,8 +2228,12 @@
       : r.screen === 'map' ? mapView()
       : r.screen === 'add' ? addView()
       : r.screen === 'catalog' ? catalogView()
+      : r.screen === 'contests' ? contestsView()
       : homeView();
-    if (changedPage) app.setAttribute('data-enter', ''); else app.removeAttribute('data-enter');
+    // Переход через меню разделов анимирует браузер целиком (View Transitions) —
+    // тогда своё «въезжание» страницы не нужно, иначе оно сыграет дважды.
+    var vt = document.documentElement.classList.contains('vt');
+    if (changedPage && !vt) app.setAttribute('data-enter', ''); else app.removeAttribute('data-enter');
     app.innerHTML = html;
     document.title = pageTitle(r);
     if (changedPage) trackPage(r);
@@ -1969,6 +2245,7 @@
     reveal(app, !changedPage);
     if ((r.screen === 'home' || r.screen === 'catalog') && changedPage) countUp(app);
     mountFX(app, changedPage);
+    watchBar(app);
 
     if (changedPage && !(opts && opts.keepScroll)) {
       window.scrollTo(0, 0);
@@ -1999,10 +2276,43 @@
         copyText(T2.greet).then(function () { toast(T2.greet_copied); }, function () {});
       }
     }
+    // Меню разделов: запоминаем направление для анимации перехода.
+    // Нажали на раздел, где уже стоишь, — просто плавно наверх.
+    var nv = e.target.closest('[data-nav]');
+    if (nv && !e.metaKey && !e.ctrlKey && !e.shiftKey) {
+      var to = +nv.getAttribute('data-nav'), cur = route(), from = navIndex(cur);
+      if (cur.screen === NAV_SCREENS[to]) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: FX && FX.reduced ? 'auto' : 'smooth' });
+        return;
+      }
+      navDir = from < 0 || to >= from ? 1 : -1;
+      return;
+    }
     var el = e.target.closest('[data-action]');
     if (!el) return;
     var action = el.getAttribute('data-action'), id = el.getAttribute('data-id');
     switch (action) {
+      case 'to-own': {
+        var own = document.getElementById('own');
+        if (!own) { window.location.hash = '#/join'; break; }
+        var reduce = FX && FX.reduced;
+        own.classList.add('in', 'done');
+        window.scrollTo({ top: own.getBoundingClientRect().top + window.pageYOffset - 90, behavior: reduce ? 'auto' : 'smooth' });
+        // Карточка вспыхивает, когда до неё доехали, — чтобы глаз сразу её нашёл.
+        own.classList.remove('ping');
+        setTimeout(function () { void own.offsetWidth; own.classList.add('ping'); }, reduce ? 0 : 650);
+        setTimeout(function () { own.classList.remove('ping'); }, 2600);
+        statsSend({ path: 'catalog/to-own', title: 'Каталог — кнопка «Добавить сообщество»', event: true });
+        break;
+      }
+      case 'ct-type':
+        state.ctType = id || 'all';
+        repaintContests();
+        break;
+      case 'ct-cal':
+        contestICS(id);
+        break;
       case 'lang':
         state.lang = id; save(LANG_KEY, id);
         render({ keepScroll: true });
@@ -2257,7 +2567,6 @@
     var t = e.target;
     if (!t.hasAttribute) return;
     if (t.hasAttribute('data-photo')) handlePhotoFile(t.files[0]);
-    if (t.hasAttribute('data-sort')) { state.sort = t.value === 'az' ? 'az' : 'rec'; state.shown = PAGE; repaintList(); }
     if (t.hasAttribute('data-dist-sel')) { state.dist = t.value || 'all'; state.shown = PAGE; repaintList(); }
   });
 
@@ -2347,7 +2656,22 @@
     window.scrollTo(0, 0);
   }
 
-  window.addEventListener('hashchange', function () { render({ focus: true }); });
+  // Переход по меню разделов: старая страница уезжает в одну сторону, новая
+  // въезжает с другой (View Transitions API). Шапка и нижнее меню стоят на месте.
+  // Где браузер так не умеет, остаётся обычное мягкое появление.
+  window.addEventListener('hashchange', function () {
+    var dir = navDir;
+    navDir = 0;
+    var go = function () { render({ focus: true }); };
+    if (!dir || !document.startViewTransition || (FX && FX.reduced)) { go(); return; }
+    var html = document.documentElement;
+    var done = function () { html.classList.remove('vt', 'vt-fwd', 'vt-back'); };
+    html.classList.add('vt', dir > 0 ? 'vt-fwd' : 'vt-back');
+    try {
+      var t = document.startViewTransition(go);
+      t.finished.then(done, done);
+    } catch (e) { done(); go(); }
+  });
   window.addEventListener('storage', function (e) {
     if (e.key === STORE_KEY) { state.mine = load(STORE_KEY, []); render({ keepScroll: true }); }
   });
@@ -2408,8 +2732,22 @@
   loadStats();
   // Первую отрисовку ждём до загрузки каталога (но не дольше 1,5 с): иначе
   // страница появится пустой и тут же перерисуется, и плавного появления не будет.
+  // Открыли сразу «Конкурсы» — ждём и их список. Иначе подгружаем его чуть
+  // позже, чтобы вкладка открывалась мгновенно и с анимацией.
   var painted = false;
   function firstPaint() { if (!painted) { painted = true; render(); } }
-  loadCatalogue().then(function () { if (painted) render({ keepScroll: true }); else firstPaint(); });
+  var boot = [loadCatalogue()];
+  if (route().screen === 'contests') boot.push(loadContests());
+  Promise.all(boot).then(function () { if (painted) render({ keepScroll: true }); else firstPaint(); });
   setTimeout(firstPaint, 1500);
+  setTimeout(loadContests, 2500);
+
+  // Знак Qosyl в шапке делает оборот, когда на него наводишь мышку (как логотип в PillNav).
+  var brandEl = document.querySelector('[data-logo]');
+  if (brandEl) brandEl.addEventListener('pointerenter', function (e) {
+    if (e.pointerType === 'touch' || (FX && FX.reduced)) return;
+    var mk = brandEl.querySelector('.logo');
+    if (!mk || !mk.animate || (mk.getAnimations && mk.getAnimations().length)) return;
+    mk.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }], { duration: 900, easing: 'cubic-bezier(0.65, 0, 0.25, 1)' });
+  });
 })();

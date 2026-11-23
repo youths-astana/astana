@@ -107,7 +107,7 @@ img { max-width: 100% }
 /* ---------- шапка ---------- */
 /* Только шапка сайта: у значка «Лучшее» раньше был тот же класс top,
    и он прилипал к верху экрана поверх всего. */
-header.top { position: sticky; top: 0; z-index: 1000; background: rgb(255 255 255 / .88); -webkit-backdrop-filter: saturate(1.4) blur(14px); backdrop-filter: saturate(1.4) blur(14px); border-bottom: 1px solid var(--line) }
+header.top { view-transition-name: qtop; position: sticky; top: 0; z-index: 1000; background: rgb(255 255 255 / .88); -webkit-backdrop-filter: saturate(1.4) blur(14px); backdrop-filter: saturate(1.4) blur(14px); border-bottom: 1px solid var(--line) }
 .top-in { display: flex; align-items: center; gap: 6px; min-height: 62px }
 .brand { display: flex; align-items: center; gap: 9px; min-height: 44px; color: var(--ink); font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: -0.02em; white-space: nowrap }
 .brand:hover { color: var(--ink) }
@@ -117,7 +117,7 @@ header.top { position: sticky; top: 0; z-index: 1000; background: rgb(255 255 25
 .nav-link:hover, .nav-link[aria-current="page"] { color: var(--ink); background: var(--hover) }
 .top-cta { display: none; align-items: center; gap: 6px; min-height: 40px; padding: 0 15px; margin-left: 4px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 13.5px; font-weight: 600; white-space: nowrap; transition: background .15s }
 .top-cta:hover { background: var(--navy-2); color: #fff }
-@media (min-width: 700px) { .top-cta { display: inline-flex } }
+@media (min-width: 1040px) { .top-cta { display: inline-flex } }
 .langs { display: flex; gap: 2px; padding: 3px; margin-left: 6px; background: var(--chip); border-radius: 11px }
 .langs button { border: 0; min-height: 36px; padding: 0 10px; border-radius: 8px; background: transparent; font-size: 12px; font-weight: 700; letter-spacing: .03em; color: var(--soft) }
 .langs button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgb(16 34 92 / .1) }
@@ -127,6 +127,9 @@ header.top { position: sticky; top: 0; z-index: 1000; background: rgb(255 255 25
   .langs button { padding: 0 7px }
 }
 @media (max-width: 480px) { .nav-about { display: none } }
+/* Планшет: в шапке меню разделов — убираем лишнее, чтобы всё влезло в строку. */
+@media (min-width: 760px) and (max-width: 899px) { .nav-about { display: none } }
+@media (min-width: 760px) and (max-width: 1039px) { .brand .city { display: none } }
 
 /* ---------- главная: бренд-блок ---------- */
 .hero { position: relative; overflow: hidden; color: #fff;
@@ -268,15 +271,15 @@ header.top { position: sticky; top: 0; z-index: 1000; background: rgb(255 255 25
 .helper-geo-note { margin: 12px 0 0; max-width: 46em; font-size: 12.5px; line-height: 1.45; color: var(--faint) }
 
 /* ---------- каталог: шапка ----------
-   Каталог — отдельная «зона» сайта: своя тёмная шапка с названием, цифрами
-   и поиском, а плитки направлений заходят на её нижний край. Так с первого
+   Каталог — отдельная «зона» сайта: своя тёмная шапка с названием, цифрами,
+   поиском и плитками направлений — тёмно-синий тянется до самой выдачи. Так с первого
    взгляда понятно, что дальше идёт сам каталог, а не ещё один блок главной. */
 .catalog { position: relative; margin-top: 52px; scroll-margin-top: 62px }
 /* На главной каталог идёт сразу за бренд-блоком — без светлой щели между двумя тёмными. */
 .hero + .catalog { margin-top: 0 }
 .hero + .catalog .cs-top { border-top: 1px solid rgb(255 255 255 / .08) }
 .home.is-catalog .catalog { margin-top: 0 }
-.cs-top { position: relative; overflow: hidden; padding: 40px 0 96px; color: #fff;
+.cs-top { position: relative; overflow: hidden; padding: 40px 0 22px; color: #fff;
   background: radial-gradient(55% 90% at 100% 0%, oklch(0.52 0.17 285 / .6) 0%, rgb(0 0 0 / 0) 62%),
               radial-gradient(45% 80% at 0% 100%, oklch(0.55 0.13 174 / .38) 0%, rgb(0 0 0 / 0) 66%),
               linear-gradient(160deg, #0F2160 0%, #0A1638 100%) }
@@ -285,7 +288,7 @@ header.top { position: sticky; top: 0; z-index: 1000; background: rgb(255 255 25
 .cs-mark { position: absolute; right: -70px; bottom: -150px; width: 440px; height: 440px; color: #fff; opacity: .06; pointer-events: none }
 .cs-top-in { position: relative; display: grid; gap: 22px }
 @media (min-width: 900px) {
-  .cs-top { padding: 48px 0 108px }
+  .cs-top { padding: 48px 0 30px }
   .cs-top-in { grid-template-columns: minmax(0, 1fr) auto; align-items: end; column-gap: 40px }
   .cs-h, .cs-search { grid-column: 1 / -1 }
 }
@@ -306,70 +309,74 @@ header.top { position: sticky; top: 0; z-index: 1000; background: rgb(255 255 25
 .cs-search:focus-within { box-shadow: 0 0 0 3px rgb(47 107 255 / .55), 0 14px 36px rgb(0 0 0 / .28) }
 .cs-search input { flex: 1; min-width: 0; min-height: 54px; border: 0; outline: none; background: transparent; font-size: 16.5px; color: var(--ink) }
 .cs-search input::-webkit-search-cancel-button { cursor: pointer }
-/* Выдача лежит на «живом» градиенте (Grainient). Холст размером с экран
-   прилипает к верху, пока листаешь список, — так он не растёт вместе
-   с выдачей. Сверху и снизу градиент растворяется в фоне страницы. Пока
-   WebGL не нарисовал первый кадр (или его нет), виден обычный CSS-градиент. */
-.cs-stage { position: relative; margin-top: -70px }
-.cs-body { position: relative }
-.cs-bg { position: absolute; left: 0; right: 0; top: 70px; bottom: 0; clip-path: inset(0); pointer-events: none;
-  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 140px, #000 calc(100% - 180px), transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 140px, #000 calc(100% - 180px), transparent 100%) }
-.cs-bg-in { position: sticky; top: 0; height: 100vh; background: linear-gradient(56deg, #FFFAFA 20%, #1B52DA 120%) }
-.grain-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100% }
-/* Подписи прямо на градиенте — на светлой подложке, чтобы читались и на синем. */
-.cs-body .count-l, .cs-body .updated { padding: 5px 12px; border-radius: 999px; background: rgb(255 255 255 / .72); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px) }
-.cs-body .updated { color: var(--soft) }
+/* Выдача — на светлой «бумаге» сразу под тёмно-синей шапкой каталога. */
+.cs-body { position: relative; padding-top: 18px }
 
 /* ---------- каталог: плитки направлений ----------
    Цветные плитки, как полки в магазине приложений: у каждой секции свой цвет
    (меняется только оттенок --h), белая подпись и большой значок в углу. */
+.cs-top .cats { position: relative; margin-top: 26px }
 .cats { display: flex; gap: 10px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; margin: 0 -18px; padding: 6px 18px 16px; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 26px), transparent); mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 26px), transparent); scroll-padding-left: 18px }
 .cats::-webkit-scrollbar { display: none }
 @media (min-width: 760px) { .cats { margin: 0 -28px; padding-left: 28px; padding-right: 28px; scroll-padding-left: 28px } }
 @media (min-width: 1000px) {
   .cats { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; overflow: visible; margin: 0; padding: 6px 0 16px; -webkit-mask-image: none; mask-image: none }
 }
-.cat { position: relative; overflow: hidden; flex: none; width: 138px; min-height: 116px; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 14px; padding: 13px 13px 14px; border: 0; border-radius: 20px; text-align: left; color: #fff;
+.cat { position: relative; overflow: hidden; flex: none; width: 146px; min-height: 140px; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 14px; padding: 13px 13px 14px; border: 0; border-radius: 20px; text-align: left; color: #fff;
   background: linear-gradient(150deg, oklch(0.63 0.15 var(--h)) 0%, oklch(0.5 0.16 var(--h)) 100%);
   box-shadow: 0 8px 22px oklch(0.42 0.14 var(--h) / .26); transition: transform .2s var(--ease), box-shadow .2s, opacity .2s, filter .2s }
-@media (min-width: 1000px) { .cat { width: auto; min-height: 124px } }
+@media (min-width: 1000px) { .cat { width: auto; min-height: 150px } }
 .cat:hover { transform: translateY(-3px); box-shadow: 0 14px 30px oklch(0.42 0.14 var(--h) / .34) }
 .cat-art { position: absolute; right: -16px; bottom: -18px; color: rgb(255 255 255 / .2); transform: rotate(-14deg); transition: transform .35s var(--ease); pointer-events: none }
 .cat-art .ic-svg { width: 86px; height: 86px; stroke-width: 1.5 }
 .cat:hover .cat-art { transform: rotate(-4deg) scale(1.08) }
-.cat .ic { position: relative; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: rgb(255 255 255 / .2); color: #fff }
 .cat-txt { position: relative; display: grid; gap: 3px }
 .cat b { font-size: 13.5px; font-weight: 700; line-height: 1.22; letter-spacing: -0.01em; text-shadow: 0 1px 2px oklch(0.3 0.1 var(--h) / .3) }
 .cat small { font-size: 12px; font-weight: 600; color: rgb(255 255 255 / .82) }
-.cat[aria-pressed="true"] { box-shadow: 0 0 0 3px #fff, 0 0 0 6px oklch(0.55 0.17 var(--h)), 0 14px 30px oklch(0.42 0.14 var(--h) / .34) }
+.cat[aria-pressed="true"] { box-shadow: 0 0 0 3px #fff, 0 14px 30px rgb(0 0 0 / .3) }
 .cat[aria-pressed="true"]::after { content: "✓"; position: absolute; right: 10px; top: 10px; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #fff; color: oklch(0.45 0.16 var(--h)); font-size: 13px; font-weight: 800 }
 /* Выбрана секция — остальные приглушаем, чтобы выбор читался издалека. */
 .cats:has(.cat[aria-pressed="true"]:not([data-id="all"])) .cat[aria-pressed="false"] { opacity: .5; filter: saturate(.6) }
 .cats:has(.cat[aria-pressed="true"]:not([data-id="all"])) .cat[aria-pressed="false"]:hover { opacity: 1; filter: none }
-.cat.is-empty { background: #fff; color: var(--ink); box-shadow: none; outline: 1.5px dashed var(--field); outline-offset: -1.5px }
-.cat.is-empty .ic { background: var(--chip); color: var(--faint) }
-.cat.is-empty .cat-art { color: var(--line) }
-.cat.is-empty b { color: var(--soft); text-shadow: none }
-.cat.is-empty small { color: var(--faint); font-weight: 500 }
-.cat.is-empty[aria-pressed="true"] { outline: 0; box-shadow: 0 0 0 2px var(--soft) }
-.cat.is-empty[aria-pressed="true"]::after { background: var(--ink); color: #fff }
+.cat.is-empty { background: rgb(255 255 255 / .05); color: #fff; box-shadow: none; outline: 1.5px dashed rgb(255 255 255 / .22); outline-offset: -1.5px }
+.cat.is-empty .cat-art { color: rgb(255 255 255 / .06) }
+.cat.is-empty b { color: rgb(255 255 255 / .78); text-shadow: none }
+.cat.is-empty small { color: rgb(255 255 255 / .5); font-weight: 500 }
+.cat.is-empty[aria-pressed="true"] { outline: 0; box-shadow: 0 0 0 2px rgb(255 255 255 / .7) }
+.cat.is-empty[aria-pressed="true"]::after { background: #fff; color: var(--navy) }
 
 /* ---------- каталог: панель фильтров ----------
    Фильтров немного, поэтому они в строку над выдачей, а не в боковой колонке.
-   На компьютере панель прилипает под шапкой сайта, пока листаешь выдачу. */
-.cs-bar { position: relative; z-index: 600; margin: 4px 0 0 }
-@media (min-width: 760px) {
-  .cs-bar { position: sticky; top: 62px; margin: 4px -28px 0; padding: 10px 28px; background: rgb(245 247 252 / .9); -webkit-backdrop-filter: saturate(1.4) blur(12px); backdrop-filter: saturate(1.4) blur(12px) }
-}
+   Своего фона у панели нет — никакой светлой полосы. На компьютере она
+   прилипает под шапкой сайта, и тогда кнопки собираются в стеклянную
+   капсулу (класс stuck ставит app.js). */
+.cs-sent { height: 1px; margin-bottom: -1px }
+.cs-bar { position: relative; z-index: 600; margin: 0 }
 .cs-bar-in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px }
 .cs-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px }
+@media (min-width: 760px) {
+  .cs-bar { position: sticky; top: 70px; margin: 0 -7px }
+  .cs-bar-in { padding: 6px; border-radius: 999px; transition: background-color .25s, box-shadow .25s, -webkit-backdrop-filter .25s, backdrop-filter .25s }
+  .cs-bar.stuck .cs-bar-in { background: rgb(255 255 255 / .8); -webkit-backdrop-filter: saturate(1.5) blur(14px); backdrop-filter: saturate(1.5) blur(14px); box-shadow: inset 0 0 0 1px rgb(16 34 92 / .07), 0 14px 34px -14px rgb(16 34 92 / .35) }
+}
 @media (max-width: 759px) {
-  /* Телефон: «Фильтры» и «Список / Карта» в первой строке, порядок — под ними. */
+  /* Телефон: «Фильтры» и «Список / Карта» в первой строке, «Добавить» — под ними. */
   .cs-bar-in { display: grid; grid-template-columns: auto auto; justify-content: space-between; column-gap: 8px }
   .cs-bar .seg button { padding: 0 11px }
   .cs-tools { display: contents }
   .cs-tools .seg { grid-column: 2; grid-row: 1 }
-  .cs-tools .sel { grid-column: 1 / -1; justify-self: start }
+  .cs-tools .addbtn { grid-column: 1 / -1; justify-self: start }
+}
+/* «Добавить сообщество» — тёмная таблетка, как кнопка в шапке: для организаторов. */
+.addbtn { display: inline-flex; align-items: center; gap: 7px; min-height: 42px; padding: 0 16px 0 13px; border: 0; border-radius: 999px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 700; white-space: nowrap; box-shadow: 0 6px 16px -6px rgb(14 21 48 / .5); transition: background .15s, scale .15s }
+.addbtn:hover { background: var(--navy-2) }
+.addbtn:active { scale: .96 }
+/* Доехали до карточки «Добавить своё» — она вспыхивает голубым кольцом. */
+.own.ping { animation: own-ping 1.8s var(--out3) }
+@keyframes own-ping {
+  0% { box-shadow: 0 0 0 0 rgb(47 107 255 / .7) }
+  35% { box-shadow: 0 0 0 10px rgb(47 107 255 / .35) }
+  100% { box-shadow: 0 0 0 22px rgb(47 107 255 / 0) }
 }
 .sel { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 30px 0 12px; border: 1.5px solid var(--line); border-radius: 999px; background: #fff; color: var(--soft); transition: border-color .15s }
 .sel:hover, .sel:focus-within { border-color: var(--field) }
@@ -935,4 +942,195 @@ html.sheet-open { overflow: hidden }
 }
 @media (prefers-reduced-motion: reduce) {
   .fsheet, .fsheet.open .fs-pill, .fsheet.open .fs-l, .fsheet.open .fs-show, .fsheet.closing .fs-pill { animation: none; transition: none }
+}
+
+/* ---------- меню разделов ----------
+   Как PillNav из React Bits, в цветах Qosyl. У каждого раздела своя белая
+   «таблетка» на серой дорожке. При наведении снизу поднимается синий круг,
+   а подпись перекатывается вверх белой. Текущий раздел отмечен точкой —
+   она на пружине переезжает к новому пункту (motion.js → pills).
+   На компьютере меню в шапке, на телефоне — плавающее стекло внизу экрана. */
+.pnav { --pn-h: 44px; --pn-pad: 4px; --pn-x: 15px; --pn-font: 14px; --pn-inner: calc(var(--pn-h) - var(--pn-pad) * 2); --pn-roll: calc(var(--pn-inner) / 2 + .7em);
+  position: relative; display: inline-flex; align-items: center; font-size: var(--pn-font); line-height: 1; -webkit-tap-highlight-color: transparent }
+.pnav > a { padding: 0 8px; font-weight: 600; color: var(--muted) }
+.pn-bar { position: relative; display: flex; align-items: center; height: var(--pn-h); padding: var(--pn-pad); border-radius: 999px; background: var(--chip); box-shadow: inset 0 0 0 1px rgb(16 34 92 / .05), inset 0 1px 0 rgb(255 255 255 / .9) }
+.pn-track { position: relative; height: 100% }
+.pn-list { display: flex; align-items: stretch; gap: 3px; height: 100%; margin: 0; padding: 0; list-style: none }
+.pn-slot { display: flex }
+.pn-item { position: relative; display: inline-flex; align-items: center; justify-content: center; height: 100%; padding: 0 var(--pn-x); border-radius: 999px;
+  background: linear-gradient(180deg, #fff 0%, #F4F6FB 100%); box-shadow: inset 0 0 0 1px rgb(16 34 92 / .07), inset 0 1px 0 #fff, 0 4px 10px -5px rgb(16 34 92 / .28);
+  color: var(--muted); font-weight: 600; letter-spacing: -.005em; white-space: nowrap; overflow: hidden; isolation: isolate; transition: color .25s }
+.pn-item:hover, .pn-item[aria-current] { color: var(--ink) }
+.pn-item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 999px }
+.pn-face { display: inline-flex; align-items: center; gap: .45em; transition: transform .36s cubic-bezier(.22, 1, .36, 1) }
+.pn-face-alt { position: absolute; inset: 0; display: inline-flex; align-items: center; justify-content: center; color: #fff; transform: translateY(var(--pn-roll)); transition: transform .36s cubic-bezier(.22, 1, .36, 1) }
+.pn-slot[data-hover] .pn-face { transform: translateY(calc(var(--pn-roll) * -1)); transition-duration: .5s }
+.pn-slot[data-hover] .pn-face-alt { transform: none; transition-duration: .5s }
+.pn-fill { position: absolute; top: 100%; left: 50%; z-index: -1; width: var(--pn-fill, 200%); height: var(--pn-fill, 200%); margin: calc(var(--pn-fill, 200%) / -2) 0 0 calc(var(--pn-fill, 200%) / -2);
+  border-radius: 50%; background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dk) 100%); transform: scale(0); transition: transform .36s cubic-bezier(.4, 0, .2, 1); pointer-events: none }
+.pn-slot[data-hover] .pn-fill { transform: scale(1); transition: transform .55s cubic-bezier(.22, 1, .36, 1) }
+.pn-dot { position: absolute; bottom: 4px; left: 0; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 999px; background: var(--accent); opacity: 0; pointer-events: none; transition: background-color .3s; will-change: transform, opacity }
+.pnav[data-dot-lit] .pn-dot { background: #fff }
+.pnav-h { margin-left: 16px }
+.pnav-b { display: none }
+@media (max-width: 759px) {
+  .pnav-h { display: none }
+  .pnav-b { --pn-h: 54px; --pn-pad: 5px; --pn-x: 17px; --pn-font: 15px; view-transition-name: qnav; position: fixed; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 900; display: flex; transform: translateX(-50%) }
+  .pnav-b .pn-bar { background: rgb(255 255 255 / .78); -webkit-backdrop-filter: saturate(1.6) blur(18px); backdrop-filter: saturate(1.6) blur(18px);
+    box-shadow: inset 0 0 0 1px rgb(16 34 92 / .08), 0 18px 40px -16px rgb(16 34 92 / .5), 0 4px 12px -6px rgb(16 34 92 / .22) }
+  .foot { padding-bottom: calc(86px + env(safe-area-inset-bottom)) }
+  .toast { bottom: calc(88px + env(safe-area-inset-bottom)) }
+}
+@media (max-width: 359px) { .pnav-b { --pn-x: 12px; --pn-font: 14px } }
+
+/* ---------- переход между разделами ----------
+   Браузер снимает «фото» старой страницы и плавно меняет его на новую:
+   старая уходит в сторону и размывается, новая въезжает с другой стороны.
+   Направление — по порядку в меню. Шапка и нижнее меню не двигаются. */
+html.vt-fwd { --vt-x: 48px }
+html.vt-back { --vt-x: -48px }
+::view-transition-old(root) { animation: vt-out .28s cubic-bezier(.4, 0, 1, 1) both; mix-blend-mode: normal }
+::view-transition-new(root) { animation: vt-in .62s var(--out3) both; mix-blend-mode: normal }
+::view-transition-old(qtop), ::view-transition-old(qnav) { display: none }
+::view-transition-new(qtop), ::view-transition-new(qnav) { animation: none }
+@keyframes vt-out { to { opacity: 0; transform: translateX(calc(var(--vt-x, 48px) * -1)) scale(.985); filter: blur(3px) } }
+@keyframes vt-in { from { opacity: 0; transform: translateX(var(--vt-x, 48px)) scale(.985); filter: blur(6px) } }
+
+/* ---------- стеклянные значки направлений ----------
+   Как GlassIcons: значок на матовом стекле, за ним — наклонная пластинка
+   посветлее цвета плитки. При наведении стекло приподнимается, пластинка
+   доворачивается и выглядывает сильнее, блик идёт за курсором (--px, --py
+   ставит motion.js → glass), а при нажатии стекло вдавливается. */
+.gi { --px: 0; --py: 0; --tilt: 18deg; position: relative; display: block; flex: none; width: 54px; height: 54px }
+@media (min-width: 1000px) { .gi { width: 58px; height: 58px } }
+.gi-plate, .gi-glass, .gi-face { position: absolute; inset: 0; border-radius: 17px }
+.gi-plate { background: linear-gradient(135deg, oklch(0.9 0.08 calc(var(--h) + 30)) 0%, oklch(0.76 0.16 calc(var(--h) - 12)) 100%); box-shadow: 0 8px 16px -8px oklch(0.25 0.12 var(--h) / .6);
+  transform-origin: 100% 100%; transform: translate(calc(var(--px) * -4px), calc(var(--py) * -4px)) rotate(var(--tilt)); transition: transform .75s cubic-bezier(.34, 1.56, .64, 1), opacity .5s var(--out3) }
+.gi-glass { overflow: hidden; background: linear-gradient(150deg, rgb(255 255 255 / .5) 0%, rgb(255 255 255 / .16) 48%, rgb(255 255 255 / .26) 100%);
+  -webkit-backdrop-filter: blur(6px) saturate(1.7); backdrop-filter: blur(6px) saturate(1.7);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .8), inset 0 0 0 1px rgb(255 255 255 / .3), inset 0 -12px 18px -12px rgb(255 255 255 / .45), 0 14px 24px -14px rgb(0 0 0 / .5);
+  transition: transform .55s cubic-bezier(.34, 1.56, .64, 1), opacity .5s var(--out3) }
+.gi-glass::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.2px; pointer-events: none;
+  background: linear-gradient(140deg, rgb(255 255 255 / .95), rgb(255 255 255 / 0) 38%, rgb(255 255 255 / 0) 62%, rgb(255 255 255 / .55));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0) }
+.gi-glass::after { content: ""; position: absolute; inset: -30%; pointer-events: none; background: radial-gradient(closest-side, rgb(255 255 255 / .55), rgb(255 255 255 / 0));
+  transform: translate(calc(-22% + var(--px) * 18%), calc(-22% + var(--py) * 18%)); opacity: .5; transition: transform .6s var(--out3), opacity .3s }
+.gi-face { display: grid; place-items: center; color: #fff; filter: drop-shadow(0 1px 2px rgb(0 0 0 / .3)); transition: transform .55s cubic-bezier(.34, 1.56, .64, 1), opacity .5s var(--out3) }
+.gi-face .ic-svg { width: 27px; height: 27px; stroke-width: 2 }
+@media (hover: hover) {
+  .cat:hover .gi { --tilt: 28deg }
+  .cat:hover .gi-plate { transform: translate(calc(var(--px) * -4px - 4px), calc(var(--py) * -4px - 4px)) rotate(var(--tilt)) }
+  .cat:hover .gi-glass, .cat:hover .gi-face { transform: translateY(-4px) }
+  .cat:hover .gi-glass::after { opacity: .85 }
+}
+.cat:active .gi-glass, .cat:active .gi-face { transform: translateY(-1px) scale(.92); transition-duration: .15s }
+.cat.is-empty .gi-plate { background: rgb(255 255 255 / .16); box-shadow: none }
+.cat.is-empty .gi-face { color: rgb(255 255 255 / .7) }
+/* Плитки выезжают по очереди — следом стекло «оседает», а пластинка разворачивается. */
+.js-reveal .cats:not(.in) .gi-plate { transform: rotate(0deg); opacity: 0 }
+.js-reveal .cats:not(.in) .gi-glass { transform: scale(.9); opacity: 0 }
+.js-reveal .cats:not(.in) .gi-face { transform: translateY(8px); opacity: 0 }
+.js-reveal .cats:not(.done) .gi-plate { transition-delay: calc(var(--k, 0) * 80ms + 280ms) }
+.js-reveal .cats:not(.done) .gi-glass { transition-delay: calc(var(--k, 0) * 80ms + 120ms) }
+.js-reveal .cats:not(.done) .gi-face { transition-delay: calc(var(--k, 0) * 80ms + 200ms) }
+
+/* ---------- появление внутри карточек ----------
+   Карточка выезжает снизу, а следом: обложка открывается сверху вниз и мягко
+   «отъезжает», плашка направления выпрыгивает, строки поднимаются по очереди. */
+.js-reveal [data-items] > .club:not(.done) .club-cover { transition: clip-path .9s var(--out3) }
+.js-reveal [data-items] > .club:not(.in) .club-cover { clip-path: inset(0 0 100% 0) }
+.js-reveal [data-items] > .club:not(.done) .club-cover img { transition: transform 1.3s var(--out3) }
+.js-reveal [data-items] > .club:not(.in) .club-cover img { transform: scale(1.18) }
+.js-reveal [data-items] > :not(.done) :is(.club-cat, .club-also, .seal, .ct-due) { transition: transform .6s cubic-bezier(.34, 1.56, .64, 1) .35s, opacity .35s ease .35s }
+.js-reveal [data-items] > :not(.in) :is(.club-cat, .club-also, .seal, .ct-due) { transform: scale(.6); opacity: 0 }
+.js-reveal [data-items] > :not(.done) :is(.club-body, .ct-card) > * { transition: transform .7s var(--out3), opacity .7s var(--out3); transition-delay: calc(.18s + var(--j, 0) * 70ms) }
+.js-reveal [data-items] > :not(.in) :is(.club-body, .ct-card) > * { transform: translateY(16px); opacity: 0 }
+:is(.club-body, .ct-card) > :nth-child(2) { --j: 1 }
+:is(.club-body, .ct-card) > :nth-child(3) { --j: 2 }
+:is(.club-body, .ct-card) > :nth-child(4) { --j: 3 }
+:is(.club-body, .ct-card) > :nth-child(5) { --j: 4 }
+:is(.club-body, .ct-card) > :nth-child(n+6) { --j: 5 }
+
+/* ---------- конкурсы ----------
+   Тёмно-синяя страница с «живым» полем точек (DotGrid) за всем содержимым:
+   курсор расталкивает точки, щелчок пускает волну. Холст размером с экран
+   прилипает к верху, пока листаешь. Без WebGL виден спокойный узор из точек.
+   Карточки белые и компактные: вид, место, условия и главное — дедлайн
+   с обратным отсчётом (красный — меньше недели, жёлтый — меньше трёх). */
+html[data-screen="contests"] .foot { margin-top: 0 }
+.ct { position: relative; padding-bottom: 72px; color: #fff;
+  background: radial-gradient(60% 50% at 100% 0%, oklch(0.52 0.17 285 / .45) 0%, rgb(0 0 0 / 0) 62%),
+              radial-gradient(50% 40% at 0% 30%, oklch(0.55 0.13 212 / .28) 0%, rgb(0 0 0 / 0) 66%),
+              linear-gradient(170deg, #0F2160 0%, #0A1638 100%) }
+/* Без overflow: hidden у .ct — иначе «липкий» холст не прилипает. */
+.ct-bg { position: absolute; inset: 0; clip-path: inset(0); pointer-events: none }
+.ct-bg-in { position: sticky; top: 0; height: 100vh; background-image: radial-gradient(rgb(110 140 230 / .3) 1.6px, rgb(0 0 0 / 0) 2px); background-size: 24px 24px }
+.ct-bg-in.has-dots { background-image: none }
+.dot-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100% }
+.ct-top { position: relative; display: grid; gap: 18px; padding-top: 40px; padding-bottom: 24px }
+.ct-top .hero-kicker { justify-self: start }
+.ct-h { display: flex; flex-wrap: wrap; align-items: flex-start; gap: .12em; min-width: 0; margin: 4px 0 -4px; font-family: var(--display); font-weight: 700; font-size: clamp(38px, 12vw, 160px); line-height: .92; letter-spacing: -0.055em }
+.ct-h.long { font-size: clamp(34px, 10.8vw, 140px) }
+.ct-word { background: linear-gradient(180deg, #fff 30%, #BFD3FF 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .06em }
+.ct-lead { margin: 0; max-width: 38em; font-size: 16.5px; line-height: 1.55; color: rgb(255 255 255 / .76); text-wrap: pretty }
+@media (min-width: 900px) { .ct-top { padding-top: 52px; grid-template-columns: minmax(0, 1fr) auto; align-items: end; column-gap: 40px } .ct-top > :not(.ct-stats) { grid-column: 1 } .ct-stats { grid-column: 2; grid-row: 3 / span 2 } }
+.ct-body { position: relative }
+.ct-types { display: flex; gap: 8px; overflow-x: auto; margin: 0 -18px; padding: 4px 18px 10px; scrollbar-width: none }
+.ct-types::-webkit-scrollbar { display: none }
+@media (min-width: 760px) { .ct-types { flex-wrap: wrap; overflow: visible; margin: 0; padding: 4px 0 10px } }
+.ct-chip { display: inline-flex; align-items: center; gap: 7px; flex: none; min-height: 42px; padding: 0 8px 0 13px; border: 1px solid rgb(255 255 255 / .16); border-radius: 999px; background: rgb(255 255 255 / .07);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: #DCE6FF; font-size: 14px; font-weight: 600; white-space: nowrap; transition: background .2s, color .2s, border-color .2s, scale .15s }
+.ct-chip span { display: grid; place-items: center; min-width: 24px; height: 24px; padding: 0 7px; border-radius: 999px; background: rgb(255 255 255 / .12); font-size: 12.5px; font-weight: 700 }
+.ct-chip:hover { background: rgb(255 255 255 / .13) }
+.ct-chip:active { scale: .96 }
+.ct-chip[aria-pressed="true"] { background: #fff; border-color: #fff; color: var(--navy) }
+.ct-chip[aria-pressed="true"] span { background: oklch(0.55 0.17 var(--h)); color: #fff }
+.ct-month { margin-top: 18px }
+.ct-month-h { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-family: var(--display); font-weight: 600; font-size: clamp(20px, 3vw, 28px); letter-spacing: -0.03em; color: #fff }
+.ct-month-h span { display: grid; place-items: center; min-width: 30px; height: 30px; padding: 0 9px; border-radius: 999px; background: rgb(255 255 255 / .1); font-family: "Golos Text", system-ui, sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0; color: #CFE0FF }
+.ct-grid { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr) }
+@media (min-width: 680px) { .ct-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (min-width: 1040px) { .ct-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px } }
+.ct-card { position: relative; display: flex; flex-direction: column; gap: 8px; overflow: hidden; padding: 18px 16px 14px; border-radius: var(--r-l); background: var(--card); color: var(--ink); box-shadow: 0 18px 40px -20px rgb(0 0 0 / .55); transition: transform .25s var(--ease), box-shadow .25s var(--ease) }
+.ct-card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: linear-gradient(90deg, oklch(0.62 0.16 var(--h)), oklch(0.74 0.13 calc(var(--h) + 40))) }
+.ct-card:hover { transform: translateY(-4px); box-shadow: 0 26px 50px -22px rgb(0 0 0 / .6) }
+.ct-card-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 8px }
+.ct-type { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 7px; border-radius: 999px; background: oklch(0.95 0.035 var(--h)); color: oklch(0.42 0.14 var(--h)); font-size: 12px; font-weight: 700 }
+.ct-where { display: inline-flex; align-items: center; gap: 5px; min-width: 0; font-size: 12.5px; font-weight: 600; color: var(--soft) }
+.ct-where .ic-svg { color: var(--faint) }
+.ct-name { margin: 2px 0 0; font-size: 18px; font-weight: 700; line-height: 1.22; letter-spacing: -0.02em; text-wrap: balance }
+.ct-desc { margin: 0; font-size: 14px; line-height: 1.5; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden }
+.ct-meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 0; padding: 0; list-style: none }
+.ct-meta li { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 8px; background: var(--chip); font-size: 12.5px; font-weight: 600; color: var(--muted) }
+.ct-meta li .ic-svg { color: var(--faint) }
+.ct-meta li.free { background: var(--ok-bg); color: var(--ok) }
+.ct-meta li.prize { background: var(--gold-lt); color: var(--gold-dk) }
+.ct-meta li.prize .ic-svg { color: var(--gold) }
+.ct-extra { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--soft) }
+.ct-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 12px; border-top: 1px dashed var(--line) }
+.ct-due { display: grid; gap: 1px; min-width: 0; padding: 7px 12px 8px; border-radius: 14px; background: var(--accent-bg); color: var(--accent-dk) }
+.ct-due-l { font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; opacity: .85 }
+.ct-due b { font-size: 15px; line-height: 1.25 }
+.ct-left { font-size: 12px; font-weight: 600 }
+.due-hot { background: #FDECEA; color: #B42318 }
+.due-warm { background: #FFF4E0; color: #94560A }
+.due-closed { background: var(--chip); color: var(--soft) }
+.ct-acts { display: flex; align-items: center; gap: 6px; flex: none }
+.ct-go { display: inline-flex; align-items: center; gap: 6px; min-height: 42px; padding: 0 14px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 700; transition: background .15s }
+.ct-go:hover { background: var(--navy-2); color: #fff }
+.ct-go .ic-svg { transform: rotate(-45deg) }
+.ct-cal { display: grid; place-items: center; width: 42px; height: 42px; padding: 0; border: 1.5px solid var(--line); border-radius: 50%; background: #fff; color: var(--muted); transition: border-color .15s, color .15s }
+.ct-cal:hover { border-color: var(--accent); color: var(--accent-dk) }
+.ct-wait { padding: 40px 0; text-align: center; color: rgb(255 255 255 / .72) }
+.ct-note { display: flex; align-items: flex-start; gap: 10px; max-width: 60em; margin: 30px 0 0; font-size: 13.5px; line-height: 1.5; color: rgb(255 255 255 / .68) }
+.ct-note .ic-svg { flex: none; margin-top: 1px; color: #8FB0FF }
+.ct-note a { color: #CFE0FF; text-decoration: underline; text-underline-offset: 2px }
+.ct-suggest { display: grid; gap: 16px; margin-top: 26px; padding: 24px; border-radius: var(--r-xl); border: 1px solid rgb(255 255 255 / .14); background: rgb(255 255 255 / .06); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px) }
+@media (min-width: 760px) { .ct-suggest { grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding: 28px 32px } }
+.ct-suggest h2 { margin: 0 0 6px; font-family: var(--display); font-weight: 600; font-size: clamp(20px, 3vw, 26px); letter-spacing: -0.03em }
+.ct-suggest p { margin: 0; color: rgb(255 255 255 / .72) }
+.ct-suggest .own-btn { justify-self: start }
+
+@media (prefers-reduced-motion: reduce) {
+  .pn-face, .pn-face-alt, .pn-fill, .pn-item, .gi-plate, .gi-glass, .gi-glass::after, .gi-face, .own.ping { transition: none; animation: none }
 }

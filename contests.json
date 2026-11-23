@@ -1,0 +1,203 @@
+{
+  "updated": "2026-11-23",
+  "items": [
+    {
+      "id": "smart-nomad",
+      "type": "biz",
+      "name": "Smart Nomad Startup Battle",
+      "desc": {
+        "ru": "Стартап-батл: собери команду, реши реальную проблему города, языка или доступной среды и выступи перед менторами в финале.",
+        "kz": "Стартап-баттл: команда жина, қала, қазақ тілі немесе қолжетімді орта мәселесін шеш те, финалда менторлар алдында қорға.",
+        "en": "Startup battle: build a team, solve a real problem (smart city, inclusion or Qazaq identity) and pitch to mentors in the final."
+      },
+      "who": { "ru": "7–12 класс и 1–2 курс · команда 1–5", "kz": "7–12 сынып және 1–2 курс · 1–5 адам", "en": "Grades 7–12 and 1st–2nd year · teams of 1–5" },
+      "where": { "ru": "Астана, Astana Garden · можно онлайн", "kz": "Астана, Astana Garden · онлайн да болады", "en": "Astana, Astana Garden · online too" },
+      "cost": { "ru": "5 000 ₸ с команды", "kz": "Командадан 5 000 ₸", "en": "5,000 ₸ per team" },
+      "free": false,
+      "prize": { "ru": "Призовой фонд 2 000 000 ₸", "kz": "Жүлде қоры 2 000 000 ₸", "en": "Prize fund 2,000,000 ₸" },
+      "dates": [{ "k": "reg", "d": "2026-12-06" }, { "k": "final", "d": "2026-12-12" }],
+      "url": "https://local-nomad.vercel.app/",
+      "src": "balamap"
+    },
+    {
+      "id": "kysn",
+      "type": "sci",
+      "name": { "ru": "Молодёжный научный симпозиум KYSN", "kz": "KYSN жастар ғылыми симпозиумы", "en": "KYSN Youth Science Symposium" },
+      "desc": {
+        "ru": "Площадка для юных исследователей: STEM, биоэлектроника и нанотехнологии. Подаёшь короткий абстракт на 300–400 слов.",
+        "kz": "Жас зерттеушілерге арналған алаң: STEM, биоэлектроника, нанотехнология. 300–400 сөздік қысқа абстракт жібересің.",
+        "en": "A forum for young researchers in STEM, bioelectronics and nanotech. Apply with a 300–400-word abstract."
+      },
+      "who": { "ru": "Молодые исследователи", "kz": "Жас зерттеушілер", "en": "Young researchers" },
+      "where": { "ru": "Алматы, офлайн", "kz": "Алматы, офлайн", "en": "Almaty, in person" },
+      "free": true,
+      "dates": [{ "k": "sub", "d": "2026-12-01" }, { "k": "event", "d": "2026-12-19" }],
+      "url": "https://instagram.com/kysn.kz",
+      "src": "balamap"
+    },
+    {
+      "id": "cassconf-2027",
+      "type": "sci",
+      "name": "CASSConf2027",
+      "desc": {
+        "ru": "Конференция по социальным и гуманитарным наукам: история, политология, экономика, психология, лингвистика. Абстракт на английском, 300–350 слов.",
+        "kz": "Әлеуметтік және гуманитарлық ғылымдар конференциясы: тарих, саясаттану, экономика, психология, тіл білімі. Абстракт ағылшынша, 300–350 сөз.",
+        "en": "Social sciences and humanities conference: history, politics, economics, psychology, linguistics. A 300–350-word abstract in English."
+      },
+      "who": { "ru": "10–12 класс, gap year, 1–2 курс", "kz": "10–12 сынып, gap year, 1–2 курс", "en": "Grades 10–12, gap year, 1st–2nd year" },
+      "where": { "ru": "Алматы, AlmaU · или Zoom", "kz": "Алматы, AlmaU · немесе Zoom", "en": "Almaty, AlmaU · or Zoom" },
+      "free": true,
+      "dates": [{ "k": "sub", "d": "2026-12-01" }, { "k": "event", "d": "2027-01-12" }],
+      "url": "https://caass-edu.github.io/CASSResearchConference2027/",
+      "src": "balamap"
+    },
+    {
+      "id": "nfte-wsi",
+      "type": "biz",
+      "name": "NFTE World Series of Innovation",
+      "desc": {
+        "ru": "Международный конкурс идей для целей устойчивого развития ООН: выбери задачу, придумай решение и отправь онлайн.",
+        "kz": "БҰҰ-ның тұрақты даму мақсаттарына арналған халықаралық идеялар байқауы: мәселені таңда, шешім ойлап тап та, онлайн жібер.",
+        "en": "Global idea challenge on the UN Sustainable Development Goals: pick a challenge, propose a solution and submit online."
+      },
+      "who": { "ru": "5–24 года, одному или командой", "kz": "5–24 жас, жеке немесе командамен", "en": "Ages 5–24, solo or in a team" },
+      "where": { "ru": "Онлайн", "kz": "Онлайн", "en": "Online" },
+      "free": true,
+      "dates": [{ "k": "sub", "d": "2026-12-13" }],
+      "url": "https://innovation.nfte.com/",
+      "src": "balamap"
+    },
+    {
+      "id": "yygs-2027",
+      "type": "program",
+      "name": "Yale Young Global Scholars",
+      "desc": {
+        "ru": "Двухнедельная летняя программа в Йельском университете: лекции, проекты и школьники из 150+ стран. Есть финансовая помощь.",
+        "kz": "Йель университетіндегі екі апталық жазғы бағдарлама: дәрістер, жобалар, 150-ден астам елдің оқушылары. Қаржылай көмек бар.",
+        "en": "Two-week summer programme at Yale: lectures, projects and students from 150+ countries. Financial aid available."
+      },
+      "who": { "ru": "За 1–2 года до выпускного класса", "kz": "Түлек сыныпқа дейін 1–2 жыл қалғанда", "en": "1–2 years before your final school year" },
+      "where": { "ru": "США, Йель · лето 2027", "kz": "АҚШ, Йель · 2027 жылдың жазы", "en": "USA, Yale · summer 2027" },
+      "cost": { "ru": "Заявка 100 $, есть финпомощь", "kz": "Өтінім 100 $, қаржылай көмек бар", "en": "$100 application fee, aid available" },
+      "free": false,
+      "dates": [{ "k": "sub", "d": "2027-01-06" }],
+      "note": {
+        "ru": "Приём до 23:59 по Нью-Йорку — в Астане это уже 7 января, 09:59.",
+        "kz": "Нью-Йорк уақытымен 23:59-ға дейін — Астанада бұл 7 қаңтар, 09:59.",
+        "en": "Closes 11:59 pm New York time — 9:59 am on 7 January in Astana."
+      },
+      "url": "https://globalscholars.yale.edu/how-apply/application-deadlines"
+    },
+    {
+      "id": "diana-award-2027",
+      "type": "social",
+      "name": "The Diana Award 2027",
+      "desc": {
+        "ru": "Международная награда для молодых лидеров с социальными и волонтёрскими проектами. Номинирует взрослый: учитель, наставник или руководитель.",
+        "kz": "Әлеуметтік және волонтерлік жобалары бар жас көшбасшыларға арналған халықаралық марапат. Ересек адам ұсынады: мұғалім, тәлімгер немесе жетекші.",
+        "en": "International award for young leaders running social and volunteer projects. An adult — a teacher, mentor or leader — nominates you."
+      },
+      "who": { "ru": "16–24 года", "kz": "16–24 жас", "en": "Ages 16–24" },
+      "where": { "ru": "Онлайн, из любой страны", "kz": "Онлайн, кез келген елден", "en": "Online, any country" },
+      "free": true,
+      "dates": [{ "k": "sub", "d": "2027-01-08" }],
+      "note": {
+        "ru": "Приём до 17:00 по Лондону — это 22:00 по Астане. Сам себя номинировать нельзя.",
+        "kz": "Лондон уақытымен 17:00-ге дейін — Астанада 22:00. Өзіңді өзің ұсынуға болмайды.",
+        "en": "Closes 5 pm UK time — 10 pm in Astana. Self-nominations are not accepted."
+      },
+      "url": "https://diana-award.org.uk/award/nomination-centre/",
+      "src": "balamap"
+    },
+    {
+      "id": "izho-2027",
+      "type": "olymp",
+      "name": { "ru": "Международная Жаутыковская олимпиада", "kz": "Халықаралық Жәутіков олимпиадасы", "en": "International Zhautykov Olympiad" },
+      "desc": {
+        "ru": "Олимпиада по математике, физике и информатике, в 2027 году — двадцать третья. Участвуют команды школ.",
+        "kz": "Математика, физика және информатика бойынша олимпиада, 2027 жылы — жиырма үшінші рет. Мектеп командалары қатысады.",
+        "en": "Olympiad in maths, physics and computer science, the 23rd in 2027. Schools send teams."
+      },
+      "who": { "ru": "Старшеклассники, через школу", "kz": "Жоғары сынып оқушылары, мектеп арқылы", "en": "High school students, via school" },
+      "where": { "ru": "Алматы", "kz": "Алматы", "en": "Almaty" },
+      "dates": [{ "k": "event", "d": "2027-01-10", "to": "2027-01-15" }],
+      "note": {
+        "ru": "Спроси учителя математики, физики или информатики, едет ли команда твоей школы.",
+        "kz": "Математика, физика не информатика мұғалімінен мектебіңнің командасы баратынын сұра.",
+        "en": "Ask your maths, physics or CS teacher whether your school is sending a team."
+      },
+      "url": "https://izho.kz/"
+    },
+    {
+      "id": "diamond-challenge-2027",
+      "type": "biz",
+      "name": "Diamond Challenge",
+      "desc": {
+        "ru": "Конкурс стартапов Делавэрского университета: бизнес- или социальная идея, лучшие команды получают до 12 000 $.",
+        "kz": "Делавэр университетінің стартап байқауы: бизнес немесе әлеуметтік идея, үздік командалар 12 000 $-ға дейін алады.",
+        "en": "University of Delaware startup challenge: a business or social idea, top teams win up to $12,000."
+      },
+      "who": { "ru": "14–18 лет, команда 2–4 + взрослый куратор", "kz": "14–18 жас, 2–4 адам + ересек жетекші", "en": "Ages 14–18, teams of 2–4 + an adult advisor" },
+      "where": { "ru": "Онлайн", "kz": "Онлайн", "en": "Online" },
+      "free": true,
+      "dates": [{ "k": "sub", "d": "2027-01-14" }],
+      "note": {
+        "ru": "Приём до 17:00 по Нью-Йорку — в Астане это 15 января, 03:00.",
+        "kz": "Нью-Йорк уақытымен 17:00-ге дейін — Астанада 15 қаңтар, 03:00.",
+        "en": "Closes 5 pm New York time — 3 am on 15 January in Astana."
+      },
+      "url": "https://horn.udel.edu/deadlines2627"
+    },
+    {
+      "id": "blue-ocean-2027",
+      "type": "biz",
+      "name": "Blue Ocean Student Entrepreneur Competition",
+      "desc": {
+        "ru": "Видео-питч на 5 минут: придумай бизнес, которого ещё нет на рынке. Один из крупнейших онлайн-конкурсов для школьников.",
+        "kz": "5 минуттық видео-питч: нарықта әлі жоқ бизнесті ойлап тап. Оқушыларға арналған ең ірі онлайн-байқаулардың бірі.",
+        "en": "A 5-minute video pitch for a business nobody has built yet. One of the largest online pitch contests for school students."
+      },
+      "who": { "ru": "Старшеклассники, одному или до 5 человек", "kz": "Жоғары сынып, жеке немесе 5 адамға дейін", "en": "High school students, solo or up to 5" },
+      "where": { "ru": "Онлайн", "kz": "Онлайн", "en": "Online" },
+      "free": true,
+      "dates": [{ "k": "sub", "d": "2027-02-21" }],
+      "url": "https://blueoceancompetition.org/"
+    },
+    {
+      "id": "swift-student-challenge-2027",
+      "type": "it",
+      "name": "Apple Swift Student Challenge",
+      "desc": {
+        "ru": "Конкурс Apple: сделай своё приложение на Swift для любой платформы Apple. Лучших пригласят в Apple Park на WWDC.",
+        "kz": "Apple байқауы: Swift тілінде кез келген Apple платформасына өз қосымшаңды жаса. Үздіктерді WWDC-ге Apple Park-қа шақырады.",
+        "en": "Apple's contest: build your own Swift app for any Apple platform. Distinguished winners are invited to Apple Park for WWDC."
+      },
+      "who": { "ru": "Школьники и студенты от 13 лет", "kz": "13 жастан бастап оқушылар мен студенттер", "en": "Students aged 13+" },
+      "where": { "ru": "Онлайн", "kz": "Онлайн", "en": "Online" },
+      "free": true,
+      "dates": [{ "k": "open", "d": "2027-02-08" }, { "k": "sub", "d": "2027-02-28" }],
+      "note": {
+        "ru": "До старта Apple проводит бесплатные онлайн-занятия: 10 декабря, 14 января и 4 февраля.",
+        "kz": "Байқау басталғанша Apple тегін онлайн-сабақтар өткізеді: 10 желтоқсан, 14 қаңтар және 4 ақпан.",
+        "en": "Before it opens, Apple runs free online sessions on 10 December, 14 January and 4 February."
+      },
+      "url": "https://developer.apple.com/swift-student-challenge/",
+      "src": "balamap"
+    },
+    {
+      "id": "technovation-girls-2027",
+      "type": "it",
+      "name": "Technovation Girls",
+      "desc": {
+        "ru": "Командой девушек сделайте приложение с ИИ, которое решает проблему вашего города, и отправьте его на мировой конкурс.",
+        "kz": "Қыздар командасымен қалаңның мәселесін шешетін ЖИ қосымшасын жасап, әлемдік байқауға жіберіңдер.",
+        "en": "With a team of girls, build an AI-powered app that solves a local problem and enter it in a global competition."
+      },
+      "who": { "ru": "Девушки 8–18 лет", "kz": "8–18 жастағы қыздар", "en": "Girls aged 8–18" },
+      "where": { "ru": "Онлайн", "kz": "Онлайн", "en": "Online" },
+      "free": true,
+      "dates": [{ "k": "reg", "d": "2027-03-11" }, { "k": "sub", "d": "2027-05-05" }],
+      "url": "https://technovationchallenge.org/get-involved/students/"
+    }
+  ]
+}

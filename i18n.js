@@ -653,5 +653,55 @@ Object.assign(STR.ru, { filters: 'Фильтры', fs_show: 'Показать {n
 Object.assign(STR.kz, { filters: 'Сүзгілер', fs_show: 'Көрсету: {n}', fs_none: 'Ештеңе табылмады — бірнеше сүзгіні алып таста', fs_reset: 'Тазалау' });
 Object.assign(STR.en, { filters: 'Filters', fs_show: 'Show {n}', fs_none: 'Nothing found — remove a filter or two', fs_reset: 'Reset' });
 
+// Меню разделов и страница «Конкурсы».
+Object.assign(STR.ru, {
+  nav_home: 'Главная', nav_contests: 'Конкурсы', nav_label: 'Разделы',
+  title_contests: 'Конкурсы и олимпиады для школьников — Qosyl',
+  ct_word: 'Конкурсы', ct_kicker: 'Обновлено {d}', ct_kicker0: 'Конкурсы для школьников',
+  ct_lead: 'Олимпиады, стартап-батлы, научные конференции и программы на ближайшие три месяца. У каждой карточки — дедлайн, условия и ссылка на официальный сайт.',
+  ct_st_open: 'открыто сейчас', ct_st_next: 'дн. до ближайшего дедлайна', ct_st_next0: 'ближайших дедлайнов нет', ct_st_free: 'бесплатно',
+  ct_types_lbl: 'Вид конкурса',
+  ct_t_biz: 'Стартапы и бизнес', ct_t_sci: 'Наука', ct_t_olymp: 'Олимпиады', ct_t_it: 'IT и приложения', ct_t_social: 'Социальные проекты', ct_t_program: 'Программы',
+  ct_k_reg: 'Регистрация до', ct_k_sub: 'Подать до', ct_k_open: 'Приём с', ct_k_event: 'Пройдёт', ct_k_final: 'Финал',
+  ct_today: 'сегодня', ct_tomorrow: 'завтра', ct_in: 'через {n} {d}',
+  ct_d_one: 'день', ct_d_few: 'дня', ct_d_many: 'дней', ct_d_other: 'дня',
+  ct_closed: 'Приём закрыт', ct_closed_h: 'Приём уже закрыт', ct_site: 'Сайт', ct_cal: 'В календарь', ct_dl: 'Дедлайн',
+  ct_loading: 'Загружаем конкурсы…', ct_none: 'Сейчас открытых конкурсов этого вида нет — загляни позже.',
+  ct_note: 'Даты сверены по официальным сайтам организаторов. Перед подачей проверь условия на сайте: их иногда меняют. Часть конкурсов мы нашли в подборках',
+  ct_sug_h: 'Знаешь конкурс, которого здесь нет?', ct_sug_p: 'Напиши нам в Instagram — проверим даты на официальном сайте и добавим.', ct_sug_b: 'Написать в Instagram'
+});
+Object.assign(STR.kz, {
+  nav_home: 'Басты бет', nav_contests: 'Байқаулар', nav_label: 'Бөлімдер',
+  title_contests: 'Оқушыларға арналған байқаулар мен олимпиадалар — Qosyl',
+  ct_word: 'Байқаулар', ct_kicker: 'Жаңартылды: {d}', ct_kicker0: 'Оқушыларға арналған байқаулар',
+  ct_lead: 'Алдағы үш айдағы олимпиадалар, стартап-баттлдар, ғылыми конференциялар мен бағдарламалар. Әр карточкада — дедлайн, шарттар және ресми сайтқа сілтеме.',
+  ct_st_open: 'қазір ашық', ct_st_next: 'күн — жақын дедлайнға дейін', ct_st_next0: 'жақын дедлайн жоқ', ct_st_free: 'тегін',
+  ct_types_lbl: 'Байқау түрі',
+  ct_t_biz: 'Стартап және бизнес', ct_t_sci: 'Ғылым', ct_t_olymp: 'Олимпиадалар', ct_t_it: 'IT және қосымшалар', ct_t_social: 'Әлеуметтік жобалар', ct_t_program: 'Бағдарламалар',
+  ct_k_reg: 'Тіркелу мерзімі', ct_k_sub: 'Жіберу мерзімі', ct_k_open: 'Қабылдау басталады', ct_k_event: 'Өтеді', ct_k_final: 'Финал',
+  ct_today: 'бүгін', ct_tomorrow: 'ертең', ct_in: '{n} {d} кейін',
+  ct_d_one: 'күннен', ct_d_few: 'күннен', ct_d_many: 'күннен', ct_d_other: 'күннен',
+  ct_closed: 'Қабылдау жабылды', ct_closed_h: 'Қабылдау жабылды', ct_site: 'Сайт', ct_cal: 'Күнтізбеге қосу', ct_dl: 'Дедлайн',
+  ct_loading: 'Байқаулар жүктелуде…', ct_none: 'Қазір бұл түрдегі ашық байқау жоқ — кейінірек кір.',
+  ct_note: 'Күндер ұйымдастырушылардың ресми сайттарымен салыстырылды. Өтінім берер алдында шарттарды сайттан тексер: олар кейде өзгереді. Кейбір байқауларды мына жинақтардан таптық:',
+  ct_sug_h: 'Мұнда жоқ байқауды білесің бе?', ct_sug_p: 'Instagram-ға жаз — күндерін ресми сайттан тексеріп, қосамыз.', ct_sug_b: 'Instagram-ға жазу'
+});
+Object.assign(STR.en, {
+  nav_home: 'Home', nav_contests: 'Contests', nav_label: 'Sections',
+  title_contests: 'Contests and olympiads for school students — Qosyl',
+  ct_word: 'Contests', ct_kicker: 'Updated {d}', ct_kicker0: 'Contests for school students',
+  ct_lead: 'Olympiads, startup battles, science conferences and programmes over the next three months. Every card has the deadline, the rules and a link to the official website.',
+  ct_st_open: 'open now', ct_st_next: 'days to the nearest deadline', ct_st_next0: 'no upcoming deadlines', ct_st_free: 'free',
+  ct_types_lbl: 'Contest type',
+  ct_t_biz: 'Startups & business', ct_t_sci: 'Science', ct_t_olymp: 'Olympiads', ct_t_it: 'IT & apps', ct_t_social: 'Social impact', ct_t_program: 'Programmes',
+  ct_k_reg: 'Register by', ct_k_sub: 'Submit by', ct_k_open: 'Opens', ct_k_event: 'Takes place', ct_k_final: 'Final',
+  ct_today: 'today', ct_tomorrow: 'tomorrow', ct_in: 'in {n} {d}',
+  ct_d_one: 'day', ct_d_few: 'days', ct_d_many: 'days', ct_d_other: 'days',
+  ct_closed: 'Applications closed', ct_closed_h: 'Applications closed', ct_site: 'Website', ct_cal: 'Add to calendar', ct_dl: 'Deadline',
+  ct_loading: 'Loading contests…', ct_none: 'No open contests of this kind right now — check back soon.',
+  ct_note: 'Dates are checked against the organisers’ official websites. Check the rules there before you apply: they sometimes change. Some of these we found in the round-ups by',
+  ct_sug_h: 'Know a contest that isn’t here?', ct_sug_p: 'Message us on Instagram — we’ll check the dates on the official website and add it.', ct_sug_b: 'Message on Instagram'
+});
+
   return STR;
 })();
