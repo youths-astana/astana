@@ -515,7 +515,6 @@
       '<span class="club-cover">' +
       (photo ? '<img src="' + esc(photo) + '" alt="" loading="lazy" decoding="async">' : coverArt(c)) +
       '<span class="club-cat">' + icon(c.cat, 16) + esc(catLabel(c.cat, L)) + '</span>' + alsoHTML +
-      (c.featured ? '<span class="seal" role="img" aria-label="' + esc(T.featured) + '"></span>' : '') +
       '</span>' +
       '<span class="club-body">' +
       '<span class="club-name">' + esc(c.name[L]) + '</span>' +
@@ -920,7 +919,7 @@
         ? '<img class="cp-img fill" src="' + esc(photo) + '" alt="' + esc(c.name[L]) + '">'
         : '<img class="cp-bg" src="' + esc(photo) + '" alt="" aria-hidden="true"><img class="cp-img" src="' + esc(photo) + '" alt="' + esc(c.name[L]) + '">')
       : coverArt(c)) +
-      (c.featured ? '<span class="seal lg" role="img" aria-label="' + esc(T.featured) + '"></span>' : '') + '</div>';
+      '</div>';
 
     var head = '<header class="cp-head"><span class="cp-cat">' + icon(c.cat, 18) + esc(catLabel(c.cat, L)) + '</span>' +
       '<h1 class="cp-title">' + esc(c.name[L]) + '</h1>' +

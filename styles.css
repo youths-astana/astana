@@ -493,13 +493,10 @@ header.top { position: sticky; top: 0; z-index: 1000; background: rgb(255 255 25
 .club-why span { font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 7px; background: var(--ok-bg); color: var(--ok) }
 .club-why span.d { background: var(--accent-bg); color: var(--accent-dk) }
 
-/* «Лучшее»: золотая рамка, золотая метка и печать-розетка на обложке —
-   розетка стоит в углу обложки и никогда не наезжает на текст. */
+/* «Лучшее»: золотая рамка и золотая метка «★ Лучшее». Печать-розетку
+   на обложке убрали 24.11.2026 — по просьбе Дамира. */
 .club.featured { border: 1.5px solid var(--gold); background: linear-gradient(180deg, #FFFDF7 0%, var(--gold-lt) 100%); box-shadow: 0 2px 8px rgb(201 146 46 / .12), 0 14px 34px rgb(201 146 46 / .14) }
 .club.featured:hover { box-shadow: 0 4px 12px rgb(201 146 46 / .16), 0 22px 48px rgb(201 146 46 / .2) }
-.seal { position: absolute; right: 12px; bottom: 12px; z-index: 1; width: 48px; height: 48px; border-radius: 50%; background-color: #FFFDF7; background-position: center; background-size: 32px; background-repeat: no-repeat; box-shadow: 0 0 0 2px rgb(217 164 65 / .55), 0 6px 16px rgb(138 91 18 / .28);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg stroke='%238A5B12' stroke-width='7' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='100' cy='100' r='7' fill='%238A5B12' stroke='none'/%3E%3Cpath d='M100 90 C 93 78, 93 64, 100 54 C 107 64, 107 78, 100 90 Z'/%3E%3Cpath d='M100 90 C 93 78, 93 64, 100 54 C 107 64, 107 78, 100 90 Z' transform='rotate(60 100 100)'/%3E%3Cpath d='M100 90 C 93 78, 93 64, 100 54 C 107 64, 107 78, 100 90 Z' transform='rotate(120 100 100)'/%3E%3Cpath d='M100 90 C 93 78, 93 64, 100 54 C 107 64, 107 78, 100 90 Z' transform='rotate(180 100 100)'/%3E%3Cpath d='M100 90 C 93 78, 93 64, 100 54 C 107 64, 107 78, 100 90 Z' transform='rotate(240 100 100)'/%3E%3Cpath d='M100 90 C 93 78, 93 64, 100 54 C 107 64, 107 78, 100 90 Z' transform='rotate(300 100 100)'/%3E%3Cpath d='M100 40 C 100 24, 80 22, 76 34 C 72.6 44, 84 48, 87 39 M100 40 C 100 24, 120 22, 124 34 C 127.4 44, 116 48, 113 39'/%3E%3Cpath d='M100 40 C 100 24, 80 22, 76 34 C 72.6 44, 84 48, 87 39 M100 40 C 100 24, 120 22, 124 34 C 127.4 44, 116 48, 113 39' transform='rotate(90 100 100)'/%3E%3Cpath d='M100 40 C 100 24, 80 22, 76 34 C 72.6 44, 84 48, 87 39 M100 40 C 100 24, 120 22, 124 34 C 127.4 44, 116 48, 113 39' transform='rotate(180 100 100)'/%3E%3Cpath d='M100 40 C 100 24, 80 22, 76 34 C 72.6 44, 84 48, 87 39 M100 40 C 100 24, 120 22, 124 34 C 127.4 44, 116 48, 113 39' transform='rotate(270 100 100)'/%3E%3C/g%3E%3C/svg%3E") }
-.seal.lg { width: 64px; height: 64px; right: 18px; bottom: 18px; background-size: 42px }
 
 .more { display: block; width: 100%; min-height: 54px; margin: 18px 0 0; border: 1.5px solid var(--line); border-radius: 16px; background: var(--card); font-size: 15px; font-weight: 700; color: var(--accent-dk); transition: border-color .15s }
 .more:hover { border-color: var(--accent) }
@@ -1033,8 +1030,8 @@ html.sheet-open { overflow: hidden }
 .js-reveal [data-items] > .club:not(.in) .club-cover { clip-path: inset(0 0 100% 0) }
 .js-reveal [data-items] > .club:not(.done) .club-cover img { transition: transform 1.3s var(--out3) }
 .js-reveal [data-items] > .club:not(.in) .club-cover img { transform: scale(1.18) }
-.js-reveal [data-items] > :not(.done) :is(.club-cat, .club-also, .seal, .ct-due) { transition: transform .6s cubic-bezier(.34, 1.56, .64, 1) .35s, opacity .35s ease .35s }
-.js-reveal [data-items] > :not(.in) :is(.club-cat, .club-also, .seal, .ct-due) { transform: scale(.6); opacity: 0 }
+.js-reveal [data-items] > :not(.done) :is(.club-cat, .club-also, .ct-due) { transition: transform .6s cubic-bezier(.34, 1.56, .64, 1) .35s, opacity .35s ease .35s }
+.js-reveal [data-items] > :not(.in) :is(.club-cat, .club-also, .ct-due) { transform: scale(.6); opacity: 0 }
 .js-reveal [data-items] > :not(.done) :is(.club-body, .ct-card) > * { transition: transform .7s var(--out3), opacity .7s var(--out3); transition-delay: calc(.18s + var(--j, 0) * 70ms) }
 .js-reveal [data-items] > :not(.in) :is(.club-body, .ct-card) > * { transform: translateY(16px); opacity: 0 }
 :is(.club-body, .ct-card) > :nth-child(2) { --j: 1 }
