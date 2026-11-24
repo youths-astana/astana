@@ -1064,5 +1064,60 @@
   "tg": "",
   "photo": "photos/freeflow-academy.jpg",
   "kw": "ООП особые дети инклюзия наставничество наставник волонтёр преподаватель репетитор английский математика детский дом центр поддержки детей FreeFlow Free Flow онлайн для новичков без опыта"
+ },
+ {
+  "id": "bstgu2611",
+  "cat": "vol",
+  "slug": "backstage-union",
+  "verified": true,
+  "beginner": false,
+  "featured": false,
+  "free": true,
+  "checked": "2026-11-24",
+  "name": {
+   "ru": "The Backstage Union",
+   "kz": "The Backstage Union",
+   "en": "The Backstage Union"
+  },
+  "tag": {
+   "ru": "Волонтёрское направление Stage Craft Group",
+   "kz": "Stage Craft Group еріктілер бағыты",
+   "en": "Volunteer branch of Stage Craft Group"
+  },
+  "about": {
+   "ru": "The Backstage Union — волонтёрское направление Stage Craft Group. Мы помогаем организаторам проводить концерты, форумы и другие события. Волонтёры получают опыт работы на площадке и знакомятся с тем, как устроены мероприятия изнутри.\n\nВозраст участников — от 14 лет. В команде есть волонтёры 25 лет и старше. Для отдельных проектов действует ограничение 18+, которое указывается при наборе.",
+   "kz": "The Backstage Union — Stage Craft Group-тың еріктілер бағыты. Біз ұйымдастырушыларға концерттерді, форумдарды және басқа да іс-шараларды өткізуге көмектесеміз. Еріктілер алаңда жұмыс тәжірибесін алып, іс-шаралардың іштей қалай құрылғанымен танысады.\n\nҚатысушылардың жасы — 14-тен бастап. Командада 25 жастан асқан еріктілер де бар. Кейбір жобаларда 18+ шектеуі бар, ол жинау кезінде айтылады.",
+   "en": "The Backstage Union is the volunteer branch of Stage Craft Group. We help organisers run concerts, forums and other events. Volunteers gain on-site experience and see how events work from the inside.\n\nParticipants are 14+. The team also includes volunteers aged 25 and over. Some projects are 18+, which is stated when recruiting."
+  },
+  "age": "14+",
+  "cost": {
+   "ru": "Бесплатно",
+   "kz": "Тегін",
+   "en": "Free"
+  },
+  "sched": {
+   "ru": "Зависит от мероприятия — условия уточняются под каждый проект",
+   "kz": "Іс-шараға байланысты — шарттар әр жобаға бөлек нақтыланады",
+   "en": "Depends on the event — set for each project"
+  },
+  "addr": {
+   "ru": "ул. Сыганак, 60 — главный офис и хаб в Казахстане",
+   "kz": "Сығанақ көшесі, 60 — Қазақстандағы бас кеңсе мен хаб",
+   "en": "60 Syganak St — main office and hub in Kazakhstan"
+  },
+  "langs": {
+   "ru": "—",
+   "kz": "—",
+   "en": "—"
+  },
+  "tel": "+7 707 668 62 14",
+  "ig": "",
+  "tg": "",
+  "photo": "photos/backstage-union.jpg",
+  "kw": "Backstage Union Stage Craft Group волонтёры волонтерство концерты форумы мероприятия события площадка за кулисами бэкстейдж",
+  "dist": "esil",
+  "lat": 51.12242,
+  "lng": 71.42819,
+  "fit": "cover"
  }
 ]
