@@ -1119,5 +1119,57 @@
   "lat": 51.12242,
   "lng": 71.42819,
   "fit": "cover"
+ },
+ {
+  "id": "jasvl2511",
+  "cat": "vol",
+  "slug": "jas-volunteers",
+  "verified": true,
+  "beginner": true,
+  "featured": false,
+  "free": true,
+  "checked": "2026-11-25",
+  "name": {
+   "ru": "JAS Volunteers",
+   "kz": "JAS Volunteers",
+   "en": "JAS Volunteers"
+  },
+  "tag": {
+   "ru": "Астанинский филиал крупнейшей волонтёрской сети Казахстана: соцпомощь, образование, ивенты",
+   "kz": "Қазақстандағы ең ірі еріктілер желісінің Астана филиалы: әлеуметтік көмек, білім, ивенттер",
+   "en": "Astana branch of Kazakhstan's largest volunteer network: social help, education, events"
+  },
+  "about": {
+   "ru": "JAS Volunteers — волонтёрское сообщество, которое работает в 15 городах Казахстана, это больше 20 команд. В Астане — свой филиал.\n\nЧем занимаются:\n— социальная помощь и социальные проекты;\n— образовательные инициативы;\n— большие мероприятия и ивенты;\n— экологическое волонтёрство вместе с движением Earth Ambassadors.\n\nВступить можно с 14 лет, опыт не нужен: координаторы и руководящий состав направляют новичков. Волонтёры растут вместе с командой: наставничество, тренинги, регулярные собрания, номинации «Волонтёр месяца» и «Волонтёр года».\n\nВступить можно через анкету в Instagram @jas_volunteers_astana. JAS алға, үміт барға!",
+   "kz": "JAS Volunteers — Қазақстанның 15 қаласында жұмыс істейтін еріктілер қауымдастығы, 20-дан астам команда. Астанада өз филиалы бар.\n\nНемен айналысады:\n— әлеуметтік көмек және әлеуметтік жобалар;\n— білім беру бастамалары;\n— ауқымды іс-шаралар мен ивенттер;\n— Earth Ambassadors қозғалысымен бірге экологиялық еріктілік.\n\n14 жастан бастап қосылуға болады, тәжірибе қажет емес: үйлестірушілер мен жетекшілік құрам жаңадан келгендерге бағыт береді. Еріктілер командамен бірге өседі: тәлімгерлік, тренингтер, тұрақты жиналыстар, «Ай еріктісі» және «Жыл еріктісі» номинациялары.\n\nInstagram-дағы @jas_volunteers_astana сауалнамасы арқылы қосылуға болады. JAS алға, үміт барға!",
+   "en": "JAS Volunteers is a volunteer community working in 15 cities across Kazakhstan, with more than 20 teams. Astana has its own branch.\n\nWhat they do:\n— social help and social projects;\n— education initiatives;\n— big events;\n— eco volunteering together with the Earth Ambassadors movement.\n\nYou can join from age 14, no experience needed: coordinators and the leadership team guide newcomers. Volunteers grow with the team: mentoring, trainings, regular meetings and the «Volunteer of the Month» and «Volunteer of the Year» awards.\n\nJoin through the application form on Instagram @jas_volunteers_astana. JAS алға, үміт барға!"
+  },
+  "age": "14+",
+  "cost": {
+   "ru": "Бесплатно",
+   "kz": "Тегін",
+   "en": "Free"
+  },
+  "sched": {
+   "ru": "Собрания и проекты — анонсы в Instagram",
+   "kz": "Жиналыстар мен жобалар — Instagram-да хабарланады",
+   "en": "Meetings and projects are announced on Instagram"
+  },
+  "addr": {
+   "ru": "Астана",
+   "kz": "Астана",
+   "en": "Astana"
+  },
+  "langs": {
+   "ru": "Казахский, русский",
+   "kz": "Қазақ, орыс тілдері",
+   "en": "Kazakh, Russian"
+  },
+  "tel": "",
+  "ig": "jas_volunteers_astana",
+  "tg": "",
+  "photo": "photos/jas-volunteers.jpg",
+  "fit": "cover",
+  "kw": "JAS Volunteers Jas Жас волонтёры волонтерство соцпомощь социальная помощь образование ивенты мероприятия экология Earth Ambassadors"
  }
 ]
