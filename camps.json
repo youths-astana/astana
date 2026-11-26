@@ -129,14 +129,6 @@
      }
     },
     {
-     "src": "photos/camps/japan-nara.jpg",
-     "cap": {
-      "ru": "Олени Нары",
-      "kz": "Нара бұғылары",
-      "en": "The deer of Nara"
-     }
-    },
-    {
      "src": "photos/camps/japan-teamlab.jpg",
      "cap": {
       "ru": "teamLab",
@@ -150,14 +142,6 @@
       "ru": "Урок на английском",
       "kz": "Ағылшын тіліндегі сабақ",
       "en": "English lesson"
-     }
-    },
-    {
-     "src": "photos/camps/japan-dinner.jpg",
-     "cap": {
-      "ru": "Ужин всей группой",
-      "kz": "Бүкіл топпен кешкі ас",
-      "en": "Dinner together"
      }
     },
     {
@@ -703,8 +687,8 @@
     "kz": "ұшақ билетінсіз",
     "en": "flights not included"
    },
-   "cover": "photos/camps/england-campus-lawn.jpg",
-   "cover_pos": "50% 62%",
+   "cover": "photos/camps/england-westminster.jpg",
+   "cover_pos": "68% 50%",
    "hero": "photos/camps/england-campus-lawn.jpg",
    "hero_pos": "50% 66%",
    "lead": {
@@ -919,7 +903,8 @@
     "en": "Photos of London and Oxford — Wikimedia Commons: Diliff (CC BY 3.0, CC BY-SA 3.0), Colin (CC BY-SA 4.0), Domo b (CC BY-SA 4.0), APK (CC BY 4.0), Julian Herzog (CC BY 4.0), Colin Smith (CC BY-SA 2.0)."
    },
    "wa": "77009633931",
-   "wa_word": "Англия лето"
+   "wa_word": "Англия лето",
+   "cover_credit": true
   }
  ]
 }

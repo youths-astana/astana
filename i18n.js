@@ -717,7 +717,7 @@ Object.assign(STR.ru, {
   cx_route_k: 'Маршрут', cx_price_k: 'Стоимость', cx_price_h: 'Что входит в {p}', cx_inc: 'Входит', cx_exc: 'Не входит', cx_know: 'Важно знать',
   cx_cta_h: 'Остались вопросы?', cx_cta_p: 'Напишите «{w}» в WhatsApp — ответят организаторы из {p}.',
   cx_greet: 'Здравствуйте! Пишу с сайта Qosyl (qosyl.club). Интересует программа «{t}» — {w}.',
-  cx_tile_k: 'Лето {y}', cx_tile_b: 'Лагеря за границей', cx_tile_s: 'Программы для подростков'
+  cx_tile_k: 'Лето {y}', cx_tile_b: 'Лагеря за границей', cx_tile_s: 'Программы для подростков', cx_newtag: 'Новое!'
 });
 Object.assign(STR.kz, {
   nav_camps: 'Лагерьлер', title_camps: 'Қазақстандық жасөспірімдерге арналған шетелдегі жазғы лагерьлер — Qosyl',
@@ -732,7 +732,7 @@ Object.assign(STR.kz, {
   cx_route_k: 'Бағыт', cx_price_k: 'Құны', cx_price_h: '{p} ішіне не кіреді', cx_inc: 'Кіреді', cx_exc: 'Кірмейді', cx_know: 'Білген жөн',
   cx_cta_h: 'Сұрақтарыңыз бар ма?', cx_cta_p: 'WhatsApp-қа «{w}» деп жазыңыз — {p} ұйымдастырушылары жауап береді.',
   cx_greet: 'Сәлеметсіз бе! Qosyl (qosyl.club) сайтынан жазып отырмын. «{t}» бағдарламасы қызықтырады — {w}.',
-  cx_tile_k: '{y} жаз', cx_tile_b: 'Шетелдегі лагерьлер', cx_tile_s: 'Жасөспірімдерге арналған бағдарламалар'
+  cx_tile_k: '{y} жаз', cx_tile_b: 'Шетелдегі лагерьлер', cx_tile_s: 'Жасөспірімдерге арналған бағдарламалар', cx_newtag: 'Жаңа!'
 });
 Object.assign(STR.en, {
   nav_camps: 'Camps', title_camps: 'Summer camps abroad for teens from Kazakhstan — Qosyl',
@@ -747,7 +747,7 @@ Object.assign(STR.en, {
   cx_route_k: 'Route', cx_price_k: 'Price', cx_price_h: 'What {p} includes', cx_inc: 'Included', cx_exc: 'Not included', cx_know: 'Good to know',
   cx_cta_h: 'Any questions?', cx_cta_p: 'Send “{w}” on WhatsApp and the {p} team will reply.',
   cx_greet: 'Hello! I’m writing from Qosyl (qosyl.club). I’m interested in “{t}” — {w}.',
-  cx_tile_k: 'Summer {y}', cx_tile_b: 'Camps abroad', cx_tile_s: 'Programmes for teens'
+  cx_tile_k: 'Summer {y}', cx_tile_b: 'Camps abroad', cx_tile_s: 'Programmes for teens', cx_newtag: 'New!'
 });
 
   return STR;

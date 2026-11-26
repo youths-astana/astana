@@ -801,9 +801,13 @@
   function heroRing(L, T, cnt) {
     var list = CATS.filter(function (c) { return cnt[c.id]; }).concat(CATS.filter(function (c) { return !cnt[c.id]; }));
     var short = T.cat_short || {};
+    // Вторая плитка — жёлтые «Лагеря» с меткой «Новое!»: ведёт в раздел поездок.
+    var camp = '<span class="ring-card camp" data-action="go-camps" style="--h:85;--sd:0.9s" title="' + esc(T.cx_tile_b) + '">' +
+      '<span class="float-tile"><span class="n">' + esc(T.cx_newtag) + '</span>' + icon('plane', 48) + '<b>' + esc(T.nav_camps) + '</b></span>' +
+      '<span class="ring-back"></span></span>';
     return '<div class="hero-ring" data-ring aria-hidden="true"><div class="ring-stage"><div class="ring-cam"><div class="ring-spin">' +
       list.map(function (c, i) {
-        return '<span class="ring-card" data-action="go-cat" data-id="' + c.id + '" style="--h:' + hueOf(c.id) + ';--sd:' + (i * 0.9).toFixed(1) + 's" title="' + esc(c[L]) + '">' +
+        return (i === 1 ? camp : '') + '<span class="ring-card" data-action="go-cat" data-id="' + c.id + '" style="--h:' + hueOf(c.id) + ';--sd:' + ((i < 1 ? i : i + 1) * 0.9).toFixed(1) + 's" title="' + esc(c[L]) + '">' +
           '<span class="float-tile">' + (cnt[c.id] ? '<span class="n">' + cnt[c.id] + '</span>' : '') + icon(c.id, 48) + '<b>' + esc(short[c.id] || c[L]) + '</b></span>' +
           '<span class="ring-back"></span></span>';
       }).join('') + '</div></div></div></div>';
@@ -2000,7 +2004,8 @@
       var lbl = esc(T[n[1]]);
       return '<li class="pn-slot"><a class="pn-item' + (n[0] === '#/camps' ? ' camp' : '') + '" href="' + n[0] + '" data-nav="' + i + '"' + (i === idx ? ' aria-current="page"' : '') + '>' +
         '<span class="pn-fill" aria-hidden="true"></span><span class="pn-face">' + lbl + '</span>' +
-        '<span class="pn-face-alt" aria-hidden="true">' + lbl + '</span></a></li>';
+        '<span class="pn-face-alt" aria-hidden="true">' + lbl + '</span></a>' +
+        (n[0] === '#/camps' ? '<span class="pn-new" aria-hidden="true">' + esc(T.cx_newtag) + '</span>' : '') + '</li>';
     }).join('') + '</ul><span class="pn-dot" aria-hidden="true"></span></div></div>';
   }
   function syncNav(r) {
@@ -2320,7 +2325,8 @@
             (prov.ig ? '<a class="cx-ig" href="' + esc(igLink(prov.ig)) + '" target="_blank" rel="noopener" data-track="camp-ig">' + icon('ig', 17) + '@' + esc(prov.ig) + '</a>' : '') +
             (prov.about ? '<small>' + esc(tr(prov.about, L)) + '</small>' : '') + '</div>' +
             '<div class="cx-grid" data-items>' + items.map(function (p) { return campCardHTML(p, L, T); }).join('') + '</div>' +
-            '<p class="cx-note">' + esc(T.cx_note.replace('{p}', prov.name).replace('{d}', longDate(CAMPS.updated, L, true))) + '</p></section>';
+            '<p class="cx-note">' + esc(T.cx_note.replace('{p}', prov.name).replace('{d}', longDate(CAMPS.updated, L, true))) + '</p>' +
+            items.filter(function (p) { return p.cover_credit && p.credit; }).map(function (p) { return '<p class="cd-credit">' + esc(tr(p.credit, L)) + '</p>'; }).join('') + '</section>';
         }).join('');
     }
     return '<div class="cx">' +
@@ -2577,6 +2583,9 @@
         state.view = id === 'map' ? 'map' : 'list';
         statsSend({ path: 'catalog/' + state.view, title: 'Каталог — ' + (state.view === 'map' ? 'карта' : 'список'), event: true });
         repaintList();
+        break;
+      case 'go-camps':
+        window.location.hash = '#/camps';
         break;
       case 'go-cat':
         state.cat = id;

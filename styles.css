@@ -1369,3 +1369,17 @@ html[data-screen^="camp"] .pn-dot { opacity: 0 !important }
   .cc-bars i.run::after { animation: none; transform: scaleX(1) }
   .cd-hero.flip-in { animation: none }
 }
+
+/* Метка «Новое!» над пунктом «Лагеря» в меню и жёлтая плитка в кольце на главной */
+.pn-slot { position: relative }
+.pn-new { position: absolute; z-index: 2; top: -9px; right: -6px; padding: 3px 6px 2px; border-radius: 6px; background: var(--sun); color: #14183A;
+  font-size: 9.5px; font-weight: 800; line-height: 1.1; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; pointer-events: none;
+  box-shadow: 0 0 0 2px #fff, 0 4px 10px -3px rgb(255 170 0 / .7); transform: rotate(6deg) }
+html[data-screen^="camp"] .pnav-h .pn-new { box-shadow: 0 0 0 2px var(--night), 0 4px 10px -3px rgb(255 170 0 / .7) }
+.pnav-b .pn-new { top: -11px }
+.ring-card.camp .float-tile { color: #14183A; border-color: rgb(255 255 255 / .5);
+  background: radial-gradient(120% 90% at 22% 12%, #FFF3B0 0%, rgb(255 243 176 / 0) 58%), linear-gradient(155deg, #FFD84D 0%, #FFA31A 100%) }
+.ring-card.camp .float-tile b { color: #14183A }
+.ring-card.camp .float-tile .ic-svg { filter: drop-shadow(0 4px 8px rgb(150 80 0 / .3)) }
+.ring-card.camp .float-tile .n { background: #14183A; color: var(--sun); font-size: 10px; letter-spacing: .04em; text-transform: uppercase }
+.ring-card.camp .ring-back { background: linear-gradient(155deg, #B07A12 0%, #6B4708 100%) }
