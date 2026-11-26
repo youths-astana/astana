@@ -5,7 +5,7 @@
   "slug": "tumar-global",
   "verified": true,
   "beginner": true,
-  "featured": true,
+  "featured": false,
   "checked": "2026-09-28",
   "name": {
    "ru": "Tumar.global",
@@ -1171,5 +1171,63 @@
   "photo": "photos/jas-volunteers.jpg",
   "fit": "cover",
   "kw": "JAS Volunteers Jas Жас волонтёры волонтерство соцпомощь социальная помощь образование ивенты мероприятия экология Earth Ambassadors"
+ },
+ {
+  "id": "istna2611",
+  "cat": "art",
+  "also": [
+   "sport"
+  ],
+  "slug": "istina-dance-sport-academy",
+  "verified": true,
+  "beginner": true,
+  "featured": true,
+  "free": false,
+  "checked": "2026-11-26",
+  "name": {
+   "ru": "Istina Dance & Sport Academy",
+   "kz": "Istina Dance & Sport Academy",
+   "en": "Istina Dance & Sport Academy"
+  },
+  "tag": {
+   "ru": "Танцы, спорт и сценическое мастерство для детей и подростков",
+   "kz": "Балалар мен жасөспірімдерге арналған би, спорт және сахна шеберлігі",
+   "en": "Dance, sport and stagecraft for children and teens"
+  },
+  "about": {
+   "ru": "Обучаем детей и подростков танцам и некоторым видам спорта, а также сценическому мастерству. Академия работает 15-й сезон: ученики выступают на сцене и участвуют в чемпионатах.\n\nГруппы по возрастам: 4–5, 6–7, 8–11, 12–15 и 16+ лет. Опыт не нужен — можно прийти на пробный урок.\n\nДва филиала:\n— Istina Dance & Sport Academy — пр. Шакарима Кудайбердыулы, 26, 2 этаж;\n— Istina Maison D'Art — ул. Желтоксан, 22/4.",
+   "kz": "Балалар мен жасөспірімдерді биге, кейбір спорт түрлеріне және сахна шеберлігіне үйретеміз. Академия 15-ші маусымын өткізіп жатыр: оқушылар сахнада өнер көрсетіп, чемпионаттарға қатысады.\n\nЖас топтары: 4–5, 6–7, 8–11, 12–15 және 16+ жас. Тәжірибе қажет емес — сынақ сабағына келуге болады.\n\nЕкі филиал:\n— Istina Dance & Sport Academy — Шәкәрім Құдайбердіұлы даңғылы, 26, 2-қабат;\n— Istina Maison D'Art — Желтоқсан көшесі, 22/4.",
+   "en": "We teach children and teens dance, some sports and stagecraft. The academy is in its 15th season: students perform on stage and compete in championships.\n\nAge groups: 4–5, 6–7, 8–11, 12–15 and 16+. No experience needed — you can come to a trial lesson.\n\nTwo branches:\n— Istina Dance & Sport Academy — 26 Shakarim Kudaiberdyuly Ave, 2nd floor;\n— Istina Maison D'Art — 22/4 Zheltoksan St."
+  },
+  "age": "4+",
+  "cost": {
+   "ru": "25 000 ₸ в месяц, цена зависит от направления",
+   "kz": "Айына 25 000 ₸, бағасы бағытқа байланысты",
+   "en": "25,000 ₸ a month, depends on the class"
+  },
+  "sched": {
+   "ru": "Много групп в разное время — расписание в Instagram академии",
+   "kz": "Әр уақытта көп топ — кесте академияның Instagram-ында",
+   "en": "Many groups at different times — timetable on the academy's Instagram"
+  },
+  "addr": {
+   "ru": "пр. Шакарима Кудайбердыулы, 26 и ул. Желтоксан, 22/4",
+   "kz": "Шәкәрім Құдайбердіұлы даңғылы, 26 және Желтоқсан көшесі, 22/4",
+   "en": "26 Shakarim Kudaiberdyuly Ave and 22/4 Zheltoksan St"
+  },
+  "dist": "almaty",
+  "lat": 51.15909,
+  "lng": 71.49141,
+  "langs": {
+   "ru": "Казахский, русский, английский",
+   "kz": "Қазақ, орыс, ағылшын",
+   "en": "Kazakh, Russian, English"
+  },
+  "tel": "+7 775 517 77 70",
+  "ig": "da_istina_official",
+  "tg": "istina_kz",
+  "photo": "photos/istina-dance-sport-academy.jpg",
+  "kw": "Istina Истина танцы танцевальная академия хореография спорт сцена сценическое мастерство актёрское чемпионаты дети подростки пробный урок",
+  "fit": "cover"
  }
 ]
