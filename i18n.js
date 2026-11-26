@@ -703,5 +703,52 @@ Object.assign(STR.en, {
   ct_sug_h: 'Know a contest that isn’t here?', ct_sug_p: 'Message us on Instagram — we’ll check the dates on the official website and add it.', ct_sug_b: 'Message on Instagram'
 });
 
+// Раздел «Лагеря»: летние поездки за границу от партнёров (это реклама — так и подписано).
+Object.assign(STR.ru, {
+  nav_camps: 'Лагеря', title_camps: 'Летние лагеря за границей для подростков из Казахстана — Qosyl',
+  cx_kicker: 'Программы из Казахстана', cx_summer: 'лето {y}', cx_h1a: 'Лето, которое', cx_h1b: 'запомнится',
+  cx_lead: 'Английский, друзья из разных стран и путешествия. Летние программы для подростков из Казахстана — группа летит вместе с сопровождающим.',
+  cx_sec_k: 'Программы', cx_sec_h: 'Куда поедем летом', cx_from: 'Программы от', cx_ad: 'Реклама', cx_new: 'Новинка', cx_age: '{a} лет',
+  cx_note: 'Поездки организует {p}. Qosyl рекомендует эти программы как партнёр — это реклама. Цены и даты — от организатора, обновлено {d}.',
+  cx_loading: 'Загружаем программы…', cx_none: 'Летних программ пока нет — загляните позже.',
+  cx_back: 'Все программы', cx_wa: 'Написать в WhatsApp', cx_open: 'Открыть программу',
+  cx_gal_k: 'Фото с прошлых поездок', cx_gal_h: 'Как это было', cx_gal_hint: 'Листайте пальцем или стрелками — фото уходят вглубь стопкой.',
+  cx_prev: 'Предыдущее фото', cx_next: 'Следующее фото', cx_photo: 'Фото {n}',
+  cx_route_k: 'Маршрут', cx_price_k: 'Стоимость', cx_price_h: 'Что входит в {p}', cx_inc: 'Входит', cx_exc: 'Не входит', cx_know: 'Важно знать',
+  cx_cta_h: 'Остались вопросы?', cx_cta_p: 'Напишите «{w}» в WhatsApp — ответят организаторы из {p}.',
+  cx_greet: 'Здравствуйте! Пишу с сайта Qosyl (qosyl.club). Интересует программа «{t}» — {w}.',
+  cx_tile_k: 'Лето {y}', cx_tile_b: 'Лагеря за границей', cx_tile_s: 'Программы для подростков'
+});
+Object.assign(STR.kz, {
+  nav_camps: 'Лагерьлер', title_camps: 'Қазақстандық жасөспірімдерге арналған шетелдегі жазғы лагерьлер — Qosyl',
+  cx_kicker: 'Қазақстаннан бағдарламалар', cx_summer: '{y} жаз', cx_h1a: 'Есте қалатын', cx_h1b: 'жаз',
+  cx_lead: 'Ағылшын тілі, әр елден келген достар және саяхат. Қазақстандық жасөспірімдерге арналған жазғы бағдарламалар — топ ілесіп жүрушімен бірге ұшады.',
+  cx_sec_k: 'Бағдарламалар', cx_sec_h: 'Жазда қайда барамыз', cx_from: 'Ұйымдастырушы:', cx_ad: 'Жарнама', cx_new: 'Жаңа', cx_age: '{a} жас',
+  cx_note: 'Сапарларды {p} ұйымдастырады. Qosyl бұл бағдарламаларды серіктес ретінде ұсынады — бұл жарнама. Бағалар мен күндер ұйымдастырушыдан, жаңартылды: {d}.',
+  cx_loading: 'Бағдарламалар жүктелуде…', cx_none: 'Жазғы бағдарламалар әзірге жоқ — кейінірек кіріңіз.',
+  cx_back: 'Барлық бағдарламалар', cx_wa: 'WhatsApp-қа жазу', cx_open: 'Бағдарламаны ашу',
+  cx_gal_k: 'Өткен сапарлардан фото', cx_gal_h: 'Бұл қалай өтті', cx_gal_hint: 'Саусақпен немесе көрсеткілермен парақтаңыз — фотолар қатармен тереңге кетеді.',
+  cx_prev: 'Алдыңғы фото', cx_next: 'Келесі фото', cx_photo: '{n}-фото',
+  cx_route_k: 'Бағыт', cx_price_k: 'Құны', cx_price_h: '{p} ішіне не кіреді', cx_inc: 'Кіреді', cx_exc: 'Кірмейді', cx_know: 'Білген жөн',
+  cx_cta_h: 'Сұрақтарыңыз бар ма?', cx_cta_p: 'WhatsApp-қа «{w}» деп жазыңыз — {p} ұйымдастырушылары жауап береді.',
+  cx_greet: 'Сәлеметсіз бе! Qosyl (qosyl.club) сайтынан жазып отырмын. «{t}» бағдарламасы қызықтырады — {w}.',
+  cx_tile_k: '{y} жаз', cx_tile_b: 'Шетелдегі лагерьлер', cx_tile_s: 'Жасөспірімдерге арналған бағдарламалар'
+});
+Object.assign(STR.en, {
+  nav_camps: 'Camps', title_camps: 'Summer camps abroad for teens from Kazakhstan — Qosyl',
+  cx_kicker: 'Programmes from Kazakhstan', cx_summer: 'summer {y}', cx_h1a: 'A summer', cx_h1b: 'to remember',
+  cx_lead: 'English, friends from around the world and travel. Summer programmes for teens from Kazakhstan — the group flies with a chaperone.',
+  cx_sec_k: 'Programmes', cx_sec_h: 'Where to go this summer', cx_from: 'Programmes by', cx_ad: 'Ad', cx_new: 'New', cx_age: 'ages {a}',
+  cx_note: 'Trips are organised by {p}. Qosyl recommends these programmes as a partner — this is advertising. Prices and dates come from the organiser, updated {d}.',
+  cx_loading: 'Loading programmes…', cx_none: 'No summer programmes yet — check back soon.',
+  cx_back: 'All programmes', cx_wa: 'Message on WhatsApp', cx_open: 'Open programme',
+  cx_gal_k: 'Photos from past trips', cx_gal_h: 'How it went', cx_gal_hint: 'Swipe or use the arrows — the photos stack into the distance.',
+  cx_prev: 'Previous photo', cx_next: 'Next photo', cx_photo: 'Photo {n}',
+  cx_route_k: 'Route', cx_price_k: 'Price', cx_price_h: 'What {p} includes', cx_inc: 'Included', cx_exc: 'Not included', cx_know: 'Good to know',
+  cx_cta_h: 'Any questions?', cx_cta_p: 'Send “{w}” on WhatsApp and the {p} team will reply.',
+  cx_greet: 'Hello! I’m writing from Qosyl (qosyl.club). I’m interested in “{t}” — {w}.',
+  cx_tile_k: 'Summer {y}', cx_tile_b: 'Camps abroad', cx_tile_s: 'Programmes for teens'
+});
+
   return STR;
 })();

@@ -983,5 +983,163 @@ window.QOSYL_FX = (function () {
     });
   }
 
-  return { reset: reset, ring: ring, fold: fold, dots: dots, pills: pills, glass: glass, reduced: REDUCED };
+  // ---------- стопка фото (DepthCarousel из React Bits) ----------
+  // Фото стоят друг за другом и уходят вглубь со сдвигом вбок и поворотом:
+  // дальние темнеют и размываются. Листается пальцем, стрелками, точками,
+  // клавишами ← → и боковой прокруткой тачпада; на экране листается само.
+  // Без React и GSAP: анимация — свой requestAnimationFrame с кривой power3.out.
+  function depth(root, opts) {
+    opts = opts || {};
+    var cards = Array.prototype.slice.call(root.querySelectorAll('.dc-card'));
+    var tints = cards.map(function (c) { return c.querySelector('.dc-tint'); });
+    var dots = Array.prototype.slice.call(root.querySelectorAll('.dc-dot'));
+    var n = cards.length;
+    if (!n) return;
+    var cfg = { depth: 220, spread: 110, tilt: 22, visible: 4, falloff: 0.2, blur: 5, duration: 700, delay: 3600 };
+    var pos = 0, focus = 0, raf = 0, alive = true, scale = 1, cardW = 300;
+    var drag = null, dragged = false, hovered = false, inView = false, timer = 0;
+
+    function tune() {
+      var w = root.clientWidth;
+      cardW = cards[0].offsetWidth || 300;
+      // На телефоне стопка уже, а размытие выключаем: на слабых телефонах оно тормозит.
+      if (w < 640) { cfg.depth = 150; cfg.spread = 54; cfg.blur = 0; } else { cfg.depth = 220; cfg.spread = 110; cfg.blur = 5; }
+      scale = Math.max(0.4, Math.min(1, w / (cardW + cfg.spread * 2 + 120)));
+    }
+    function wrapD(i, p) { var d = i - p; d = ((d % n) + n) % n; if (d > n / 2) d -= n; return d; }
+    function norm(p) { return ((p % n) + n) % n; }
+    function layout(p) {
+      for (var i = 0; i < n; i++) {
+        var d = wrapD(i, p), back = Math.max(0, d), shown = Math.abs(d) <= cfg.visible + 0.5;
+        var op = d < 0 ? Math.max(0, 1 + d) : 1;
+        if (!shown) op = 0;
+        var br = Math.max(0.15, 1 - back * cfg.falloff);
+        var bl = cfg.blur ? Math.min(cfg.blur, back / cfg.visible * cfg.blur) : 0;
+        var c = cards[i];
+        c.style.transform = 'translate(-50%, -50%) scale(' + scale.toFixed(3) + ') translateX(' + (cfg.spread * d).toFixed(1) + 'px) translateZ(' + (-cfg.depth * d).toFixed(1) + 'px) rotateY(' + (cfg.tilt * Math.min(Math.max(d, 0), 1)).toFixed(2) + 'deg)';
+        c.style.opacity = op.toFixed(3);
+        c.style.filter = 'brightness(' + br.toFixed(3) + ')' + (bl > 0.05 ? ' blur(' + bl.toFixed(2) + 'px)' : '');
+        c.style.zIndex = String(Math.round(2000 - d * 20));
+        c.style.pointerEvents = shown && op > 0.05 ? 'auto' : 'none';
+        c.classList.toggle('is-front', Math.abs(d) < 0.5);
+        if (tints[i]) tints[i].style.opacity = Math.min(0.86, back * cfg.falloff * 1.25).toFixed(3);
+      }
+    }
+    function paint() {
+      dots.forEach(function (b, i) { b.classList.toggle('on', i === focus); b.setAttribute('aria-current', i === focus ? 'true' : 'false'); });
+      cards.forEach(function (c, i) { c.setAttribute('aria-hidden', i === focus ? 'false' : 'true'); });
+    }
+    function tweenTo(target, animate) {
+      cancelAnimationFrame(raf);
+      var from = pos, dur = animate && !REDUCED ? cfg.duration : 0;
+      if (!dur) { pos = norm(target); layout(pos); return; }
+      var t0 = null;
+      function step(t) {
+        if (!alive) return;
+        if (t0 == null) t0 = t;
+        var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        pos = from + (target - from) * e;
+        layout(pos);
+        if (k < 1) raf = requestAnimationFrame(step); else { pos = norm(pos); layout(pos); }
+      }
+      raf = requestAnimationFrame(step);
+    }
+    function setFocus(raw, animate) {
+      var idx = norm(Math.round(raw)), delta = idx - pos;
+      delta = ((delta % n) + n) % n;
+      if (delta > n / 2) delta -= n;
+      tweenTo(pos + delta, animate !== false);
+      if (idx !== focus) { focus = idx; paint(); }
+    }
+    function by(step) { setFocus(focus + step, true); }
+    function stepPx() { return Math.max(cardW * 0.55 * scale, 40); }
+
+    // Пальцем и мышкой. touch-action: pan-y — страница по-прежнему листается вверх-вниз.
+    function down(e) {
+      if (e.button || n < 2) return;
+      cancelAnimationFrame(raf);
+      drag = { x: e.clientX, y: e.clientY, start: pos, lastX: e.clientX, lastT: performance.now(), v: 0, moved: false, id: e.pointerId };
+    }
+    function move(e) {
+      if (!drag) return;
+      var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if (!drag.moved) {
+        if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { drag = null; setFocus(pos, true); return; }
+        if (Math.abs(dx) < 6) return;
+        drag.moved = true;
+        try { root.setPointerCapture(drag.id); } catch (_) {}
+      }
+      var now = performance.now(), dt = Math.max(now - drag.lastT, 1);
+      drag.v = (e.clientX - drag.lastX) / dt;
+      drag.lastX = e.clientX;
+      drag.lastT = now;
+      pos = drag.start - dx / stepPx();
+      layout(pos);
+    }
+    function up() {
+      if (!drag) return;
+      var d = drag;
+      drag = null;
+      if (!d.moved) return;
+      dragged = true;
+      setTimeout(function () { dragged = false; }, 0);
+      setFocus(pos - (d.v * 180) / stepPx(), true);
+    }
+    function click(e) {
+      if (dragged) return;
+      if (e.target.closest('.dc-prev')) return by(-1);
+      if (e.target.closest('.dc-next')) return by(1);
+      var dot = e.target.closest('.dc-dot');
+      if (dot) return setFocus(+dot.getAttribute('data-i'), true);
+      var card = e.target.closest('.dc-card');
+      if (card) setFocus(cards.indexOf(card), true);
+    }
+    function key(e) {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); by(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); by(1); }
+    }
+    // Только боковая прокрутка тачпада: обычное колесо листает страницу, а не фото.
+    var wheelT = 0;
+    function wheel(e) {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || Math.abs(e.deltaX) < 2) return;
+      e.preventDefault();
+      cancelAnimationFrame(raf);
+      pos += Math.max(-0.6, Math.min(0.6, e.deltaX / (cardW * 0.9)));
+      layout(pos);
+      clearTimeout(wheelT);
+      wheelT = setTimeout(function () { setFocus(pos, true); }, 130);
+    }
+    root.addEventListener('pointerdown', down);
+    root.addEventListener('pointermove', move);
+    root.addEventListener('pointerup', up);
+    root.addEventListener('pointercancel', up);
+    root.addEventListener('click', click);
+    root.addEventListener('keydown', key);
+    root.addEventListener('wheel', wheel, { passive: false });
+    root.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') hovered = true; });
+    root.addEventListener('pointerleave', function () { hovered = false; });
+
+    // Само листается, только пока стопка на экране и её не трогают.
+    if (!REDUCED && n > 1) {
+      timer = setInterval(function () { if (inView && !hovered && !drag && document.activeElement !== root) by(1); }, cfg.delay);
+    }
+    var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) { inView = es[0].isIntersecting; }, { threshold: 0.4 }) : null;
+    if (io) io.observe(root); else inView = true;
+    var ro = 'ResizeObserver' in window ? new ResizeObserver(function () { tune(); layout(pos); }) : null;
+    if (ro) ro.observe(root);
+    tune();
+    layout(0);
+    paint();
+    root.classList.add('is-live');
+    running.push(function () {
+      alive = false;
+      cancelAnimationFrame(raf);
+      clearInterval(timer);
+      clearTimeout(wheelT);
+      if (io) io.disconnect();
+      if (ro) ro.disconnect();
+    });
+  }
+
+  return { reset: reset, ring: ring, fold: fold, dots: dots, pills: pills, glass: glass, depth: depth, reduced: REDUCED };
 })();

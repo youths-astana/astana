@@ -1,0 +1,925 @@
+{
+ "updated": "2026-11-26",
+ "providers": [
+  {
+   "id": "studyme",
+   "name": "StudyMe",
+   "logo": "photos/camps/studyme.png",
+   "ig": "zarema.studyme",
+   "about": {
+    "ru": "организатор поездок · сопровождающий из Казахстана",
+    "kz": "сапарларды ұйымдастырушы · Қазақстаннан ілесіп жүруші",
+    "en": "trip organiser · chaperone from Kazakhstan"
+   }
+  }
+ ],
+ "programs": [
+  {
+   "slug": "japan",
+   "provider": "studyme",
+   "new": true,
+   "start": "2027-07-02",
+   "end": "2027-07-15",
+   "title": {
+    "ru": "Лето в Японии",
+    "kz": "Жапониядағы жаз",
+    "en": "Summer in Japan"
+   },
+   "tag": {
+    "ru": "Токио · Фудзи · Киото",
+    "kz": "Токио · Фудзи · Киото",
+    "en": "Tokyo · Fuji · Kyoto"
+   },
+   "where": {
+    "ru": "Токио · Фудзи · Киото · Нара · Осака",
+    "kz": "Токио · Фудзи · Киото · Нара · Осака",
+    "en": "Tokyo · Fuji · Kyoto · Nara · Osaka"
+   },
+   "dates": {
+    "ru": "2–15 июля",
+    "kz": "2–15 шілде",
+    "en": "2–15 July"
+   },
+   "len": {
+    "ru": "14 дней",
+    "kz": "14 күн",
+    "en": "14 days"
+   },
+   "age": "13–17",
+   "price": "$3 800",
+   "price_note": {
+    "ru": "без перелёта",
+    "kz": "ұшақ билетінсіз",
+    "en": "flights not included"
+   },
+   "cover": "photos/camps/japan-yukata.jpg",
+   "cover_pos": "42% 50%",
+   "hero": "photos/camps/japan-pagoda.jpg",
+   "hero_pos": "50% 42%",
+   "lead": {
+    "ru": "Две недели по Японии с уроками английского: храмы в юкатах, синкансэн и Фудзи, которую видно с озера.",
+    "kz": "Жапония бойынша екі апта және ағылшын сабақтары: юката киіп ғибадатханаларға бару, синкансэн пойызы және көлден көрінетін Фудзи.",
+    "en": "Two weeks across Japan with English lessons: temples in yukata, the shinkansen and Mount Fuji seen from the lake."
+   },
+   "stats": [
+    {
+     "b": {
+      "ru": "14 дней",
+      "kz": "14 күн",
+      "en": "14 days"
+     },
+     "s": {
+      "ru": "2–15 июля 2027",
+      "kz": "2–15 шілде 2027",
+      "en": "2–15 July 2027"
+     }
+    },
+    {
+     "b": {
+      "ru": "13–17 лет",
+      "kz": "13–17 жас",
+      "en": "Ages 13–17"
+     },
+     "s": {
+      "ru": "школьники",
+      "kz": "оқушылар",
+      "en": "school students"
+     }
+    },
+    {
+     "b": {
+      "ru": "С группой",
+      "kz": "Топпен бірге",
+      "en": "With the group"
+     },
+     "s": {
+      "ru": "групп-лидер StudyMe",
+      "kz": "StudyMe топ жетекшісі",
+      "en": "StudyMe group leader"
+     }
+    },
+    {
+     "b": {
+      "ru": "$3 800",
+      "kz": "$3 800",
+      "en": "$3,800"
+     },
+     "s": {
+      "ru": "без перелёта",
+      "kz": "ұшақ билетінсіз",
+      "en": "flights not included"
+     }
+    }
+   ],
+   "photos": [
+    {
+     "src": "photos/camps/japan-yukata.jpg",
+     "cap": {
+      "ru": "Храм Мэйдзи в юкатах",
+      "kz": "Мэйдзи храмы, юката киіп",
+      "en": "Meiji Shrine in yukata"
+     }
+    },
+    {
+     "src": "photos/camps/japan-fuji.jpg",
+     "cap": {
+      "ru": "Озеро Кавагучи и Фудзи",
+      "kz": "Кавагути көлі және Фудзи",
+      "en": "Lake Kawaguchi and Fuji"
+     }
+    },
+    {
+     "src": "photos/camps/japan-nara.jpg",
+     "cap": {
+      "ru": "Олени Нары",
+      "kz": "Нара бұғылары",
+      "en": "The deer of Nara"
+     }
+    },
+    {
+     "src": "photos/camps/japan-teamlab.jpg",
+     "cap": {
+      "ru": "teamLab",
+      "kz": "teamLab",
+      "en": "teamLab"
+     }
+    },
+    {
+     "src": "photos/camps/japan-lesson.jpg",
+     "cap": {
+      "ru": "Урок на английском",
+      "kz": "Ағылшын тіліндегі сабақ",
+      "en": "English lesson"
+     }
+    },
+    {
+     "src": "photos/camps/japan-dinner.jpg",
+     "cap": {
+      "ru": "Ужин всей группой",
+      "kz": "Бүкіл топпен кешкі ас",
+      "en": "Dinner together"
+     }
+    },
+    {
+     "src": "photos/camps/japan-group.jpg",
+     "cap": {
+      "ru": "Вся группа",
+      "kz": "Бүкіл топ",
+      "en": "The whole group"
+     }
+    }
+   ],
+   "route_h": {
+    "ru": "Неделя в Токио, неделя в Киото и Осаке",
+    "kz": "Бір апта Токиода, бір апта Киото мен Осакада",
+    "en": "A week in Tokyo, a week in Kyoto and Osaka"
+   },
+   "route": [
+    {
+     "c": {
+      "ru": "Токио",
+      "kz": "Токио",
+      "en": "Tokyo"
+     },
+     "w": {
+      "ru": "дни 1–7",
+      "kz": "1–7 күндер",
+      "en": "days 1–7"
+     }
+    },
+    {
+     "c": {
+      "ru": "Фудзи",
+      "kz": "Фудзи",
+      "en": "Fuji"
+     },
+     "w": {
+      "ru": "день 3",
+      "kz": "3-күн",
+      "en": "day 3"
+     }
+    },
+    {
+     "c": {
+      "ru": "Йокогама",
+      "kz": "Йокогама",
+      "en": "Yokohama"
+     },
+     "w": {
+      "ru": "день 4",
+      "kz": "4-күн",
+      "en": "day 4"
+     }
+    },
+    {
+     "c": {
+      "ru": "Нара",
+      "kz": "Нара",
+      "en": "Nara"
+     },
+     "w": {
+      "ru": "день 8",
+      "kz": "8-күн",
+      "en": "day 8"
+     }
+    },
+    {
+     "c": {
+      "ru": "Киото",
+      "kz": "Киото",
+      "en": "Kyoto"
+     },
+     "w": {
+      "ru": "дни 9 и 13",
+      "kz": "9 және 13-күндер",
+      "en": "days 9 and 13"
+     }
+    },
+    {
+     "c": {
+      "ru": "Осака",
+      "kz": "Осака",
+      "en": "Osaka"
+     },
+     "w": {
+      "ru": "дни 10–14",
+      "kz": "10–14 күндер",
+      "en": "days 10–14"
+     }
+    }
+   ],
+   "highlights": [
+    {
+     "src": "photos/camps/japan-shibuya.jpg",
+     "k": {
+      "ru": "День 5",
+      "kz": "5-күн",
+      "en": "Day 5"
+     },
+     "t": {
+      "ru": "Перекрёсток Сибуя",
+      "kz": "Сибуя қиылысы",
+      "en": "Shibuya Crossing"
+     }
+    },
+    {
+     "src": "photos/camps/japan-inari.jpg",
+     "k": {
+      "ru": "День 13",
+      "kz": "13-күн",
+      "en": "Day 13"
+     },
+     "t": {
+      "ru": "Тысячи ворот Фусими Инари",
+      "kz": "Фусими Инаридің мыңдаған қақпасы",
+      "en": "The thousand gates of Fushimi Inari"
+     }
+    },
+    {
+     "src": "photos/camps/japan-dotonbori.jpg",
+     "k": {
+      "ru": "День 11",
+      "kz": "11-күн",
+      "en": "Day 11"
+     },
+     "t": {
+      "ru": "Неон Дотонбори",
+      "kz": "Дотонбори неоны",
+      "en": "Dotonbori neon"
+     }
+    }
+   ],
+   "inc": {
+    "ru": [
+     "Отели 3*, 13 ночей — мальчики и девочки живут отдельно",
+     "Трёхразовое питание",
+     "Уроки английского и мастер-классы по японской культуре",
+     "Все экскурсии и билеты, в том числе Universal Studios и teamLab",
+     "Весь транспорт по Японии, включая переезд Токио — Осака",
+     "Вожатые 24/7 и групп-лидер от StudyMe",
+     "Медицинская страховка, сертификат и футболка",
+     "Помощь с документами для визы"
+    ],
+    "kz": [
+     "3* қонақүйлер, 13 түн — ұлдар мен қыздар бөлек тұрады",
+     "Күніне үш рет тамақ",
+     "Ағылшын сабақтары және жапон мәдениеті бойынша шеберлік сабақтары",
+     "Барлық экскурсиялар мен билеттер, оның ішінде Universal Studios және teamLab",
+     "Жапония бойынша барлық көлік, Токио — Осака сапарын қоса",
+     "Тәулік бойы тәлімгерлер және StudyMe топ жетекшісі",
+     "Медициналық сақтандыру, сертификат және футболка",
+     "Виза құжаттарына көмек"
+    ],
+    "en": [
+     "3-star hotels, 13 nights; boys and girls stay separately",
+     "Three meals a day",
+     "English lessons and Japanese culture workshops",
+     "All excursions and tickets, including Universal Studios and teamLab",
+     "All transport in Japan, including Tokyo–Osaka",
+     "Counsellors 24/7 and a StudyMe group leader",
+     "Medical insurance, certificate and T-shirt",
+     "Help with visa documents"
+    ]
+   },
+   "exc": {
+    "ru": [
+     "Авиабилеты — предварительно Air China через Пекин",
+     "Нотариальное оформление документов для визы",
+     "Карманные деньги и сувениры"
+    ],
+    "kz": [
+     "Ұшақ билеттері — алдын ала Пекин арқылы Air China",
+     "Виза құжаттарын нотариалды рәсімдеу",
+     "Қалта ақшасы және кәдесыйлар"
+    ],
+    "en": [
+     "Flights — provisionally Air China via Beijing",
+     "Notarised documents for the visa",
+     "Pocket money and souvenirs"
+    ]
+   },
+   "know": {
+    "ru": "Уроки — история и культура Японии на английском, поэтому нужен хотя бы разговорный английский. Сама виза для граждан Казахстана бесплатная.",
+    "kz": "Сабақтар — Жапонияның тарихы мен мәдениеті ағылшын тілінде, сондықтан кем дегенде ауызекі ағылшын тілі қажет. Қазақстан азаматтары үшін визаның өзі тегін.",
+    "en": "Lessons cover Japanese history and culture in English, so at least conversational English is needed. The visa itself is free for citizens of Kazakhstan."
+   },
+   "wa": "77017373362",
+   "wa_word": "Япония"
+  },
+  {
+   "slug": "europe",
+   "provider": "studyme",
+   "start": "2027-07-03",
+   "end": "2027-07-23",
+   "title": {
+    "ru": "Лето в Европе",
+    "kz": "Еуропадағы жаз",
+    "en": "Summer in Europe"
+   },
+   "tag": {
+    "ru": "Прага · 6 стран",
+    "kz": "Прага · 6 ел",
+    "en": "Prague · 6 countries"
+   },
+   "where": {
+    "ru": "Чехия · Германия · Австрия · Швейцария · Италия · Франция",
+    "kz": "Чехия · Германия · Австрия · Швейцария · Италия · Франция",
+    "en": "Czechia · Germany · Austria · Switzerland · Italy · France"
+   },
+   "dates": {
+    "ru": "3–23 июля",
+    "kz": "3–23 шілде",
+    "en": "3–23 July"
+   },
+   "len": {
+    "ru": "21 день",
+    "kz": "21 күн",
+    "en": "21 days"
+   },
+   "age": "11–20",
+   "price": "€3 600",
+   "price_note": {
+    "ru": "без перелёта",
+    "kz": "ұшақ билетінсіз",
+    "en": "flights not included"
+   },
+   "cover": "photos/camps/europe-paris-group.jpg",
+   "cover_pos": "50% 62%",
+   "hero": "photos/camps/europe-paris-group.jpg",
+   "hero_pos": "50% 58%",
+   "lead": {
+    "ru": "Три недели живём в Праге: английский с носителями языка, друзья из разных стран и четыре поездки по Европе — от Вены до Диснейленда.",
+    "kz": "Үш апта Прагада тұрамыз: тіл иелерімен ағылшын тілі, әр елден келген достар және Еуропа бойынша төрт сапар — Венадан Диснейлендке дейін.",
+    "en": "Three weeks based in Prague: English with native speakers, friends from different countries and four trips across Europe, from Vienna to Disneyland."
+   },
+   "stats": [
+    {
+     "b": {
+      "ru": "21 день",
+      "kz": "21 күн",
+      "en": "21 days"
+     },
+     "s": {
+      "ru": "3–23 июля 2027",
+      "kz": "3–23 шілде 2027",
+      "en": "3–23 July 2027"
+     }
+    },
+    {
+     "b": {
+      "ru": "11–20 лет",
+      "kz": "11–20 жас",
+      "en": "Ages 11–20"
+     },
+     "s": {
+      "ru": "подростки",
+      "kz": "жасөспірімдер",
+      "en": "teenagers"
+     }
+    },
+    {
+     "b": {
+      "ru": "40 часов",
+      "kz": "40 сағат",
+      "en": "40 hours"
+     },
+     "s": {
+      "ru": "английского с носителями",
+      "kz": "тіл иелерімен ағылшын",
+      "en": "English with native speakers"
+     }
+    },
+    {
+     "b": {
+      "ru": "€3 600",
+      "kz": "€3 600",
+      "en": "€3,600"
+     },
+     "s": {
+      "ru": "без перелёта",
+      "kz": "ұшақ билетінсіз",
+      "en": "flights not included"
+     }
+    }
+   ],
+   "photos": [
+    {
+     "src": "photos/camps/europe-paris-group.jpg",
+     "cap": {
+      "ru": "Вечер у Эйфелевой башни",
+      "kz": "Эйфель мұнарасы жанындағы кеш",
+      "en": "Evening at the Eiffel Tower"
+     },
+     "pos": "50% 60%"
+    },
+    {
+     "src": "photos/camps/europe-prague.jpg",
+     "cap": {
+      "ru": "Прага",
+      "kz": "Прага",
+      "en": "Prague"
+     }
+    },
+    {
+     "src": "photos/camps/europe-lessons.jpg",
+     "cap": {
+      "ru": "Уроки с носителями",
+      "kz": "Тіл иелерімен сабақ",
+      "en": "Lessons with native speakers"
+     }
+    },
+    {
+     "src": "photos/camps/europe-dresden.jpg",
+     "cap": {
+      "ru": "Дрезден",
+      "kz": "Дрезден",
+      "en": "Dresden"
+     }
+    },
+    {
+     "src": "photos/camps/europe-vienna.jpg",
+     "cap": {
+      "ru": "Вена",
+      "kz": "Вена",
+      "en": "Vienna"
+     }
+    },
+    {
+     "src": "photos/camps/europe-louvre.jpg",
+     "cap": {
+      "ru": "Лувр",
+      "kz": "Лувр",
+      "en": "The Louvre"
+     }
+    },
+    {
+     "src": "photos/camps/europe-disneyland.jpg",
+     "cap": {
+      "ru": "Диснейленд",
+      "kz": "Диснейленд",
+      "en": "Disneyland"
+     }
+    }
+   ],
+   "route_h": {
+    "ru": "Дом в Праге и четыре поездки",
+    "kz": "Прагадағы үй және төрт сапар",
+    "en": "A home in Prague and four trips"
+   },
+   "route": [
+    {
+     "c": {
+      "ru": "Прага",
+      "kz": "Прага",
+      "en": "Prague"
+     },
+     "w": {
+      "ru": "3 недели, база",
+      "kz": "3 апта, негізгі орын",
+      "en": "3 weeks, home base"
+     }
+    },
+    {
+     "c": {
+      "ru": "Дрезден",
+      "kz": "Дрезден",
+      "en": "Dresden"
+     },
+     "w": {
+      "ru": "1 день",
+      "kz": "1 күн",
+      "en": "1 day"
+     }
+    },
+    {
+     "c": {
+      "ru": "Вена",
+      "kz": "Вена",
+      "en": "Vienna"
+     },
+     "w": {
+      "ru": "2 дня",
+      "kz": "2 күн",
+      "en": "2 days"
+     }
+    },
+    {
+     "c": {
+      "ru": "Альпы",
+      "kz": "Альпі",
+      "en": "The Alps"
+     },
+     "w": {
+      "ru": "поезд",
+      "kz": "пойыз",
+      "en": "train"
+     }
+    },
+    {
+     "c": {
+      "ru": "Комо",
+      "kz": "Комо",
+      "en": "Como"
+     },
+     "w": {
+      "ru": "2 дня",
+      "kz": "2 күн",
+      "en": "2 days"
+     }
+    },
+    {
+     "c": {
+      "ru": "Париж",
+      "kz": "Париж",
+      "en": "Paris"
+     },
+     "w": {
+      "ru": "3 дня + Диснейленд",
+      "kz": "3 күн + Диснейленд",
+      "en": "3 days + Disneyland"
+     }
+    }
+   ],
+   "highlights": [
+    {
+     "src": "photos/camps/europe-vienna.jpg",
+     "k": {
+      "ru": "Вена · 2 дня",
+      "kz": "Вена · 2 күн",
+      "en": "Vienna · 2 days"
+     },
+     "t": {
+      "ru": "Хофбург и собор Святого Стефана",
+      "kz": "Хофбург және Әулие Стефан соборы",
+      "en": "Hofburg and St Stephen's Cathedral"
+     }
+    },
+    {
+     "src": "photos/camps/europe-alps.jpg",
+     "k": {
+      "ru": "Швейцария",
+      "kz": "Швейцария",
+      "en": "Switzerland"
+     },
+     "t": {
+      "ru": "Панорамный поезд через Альпы",
+      "kz": "Альпі арқылы панорамалық пойыз",
+      "en": "A panoramic train through the Alps"
+     }
+    },
+    {
+     "src": "photos/camps/europe-como.jpg",
+     "k": {
+      "ru": "Италия · 2 дня",
+      "kz": "Италия · 2 күн",
+      "en": "Italy · 2 days"
+     },
+     "t": {
+      "ru": "Озеро Комо на кораблике",
+      "kz": "Комо көлінде кемемен",
+      "en": "Lake Como by boat"
+     }
+    }
+   ],
+   "inc": {
+    "ru": [
+     "Проживание и питание в Праге: завтрак, обед, ужин и перекус",
+     "40 часов английского с носителями и сертификат",
+     "Проект в мини-группе, мастер-классы по ИИ и публичным выступлениям",
+     "4 поездки: отели, гиды, билеты",
+     "Кураторы 24/7, трансфер из аэропорта, SIM-карта и проездной"
+    ],
+    "kz": [
+     "Прагада тұру және тамақ: таңғы, түскі, кешкі ас және жеңіл тамақ",
+     "Тіл иелерімен 40 сағат ағылшын тілі және сертификат",
+     "Шағын топтағы жоба, жасанды интеллект пен шешендік өнер бойынша шеберлік сабақтары",
+     "4 сапар: қонақүйлер, гидтер, билеттер",
+     "Тәулік бойы кураторлар, әуежайдан трансфер, SIM-карта және жол жүру картасы"
+    ],
+    "en": [
+     "Accommodation and meals in Prague: breakfast, lunch, dinner and a snack",
+     "40 hours of English with native speakers and a certificate",
+     "A small-group project, AI and public speaking workshops",
+     "4 trips: hotels, guides, tickets",
+     "Supervisors 24/7, airport transfer, SIM card and travel pass"
+    ]
+   },
+   "exc": {
+    "ru": [
+     "Перелёт, страховка и виза",
+     "Обеды и ужины в поездках"
+    ],
+    "kz": [
+     "Ұшақ билеті, сақтандыру және виза",
+     "Сапарлардағы түскі және кешкі ас"
+    ],
+    "en": [
+     "Flights, insurance and visa",
+     "Lunches and dinners on the trips"
+    ]
+   },
+   "know": {
+    "ru": "Живут в студенческой резиденции в Праге, в комнатах на двоих. Кураторы рядом круглосуточно — один на 10 детей. В конце — проект на английском и сертификат.",
+    "kz": "Прагадағы студенттік резиденцияда, екі адамдық бөлмелерде тұрады. Кураторлар тәулік бойы қасында — 10 балаға бір куратор. Соңында — ағылшын тіліндегі жоба және сертификат.",
+    "en": "Students live in a student residence in Prague, two to a room. Supervisors are on hand 24/7, one per 10 children. The course ends with a project in English and a certificate."
+   },
+   "wa": "77009633931",
+   "wa_word": "Евротур"
+  },
+  {
+   "slug": "england",
+   "provider": "studyme",
+   "start": "2027-08-03",
+   "end": "2027-08-17",
+   "title": {
+    "ru": "Лето в Англии",
+    "kz": "Англиядағы жаз",
+    "en": "Summer in England"
+   },
+   "tag": {
+    "ru": "Лондон · Оксфорд · Surrey",
+    "kz": "Лондон · Оксфорд · Surrey",
+    "en": "London · Oxford · Surrey"
+   },
+   "where": {
+    "ru": "Кампус University of Surrey · Лондон · Оксфорд · Гилфорд",
+    "kz": "University of Surrey кампусы · Лондон · Оксфорд · Гилфорд",
+    "en": "University of Surrey campus · London · Oxford · Guildford"
+   },
+   "dates": {
+    "ru": "3–17 августа",
+    "kz": "3–17 тамыз",
+    "en": "3–17 August"
+   },
+   "len": {
+    "ru": "15 дней",
+    "kz": "15 күн",
+    "en": "15 days"
+   },
+   "age": "",
+   "price": "£2 990",
+   "price_note": {
+    "ru": "без перелёта",
+    "kz": "ұшақ билетінсіз",
+    "en": "flights not included"
+   },
+   "cover": "photos/camps/england-campus-lawn.jpg",
+   "cover_pos": "50% 62%",
+   "hero": "photos/camps/england-campus-lawn.jpg",
+   "hero_pos": "50% 66%",
+   "lead": {
+    "ru": "Две недели живём в кампусе University of Surrey, как настоящие британские студенты: утром английский с ребятами из разных стран, вечером веселье, а ещё Лондон и Оксфорд.",
+    "kz": "Екі апта University of Surrey кампусында нағыз британ студенттері сияқты тұрамыз: таңертең әр елден келген балалармен ағылшын тілі, кешке көңілді іс-шаралар, сондай-ақ Лондон мен Оксфорд.",
+    "en": "Two weeks living on the University of Surrey campus like real British students: English with teens from around the world in the morning, fun in the evening, plus London and Oxford."
+   },
+   "stats": [
+    {
+     "b": {
+      "ru": "15 дней",
+      "kz": "15 күн",
+      "en": "15 days"
+     },
+     "s": {
+      "ru": "3–17 августа 2027",
+      "kz": "3–17 тамыз 2027",
+      "en": "3–17 August 2027"
+     }
+    },
+    {
+     "b": {
+      "ru": "Кампус",
+      "kz": "Кампус",
+      "en": "Campus"
+     },
+     "s": {
+      "ru": "University of Surrey",
+      "kz": "University of Surrey",
+      "en": "University of Surrey"
+     }
+    },
+    {
+     "b": {
+      "ru": "40 минут",
+      "kz": "40 минут",
+      "en": "40 minutes"
+     },
+     "s": {
+      "ru": "до Лондона на поезде",
+      "kz": "Лондонға пойызбен",
+      "en": "to London by train"
+     }
+    },
+    {
+     "b": {
+      "ru": "£2 990",
+      "kz": "£2 990",
+      "en": "£2,990"
+     },
+     "s": {
+      "ru": "без перелёта",
+      "kz": "ұшақ билетінсіз",
+      "en": "flights not included"
+     }
+    }
+   ],
+   "photos": [
+    {
+     "src": "photos/camps/england-campus-lawn.jpg",
+     "cap": {
+      "ru": "Вечер на лужайке кампуса",
+      "kz": "Кампус алаңындағы кеш",
+      "en": "Evening on the campus lawn"
+     },
+     "pos": "50% 62%"
+    },
+    {
+     "src": "photos/camps/england-campus-boys.jpg",
+     "cap": {
+      "ru": "Друзья из разных стран",
+      "kz": "Әр елден келген достар",
+      "en": "Friends from around the world"
+     },
+     "pos": "50% 62%"
+    },
+    {
+     "src": "photos/camps/england-evening.jpg",
+     "cap": {
+      "ru": "Вечер в общежитии",
+      "kz": "Жатақханадағы кеш",
+      "en": "An evening at the residence"
+     }
+    }
+   ],
+   "route_h": {
+    "ru": "Кампус под Лондоном и поездки",
+    "kz": "Лондон маңындағы кампус және сапарлар",
+    "en": "A campus near London, plus trips"
+   },
+   "route": [
+    {
+     "c": {
+      "ru": "Гилфорд",
+      "kz": "Гилфорд",
+      "en": "Guildford"
+     },
+     "w": {
+      "ru": "кампус и старый город",
+      "kz": "кампус және ескі қала",
+      "en": "campus and old town"
+     }
+    },
+    {
+     "c": {
+      "ru": "Лондон",
+      "kz": "Лондон",
+      "en": "London"
+     },
+     "w": {
+      "ru": "Вестминстер, музеи, Темза",
+      "kz": "Вестминстер, мұражайлар, Темза",
+      "en": "Westminster, museums, the Thames"
+     }
+    },
+    {
+     "c": {
+      "ru": "Оксфорд",
+      "kz": "Оксфорд",
+      "en": "Oxford"
+     },
+     "w": {
+      "ru": "колледжи",
+      "kz": "колледждер",
+      "en": "the colleges"
+     }
+    }
+   ],
+   "highlights": [
+    {
+     "src": "photos/camps/england-westminster.jpg",
+     "k": {
+      "ru": "Лондон",
+      "kz": "Лондон",
+      "en": "London"
+     },
+     "t": {
+      "ru": "Биг-Бен и Вестминстер",
+      "kz": "Биг-Бен және Вестминстер",
+      "en": "Big Ben and Westminster"
+     }
+    },
+    {
+     "src": "photos/camps/england-museum.jpg",
+     "k": {
+      "ru": "Лондон",
+      "kz": "Лондон",
+      "en": "London"
+     },
+     "t": {
+      "ru": "Синий кит в Музее естествознания",
+      "kz": "Табиғи тарих мұражайындағы көк кит",
+      "en": "The blue whale at the Natural History Museum"
+     }
+    },
+    {
+     "src": "photos/camps/england-oxford.jpg",
+     "k": {
+      "ru": "Оксфорд",
+      "kz": "Оксфорд",
+      "en": "Oxford"
+     },
+     "t": {
+      "ru": "Здесь учились Толкин и Хокинг",
+      "kz": "Мұнда Толкин мен Хокинг оқыған",
+      "en": "Where Tolkien and Hawking studied"
+     }
+    }
+   ],
+   "inc": {
+    "ru": [
+     "Жильё в общежитии кампуса и трёхразовое питание",
+     "Уроки английского в группах с ребятами из разных стран",
+     "Все экскурсии и билеты в музеи",
+     "Вечерние мероприятия и выпускной",
+     "Сопровождающий из Казахстана"
+    ],
+    "kz": [
+     "Кампус жатақханасында тұру және күніне үш рет тамақ",
+     "Әр елден келген балалармен топтағы ағылшын сабақтары",
+     "Барлық экскурсиялар мен мұражай билеттері",
+     "Кешкі іс-шаралар және бітіру кеші",
+     "Қазақстаннан ілесіп жүруші"
+    ],
+    "en": [
+     "Campus residence and three meals a day",
+     "English lessons in groups with teens from different countries",
+     "All excursions and museum tickets",
+     "Evening activities and a graduation party",
+     "A chaperone from Kazakhstan"
+    ]
+   },
+   "exc": {
+    "ru": [
+     "Перелёт, страховка и виза"
+    ],
+    "kz": [
+     "Ұшақ билеті, сақтандыру және виза"
+    ],
+    "en": [
+     "Flights, insurance and visa"
+    ]
+   },
+   "know": {
+    "ru": "С группой летит сопровождающий StudyMe из Казахстана и всё время рядом. По вечерам дискотеки, караоке, кино, конкурс талантов и показ мод, а в конце — настоящий выпускной.",
+    "kz": "Топпен бірге Қазақстаннан StudyMe ілесіп жүрушісі ұшады және үнемі қасында болады. Кешкілік дискотека, караоке, кино, таланттар байқауы мен сән көрсетілімі, ал соңында — нағыз бітіру кеші.",
+    "en": "A StudyMe chaperone from Kazakhstan flies with the group and stays with them throughout. Evenings bring discos, karaoke, films, a talent show and a fashion show, and it ends with a real graduation party."
+   },
+   "credit": {
+    "ru": "Фото Лондона и Оксфорда — Wikimedia Commons: Diliff (CC BY 3.0, CC BY-SA 3.0), Colin (CC BY-SA 4.0), Domo b (CC BY-SA 4.0), APK (CC BY 4.0), Julian Herzog (CC BY 4.0), Colin Smith (CC BY-SA 2.0).",
+    "kz": "Лондон мен Оксфорд фотолары — Wikimedia Commons: Diliff (CC BY 3.0, CC BY-SA 3.0), Colin (CC BY-SA 4.0), Domo b (CC BY-SA 4.0), APK (CC BY 4.0), Julian Herzog (CC BY 4.0), Colin Smith (CC BY-SA 2.0).",
+    "en": "Photos of London and Oxford — Wikimedia Commons: Diliff (CC BY 3.0, CC BY-SA 3.0), Colin (CC BY-SA 4.0), Domo b (CC BY-SA 4.0), APK (CC BY 4.0), Julian Herzog (CC BY 4.0), Colin Smith (CC BY-SA 2.0)."
+   },
+   "wa": "77009633931",
+   "wa_word": "Англия лето"
+  }
+ ]
+}

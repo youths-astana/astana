@@ -1127,3 +1127,245 @@ html[data-screen="contests"] body { background: #0A1638 }
 @media (prefers-reduced-motion: reduce) {
   .pn-face, .pn-face-alt, .pn-fill, .pn-item, .gi-plate, .gi-glass, .gi-glass::after, .gi-face, .own.ping { transition: none; animation: none }
 }
+
+/* ---------- лагеря ---------- */
+/* Партнёрский раздел: летние поездки за границу. Своя атмосфера — ночное небо,
+   солнечный жёлтый и заголовки с засечками (Cormorant Garamond, грузится только
+   здесь). Шапка на этих страницах тёмная, чтобы жёлтый читался. */
+:root { --sun: #FFD23F; --night: #0B1230; --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif }
+html[data-screen^="camp"] body { background: var(--night) }
+html[data-screen^="camp"] .foot { margin-top: 0 }
+html[data-screen^="camp"] header.top { background: rgb(11 18 48 / .86); border-bottom-color: rgb(255 255 255 / .08) }
+html[data-screen^="camp"] .brand, html[data-screen^="camp"] .brand:hover { color: #fff }
+html[data-screen^="camp"] .nav-link { color: rgb(255 255 255 / .72) }
+html[data-screen^="camp"] .nav-link:hover { color: #fff; background: rgb(255 255 255 / .08) }
+html[data-screen^="camp"] .top-cta { background: #fff; color: var(--night) }
+html[data-screen^="camp"] .langs { background: rgb(255 255 255 / .08) }
+html[data-screen^="camp"] .langs button { color: rgb(255 255 255 / .6) }
+html[data-screen^="camp"] .langs button[aria-pressed="true"] { background: #fff; color: var(--night) }
+html[data-screen^="camp"] .pnav-h .pn-bar { background: rgb(255 255 255 / .07); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .1) }
+html[data-screen^="camp"] .pnav-h .pn-item:not(.camp) { background: rgb(255 255 255 / .06); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .08); color: rgb(255 255 255 / .74) }
+html[data-screen^="camp"] .pnav-h .pn-item:not(.camp):hover { color: #fff }
+html[data-screen^="camp"] .pn-dot { opacity: 0 !important }
+.pn-item.camp[aria-current] { background: linear-gradient(180deg, #FFE066 0%, var(--sun) 100%); box-shadow: 0 6px 16px -6px rgb(255 190 40 / .7); color: #14183A }
+.pn-item.camp .pn-face::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--sun); box-shadow: 0 0 0 3px rgb(255 210 63 / .3) }
+.pn-item.camp[aria-current] .pn-face::before { background: #14183A; box-shadow: none }
+/* «Qosyl × Лагеря» у знака в шапке */
+.qx { display: inline-flex; align-items: center; gap: 8px; margin-left: 9px }
+.qx i { font-family: "Golos Text", system-ui, sans-serif; font-style: normal; font-weight: 400; font-size: 17px; opacity: .45; transform: translateY(-1px) }
+.qx b { font-weight: 600; color: var(--sun) }
+/* На телефоне четыре раздела внизу: «Главная» — значком-домиком, чтобы всё влезло. */
+@media (max-width: 759px) {
+  .pnav-b { --pn-x: 12px }
+  .pnav-b [data-nav="0"] :is(.pn-face, .pn-face-alt) { font-size: 0; gap: 0 }
+  .pnav-b [data-nav="0"] :is(.pn-face, .pn-face-alt)::before { content: ""; width: 21px; height: 21px; background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z'/%3E%3C/svg%3E") center / contain no-repeat }
+}
+@media (max-width: 400px) { .pnav-b { --pn-x: 10px; --pn-font: 14px } }
+
+/* Жёлтая плитка «Лагеря за границей» среди направлений каталога */
+.cat.camp { color: #14183A;
+  background: radial-gradient(120% 90% at 0% 0%, #FFF1A8 0%, rgb(255 241 168 / 0) 55%), linear-gradient(150deg, #FFDF5E 0%, #FFC531 52%, #FF9F1C 100%);
+  box-shadow: 0 10px 30px rgb(255 176 32 / .42), inset 0 0 0 1px rgb(255 255 255 / .35) }
+.cat.camp:hover { box-shadow: 0 16px 34px rgb(255 176 32 / .5), inset 0 0 0 1px rgb(255 255 255 / .35) }
+.cat.camp b { text-shadow: none }
+.cat.camp small { color: rgb(20 24 58 / .72) }
+.cat.camp .cat-art { color: rgb(255 255 255 / .5) }
+.cat.camp .gi-plate { background: linear-gradient(135deg, #fff 0%, #FFE9A0 100%) }
+.cat.camp .gi-face { color: #14183A }
+.cat-serif { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 20px; line-height: 1; letter-spacing: 0 }
+@media (max-width: 999px) { .cats > :first-child { order: -2 } .cats > .camp { order: -1 } }
+
+/* Страница «Лагеря» */
+.cx { position: relative; padding-bottom: 72px; color: #fff;
+  background: radial-gradient(48% 55% at 96% 0%, rgb(255 196 60 / .2) 0%, rgb(255 196 60 / 0) 66%),
+              radial-gradient(45% 50% at 0% 35%, rgb(47 107 255 / .16) 0%, rgb(47 107 255 / 0) 70%),
+              linear-gradient(175deg, #101C52 0%, var(--night) 46%) }
+.cx-sky { position: absolute; left: 0; right: 0; top: 0; height: 620px; overflow: hidden; pointer-events: none;
+  -webkit-mask-image: linear-gradient(#000 55%, transparent); mask-image: linear-gradient(#000 55%, transparent) }
+.cx-sky-svg { display: block; width: 100%; height: 100% }
+.cx-top { position: relative; display: grid; gap: 16px; padding-top: 64px; padding-bottom: 34px }
+.cx-eb { margin: 0; font-size: 12.5px; font-weight: 600; line-height: 1.35; letter-spacing: .24em; text-transform: uppercase; color: rgb(255 255 255 / .8) }
+.cx-eb b { color: var(--sun); font-weight: 700 }
+.cx-h { margin: 0; max-width: 11em; font-family: var(--serif); font-weight: 600; font-size: clamp(50px, 8.4vw, 96px); line-height: .96; letter-spacing: -.01em }
+.cx-h em { font-style: italic; color: var(--sun) }
+.cx-lead { margin: 0; max-width: 32em; font-family: var(--serif); font-size: clamp(19px, 2.2vw, 24px); line-height: 1.42; color: rgb(255 255 255 / .86) }
+.cx-body { position: relative }
+.cx-head { display: grid; gap: 10px; margin: 22px 0 18px }
+.cx-h2 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: clamp(36px, 5vw, 52px); line-height: 1; letter-spacing: -.005em }
+.cx-prov + .cx-prov { margin-top: 56px }
+.cx-from { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; margin: 0 0 24px }
+.cx-from > span { font-size: 15px; font-weight: 500; color: rgb(255 255 255 / .65) }
+.cx-from img { display: block; height: 38px; width: auto; border-radius: 6px }
+.cx-from small { font-size: 13px; color: rgb(255 255 255 / .5); padding-left: 14px; border-left: 1px solid rgb(255 255 255 / .16) }
+.cx-ig { display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid rgb(255 255 255 / .22); font-size: 14px; font-weight: 600; color: #fff }
+.cx-ig:hover { color: #fff; background: rgb(255 255 255 / .08) }
+.cx-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px }
+.cx-note { margin: 24px 0 0; max-width: 46em; font-size: 13.5px; line-height: 1.55; color: rgb(255 255 255 / .52) }
+@media (max-width: 999px) { .cx-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 640px) {
+  .cx-top { padding-top: 40px }
+  .cx-from small { flex-basis: 100%; padding-left: 0; border: 0 }
+  .cx-grid { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 18px; margin: 0 -18px; padding: 4px 18px 10px; scrollbar-width: none }
+  .cx-grid::-webkit-scrollbar { display: none }
+  .cx-grid > .cc { flex: 0 0 84%; scroll-snap-align: start }
+}
+
+/* Карточка программы: фото листаются, как сторис, текст лежит прямо на фото */
+.cc { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; isolation: isolate; border-radius: 26px; color: #fff; background: #141C44;
+  box-shadow: 0 30px 60px -22px rgb(0 0 0 / .65); transition: transform .3s var(--ease), box-shadow .3s }
+.cc:hover { color: #fff; transform: translateY(-4px); box-shadow: 0 36px 70px -22px rgb(0 0 0 / .75) }
+.cc-ph { position: absolute; inset: 0 }
+.cc-ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.07); transition: opacity 1s ease, transform 6s linear }
+.cc-ph img.on { opacity: 1; transform: scale(1) }
+.cc::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgb(5 8 22 / .5) 0%, rgb(5 8 22 / 0) 22%, rgb(5 8 22 / 0) 40%, rgb(5 8 22 / .84) 67%, rgb(5 8 22 / .97) 100%) }
+.cc-bars { position: absolute; z-index: 2; left: 16px; right: 16px; top: 14px; display: flex; gap: 5px }
+.cc-bars i { position: relative; flex: 1; height: 3px; overflow: hidden; border-radius: 3px; background: rgb(255 255 255 / .32) }
+.cc-bars i::after { content: ""; position: absolute; inset: 0; background: #fff; transform: scaleX(0); transform-origin: left }
+.cc-bars i.done::after { transform: scaleX(1) }
+.cc-bars i.run::after { animation: ccRun 4s linear forwards }
+.cc.still .cc-bars i:first-child::after { animation: none; transform: scaleX(1) }
+@keyframes ccRun { to { transform: scaleX(1) } }
+.cc-top { position: absolute; z-index: 2; left: 16px; right: 16px; top: 28px; display: flex; justify-content: space-between; align-items: center; gap: 8px }
+.cc-ig { display: inline-flex; align-items: center; gap: 5px; min-width: 0; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  background: rgb(10 14 32 / .36); border: 1px solid rgb(255 255 255 / .22); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px) }
+.cc-ad { flex: none; font-size: 10.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgb(255 255 255 / .8) }
+.cc-txt { position: absolute; z-index: 2; left: 22px; right: 22px; bottom: 22px; display: flex; flex-direction: column; align-items: flex-start }
+.cc-new { display: inline-block; margin-bottom: 10px; padding: 6px 8px; border-radius: 6px; background: var(--sun); color: #14183A; font-size: 10.5px; font-weight: 800; line-height: 1; letter-spacing: .14em; text-transform: uppercase }
+.cc-eb { margin-bottom: 9px; font-size: 11.5px; font-weight: 600; line-height: 1.3; letter-spacing: .2em; text-transform: uppercase; color: rgb(255 255 255 / .86) }
+.cc-t { font-family: var(--serif); font-weight: 600; font-size: clamp(36px, 3.6vw, 44px); line-height: .95 }
+.cc-meta { margin-top: 10px; font-size: 14.5px; font-weight: 500; color: rgb(255 255 255 / .86) }
+.cc-row { align-self: stretch; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgb(255 255 255 / .18) }
+.cc-price { font-family: var(--serif); font-weight: 600; font-size: 30px; line-height: 1 }
+.cc-price small { margin-left: 6px; font-family: "Golos Text", system-ui, sans-serif; font-size: 12px; font-weight: 500; color: rgb(255 255 255 / .7) }
+.cc-go { display: grid; place-items: center; flex: none; width: 46px; height: 46px; border-radius: 50%; background: var(--sun); color: #14183A; transition: transform .25s var(--ease) }
+.cc:hover .cc-go { transform: translateX(3px) }
+/* Появление как у карточек каталога: фото проявляется сверху вниз, строки — по очереди */
+.js-reveal [data-items] > .cc:not(.done) .cc-ph { transition: clip-path .9s var(--out3) }
+.js-reveal [data-items] > .cc:not(.in) .cc-ph { clip-path: inset(0 0 100% 0) }
+.js-reveal [data-items] > .cc:not(.done) .cc-txt > * { transition: transform .7s var(--out3), opacity .7s var(--out3) }
+.js-reveal [data-items] > .cc:not(.in) .cc-txt > * { transform: translateY(16px); opacity: 0 }
+.cc-txt > :nth-child(2) { --j: 1 } .cc-txt > :nth-child(3) { --j: 2 } .cc-txt > :nth-child(4) { --j: 3 } .cc-txt > :nth-child(5) { --j: 4 }
+.js-reveal [data-items] > .cc:not(.done) .cc-txt > * { transition-delay: calc(.2s + var(--j, 0) * 70ms) }
+
+/* Страница программы: «обратная сторона» карточки */
+.cd { color: #fff; background: var(--night); padding-bottom: 72px }
+.cd-hero { position: relative; display: flex; min-height: min(80vh, 680px); overflow: hidden; background: #0B1230; transform-origin: 50% 40% }
+.cd-hero.flip-in { animation: cdFlip .62s cubic-bezier(.2, .75, .25, 1) both }
+@keyframes cdFlip { from { transform: perspective(1200px) rotateY(80deg) scale(1.05); opacity: .35 } to { transform: none; opacity: 1 } }
+.cd-hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover }
+.cd-hero::after { content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgb(8 12 30 / .88) 0%, rgb(8 12 30 / .55) 48%, rgb(8 12 30 / .08) 82%), linear-gradient(0deg, rgb(11 18 48 / .75) 0%, rgb(11 18 48 / 0) 34%) }
+.cd-hero-in { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; padding-top: 22px; padding-bottom: 60px }
+.cd-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px }
+.cd-back { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; font-size: 14px; font-weight: 600; color: rgb(255 255 255 / .88) }
+.cd-back:hover { color: #fff }
+.cd-back .ic-svg, .dc-prev .ic-svg { transform: scaleX(-1) }
+.cd-badge { display: inline-flex; align-items: center; gap: 12px }
+.cd-badge span { font-size: 10.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgb(255 255 255 / .75) }
+.cd-badge img { display: block; height: 34px; width: auto; border-radius: 6px }
+.cd-txt { display: grid; justify-items: start; gap: 16px; max-width: 760px }
+.cd-txt .cc-new { margin: 0 }
+.cd-h { margin: 0; font-family: var(--serif); font-weight: 600; font-size: clamp(54px, 9.4vw, 108px); line-height: .94; letter-spacing: -.01em }
+.cd-lead { margin: 0; max-width: 34em; font-family: var(--serif); font-size: clamp(19px, 2.3vw, 26px); line-height: 1.4; color: rgb(255 255 255 / .92) }
+.cd-btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px }
+.cd-b1, .cd-b2 { display: inline-flex; align-items: center; gap: 10px; min-height: 54px; padding: 0 22px; border-radius: 4px; font-size: 15px; font-weight: 700; letter-spacing: .01em }
+.cd-b1 { background: var(--sun); color: #14183A }
+.cd-b1:hover { color: #14183A; background: #FFE066 }
+.cd-b2 { border: 1.5px solid rgb(255 255 255 / .85); color: #fff }
+.cd-b2:hover { color: #fff; background: rgb(255 255 255 / .1) }
+.cd-stats { background: #FBFAF6; color: #0F1630; border-top: 3px solid var(--sun) }
+.cd-stats ul { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0 auto; padding-top: 30px; padding-bottom: 30px; list-style: none }
+.cd-stats li { min-width: 0; padding: 0 28px; border-left: 1px solid #D9D6CC }
+.cd-stats li:first-child { padding-left: 0; border: 0 }
+.cd-stats b { display: block; font-family: var(--serif); font-weight: 600; font-size: clamp(30px, 3.4vw, 42px); line-height: 1.05 }
+.cd-stats span { display: block; margin-top: 8px; font-size: 12px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: #4A5370 }
+.cd-body { padding-top: 10px }
+.cd-sec { padding-top: 76px }
+.cd-sec-h { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 14px 30px; margin-bottom: 28px }
+.cd-sec-h > div { display: grid; gap: 12px }
+.cd-hint { margin: 0; max-width: 22em; font-size: 14.5px; line-height: 1.5; color: rgb(255 255 255 / .58) }
+/* Стопка фото (DepthCarousel) */
+.dc { position: relative; height: 540px; overflow: hidden; perspective: 1400px; border-radius: 28px; outline: none; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none;
+  background: radial-gradient(70% 80% at 40% 50%, rgb(47 107 255 / .16), rgb(47 107 255 / 0) 70%) }
+.dc:active { cursor: grabbing }
+.dc:focus-visible { outline: 2px solid rgb(255 255 255 / .5); outline-offset: 4px }
+.dc-stage { position: absolute; inset: 0; transform-style: preserve-3d }
+.dc-card { position: absolute; top: 50%; left: 44%; width: 340px; height: 430px; margin: 0; overflow: hidden; border-radius: 20px; background: #0B0D12; transform: translate(-50%, -50%);
+  box-shadow: 0 30px 60px -20px rgb(0 0 0 / .65), 0 8px 20px -10px rgb(0 0 0 / .5); will-change: transform, opacity, filter }
+.dc:not(.is-live) .dc-card:not(:first-child) { opacity: 0 }
+.dc-card img { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none }
+.dc-tint { position: absolute; inset: 0; background: #05060A; mix-blend-mode: multiply; opacity: 0; pointer-events: none }
+.dc-card figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 46px 18px 16px; background: linear-gradient(rgb(0 0 0 / 0), rgb(0 0 0 / .6));
+  font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; opacity: 0; transition: opacity .4s }
+.dc-card.is-front figcaption, .dc:not(.is-live) .dc-card:first-child figcaption { opacity: 1 }
+.dc-arr { position: absolute; z-index: 3000; top: 50%; display: grid; place-items: center; width: 46px; height: 46px; margin-top: -23px; padding: 0; border-radius: 50%; cursor: pointer;
+  border: 1px solid rgb(255 255 255 / .2); background: rgb(18 20 26 / .55); color: #fff; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: background .2s, border-color .2s }
+.dc-arr:hover { background: rgb(28 31 40 / .85); border-color: rgb(255 255 255 / .4) }
+.dc-prev { left: 18px } .dc-next { right: 18px }
+.dc-dots { position: absolute; z-index: 3000; bottom: 16px; left: 50%; display: flex; gap: 8px; padding: 8px 12px; border-radius: 999px; transform: translateX(-50%); background: rgb(14 16 22 / .45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px) }
+.dc-dot { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 999px; background: rgb(255 255 255 / .32); cursor: pointer; transition: width .25s, background .25s }
+.dc-dot.on { width: 20px; background: #fff }
+/* Маршрут — пунктир с остановками */
+.cd-route { position: relative; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); margin: 0 0 34px; padding: 0; list-style: none }
+.cd-route::before { content: ""; position: absolute; top: 9px; left: calc(50% / var(--n, 4)); right: calc(50% / var(--n, 4)); border-top: 2px dashed rgb(255 210 63 / .7) }
+.cd-route li { position: relative; padding: 0 6px; text-align: center }
+.cd-route li::before { content: ""; display: block; width: 18px; height: 18px; margin: 0 auto 14px; border-radius: 50%; background: var(--sun); box-shadow: 0 0 0 6px rgb(255 210 63 / .18) }
+.cd-route b { display: block; font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase }
+.cd-route span { display: block; margin-top: 6px; font-size: 13.5px; line-height: 1.4; color: rgb(255 255 255 / .62) }
+.cd-hl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px }
+.cd-hl figure { position: relative; height: 300px; margin: 0; overflow: hidden; border-radius: 22px; background: #141C44 }
+.cd-hl img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--out3) }
+.cd-hl figure:hover img { transform: scale(1.05) }
+.cd-hl figure::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(5 8 22 / 0) 45%, rgb(5 8 22 / .9) 100%) }
+.cd-hl figcaption { position: absolute; z-index: 1; left: 20px; right: 20px; bottom: 18px }
+.cd-hl small { display: block; font-size: 11.5px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--sun) }
+.cd-hl b { display: block; margin-top: 6px; font-family: var(--serif); font-weight: 600; font-size: 29px; line-height: 1.05 }
+.cd-credit { margin: 14px 0 0; font-size: 12px; line-height: 1.5; color: rgb(255 255 255 / .42) }
+/* Что входит в цену */
+.cd-inc { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: start }
+.cd-inc > div { padding: 28px 30px; border-radius: 22px; background: rgb(255 255 255 / .05); border: 1px solid rgb(255 255 255 / .1) }
+.cd-inc h3 { margin: 0 0 14px; font-family: var(--serif); font-weight: 600; font-size: 32px }
+.cd-inc ul { margin: 0; padding: 0; list-style: none }
+.cd-inc li { display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid rgb(255 255 255 / .08); font-size: 15.5px; line-height: 1.45; color: rgb(255 255 255 / .88) }
+.cd-inc .yes li::before { content: "✓"; flex: none; font-weight: 700; color: var(--sun) }
+.cd-inc .no li::before { content: "—"; flex: none; color: rgb(255 255 255 / .45) }
+.cd-know { margin-top: 22px; padding: 16px 18px; border-radius: 14px; background: rgb(255 210 63 / .08); border-left: 3px solid var(--sun) }
+.cd-know b { display: block; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--sun) }
+.cd-know p { margin: 8px 0 0; font-size: 15px; line-height: 1.5; color: rgb(255 255 255 / .86) }
+.cd-cta { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px 40px; margin-top: 80px; padding-top: 56px; border-top: 1px solid rgb(255 255 255 / .1) }
+.cd-cta h2 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: clamp(42px, 6vw, 66px); line-height: 1 }
+.cd-cta p { margin: 14px 0 0; max-width: 32em; font-size: 16px; line-height: 1.5; color: rgb(255 255 255 / .7) }
+.cd-cta .cd-btns { margin: 0 }
+@media (max-width: 759px) {
+  .cd-hero { min-height: 620px }
+  .cd-hero::after { background: linear-gradient(0deg, rgb(8 12 30 / .94) 0%, rgb(8 12 30 / .72) 48%, rgb(8 12 30 / .3) 78%, rgb(8 12 30 / .45) 100%) }
+  .cd-hero-in { padding-bottom: 36px }
+  .cd-badge span { display: none }
+  .cd-badge img { height: 28px }
+  .cd-b1, .cd-b2 { min-height: 50px; padding: 0 16px; font-size: 14px }
+  .cd-stats ul { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 22px; padding-top: 24px; padding-bottom: 24px }
+  .cd-stats li { padding: 0 0 0 16px }
+  .cd-stats li:nth-child(odd) { padding-left: 0; border: 0 }
+  .cd-sec { padding-top: 56px }
+  .dc { height: 460px; margin: 0 -18px; border-radius: 0 }
+  .dc-card { left: 38%; width: 250px; height: 330px }
+  .dc-arr { display: none }
+  .cd-route { grid-template-columns: 1fr; gap: 18px }
+  .cd-route::before { top: 9px; bottom: 9px; left: 8px; right: auto; border-top: 0; border-left: 2px dashed rgb(255 210 63 / .7) }
+  .cd-route li { display: grid; grid-template-columns: 18px 1fr; column-gap: 16px; padding: 0; text-align: left }
+  .cd-route li::before { grid-row: span 2; margin: 0 }
+  .cd-route span { margin-top: 3px }
+  .cd-hl { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 18px; margin: 0 -18px; padding: 0 18px 6px; scrollbar-width: none }
+  .cd-hl::-webkit-scrollbar { display: none }
+  .cd-hl figure { flex: 0 0 78%; height: 260px; scroll-snap-align: start }
+  .cd-inc { grid-template-columns: 1fr }
+  .cd-inc > div { padding: 22px 20px }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cc-ph img, .cc, .cc-go, .cd-hl img { transition: none }
+  .cc-bars i.run::after { animation: none; transform: scaleX(1) }
+  .cd-hero.flip-in { animation: none }
+}

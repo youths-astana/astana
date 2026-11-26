@@ -150,6 +150,7 @@
     tt: '<path d="M14 3.5v11.2a3.6 3.6 0 1 1-3.6-3.6"/><path d="M14 3.5c.5 2.6 2.4 4.4 5.2 4.7"/>',
     globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.2 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.2-3.6-8.5S9.6 5.8 12 3.5z"/>',
     sort: '<path d="M7 4v16M3.5 16.5 7 20l3.5-3.5M17 20V4M13.5 7.5 17 4l3.5 3.5"/>',
+    plane: '<path d="m21 3-6.8 18-3.9-8.3L2 8.8z"/><path d="M21 3 10.3 12.7"/>',
     photo: '<rect x="3.5" y="5" width="17" height="14" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="m4 17 5-4.5 3.5 3 2.5-2 5 4"/>',
     cal: '<rect x="4" y="5.5" width="16" height="15" rx="3"/><path d="M4 10.5h16M8.5 3.5v4M15.5 3.5v4"/><path d="M12 13.5v4M10 15.5h4"/>'
   };
@@ -420,6 +421,7 @@
     var parts = h.split('/').map(function (p) { try { return decodeURIComponent(p); } catch (e) { return p; } });
     if (parts[0] === 'club' && parts[1]) return { screen: 'club', id: parts[1] };
     if (parts[0] === 'join') return { screen: 'join', id: parts[1] || '' };
+    if (parts[0] === 'camps') return parts[1] ? { screen: 'camp', id: parts[1] } : { screen: 'camps' };
     if (parts[0] === 'about' || parts[0] === 'map' || parts[0] === 'add' || parts[0] === 'catalog' || parts[0] === 'contests') return { screen: parts[0] };
     return { screen: 'home' };
   }
@@ -606,7 +608,7 @@
         '<span class="cat-txt"><b>' + esc(label) + '</b>' +
         '<small>' + (n ? n + ' ' + esc(plural(n, L)) : esc(T.cat_none)) + '</small></span></button>';
     }
-    return tile('all', T.all, ALL.length) + full.concat(empty).map(function (c) { return tile(c.id, c[L], cnt[c.id] || 0); }).join('');
+    return tile('all', T.all, ALL.length) + full.concat(empty).map(function (c) { return tile(c.id, c[L], cnt[c.id] || 0); }).join('') + campTileHTML();
   }
   var chipsHTML = catsHTML;
 
@@ -1878,7 +1880,9 @@
   function renderChrome(r) {
     var T = STR[state.lang];
     document.documentElement.lang = LANGS.filter(function (l) { return l.id === state.lang; })[0].html;
-    document.querySelector('[data-logo]').innerHTML = LOGO(28) + '<span>Qosyl<span class="city"> · ' + (state.lang === 'en' ? 'Astana' : 'Астана') + '</span></span>';
+    document.querySelector('[data-logo]').innerHTML = LOGO(28) + (r.screen === 'camps' || r.screen === 'camp'
+      ? '<span>Qosyl</span><span class="qx"><i aria-hidden="true">×</i><b>' + esc(T.nav_camps) + '</b></span>'
+      : '<span>Qosyl<span class="city"> · ' + (state.lang === 'en' ? 'Astana' : 'Астана') + '</span></span>');
     document.querySelector('[data-logo-big]').innerHTML = LOGO(76);
     document.getElementById('foot-mission').textContent = T.foot_mission;
     document.getElementById('foot-creator').textContent = T.creator;
@@ -1910,6 +1914,8 @@
     if (r.screen === 'map') return T.map_h1 + ' — ' + site;
     if (r.screen === 'catalog') return T.title_catalog;
     if (r.screen === 'contests') return T.title_contests;
+    if (r.screen === 'camps') return T.title_camps;
+    if (r.screen === 'camp') { var cp = campBy(r.id); return cp ? tr(cp.title, state.lang) + ' — ' + T.nav_camps + ' · ' + site : T.title_camps; }
     if (r.screen === 'add') return 'Панель создателя — ' + site;
     if (r.screen === 'join') return T.join_h1 + ' — ' + site;
     return T.title_home;
@@ -1951,6 +1957,11 @@
     if (chips && FX.glass) FX.glass(chips);
     var d = app.querySelector('[data-dots]');
     if (d && FX.dots) FX.dots(d, Object.assign({ intro: intro }, DOTS));
+    var dc = app.querySelector('[data-depth]');
+    if (dc && FX.depth) FX.depth(dc);
+    // Огоньки на небе «Лагерей» стоят, если человек просил меньше движения.
+    var sky = app.querySelector('.cx-sky-svg');
+    if (sky && FX.reduced && sky.pauseAnimations) sky.pauseAnimations();
   }
 
   // Панель фильтров на компьютере прилипает под шапкой. Пока она на своём
@@ -1974,19 +1985,20 @@
   // ---------- меню разделов ----------
   // «Главная · Каталог · Конкурсы» — таблетки в шапке (на телефоне — внизу
   // экрана). Строим один раз на язык, дальше только двигаем точку (motion.js → pills).
-  var NAV = [['#/', 'nav_home'], ['#/catalog', 'nav_catalog'], ['#/contests', 'nav_contests']];
-  var NAV_SCREENS = ['home', 'catalog', 'contests'];
+  var NAV = [['#/', 'nav_home'], ['#/catalog', 'nav_catalog'], ['#/contests', 'nav_contests'], ['#/camps', 'nav_camps']];
+  var NAV_SCREENS = ['home', 'catalog', 'contests', 'camps'];
   var navLang = null, navCtl = [null, null];
   function navIndex(r) {
     if (r.screen === 'home') return 0;
     if (r.screen === 'catalog' || r.screen === 'club' || r.screen === 'map') return 1;
     if (r.screen === 'contests') return 2;
+    if (r.screen === 'camps' || r.screen === 'camp') return 3;
     return -1;
   }
   function navHTML(T, idx) {
     return '<div class="pn-bar"><div class="pn-track"><ul class="pn-list">' + NAV.map(function (n, i) {
       var lbl = esc(T[n[1]]);
-      return '<li class="pn-slot"><a class="pn-item" href="' + n[0] + '" data-nav="' + i + '"' + (i === idx ? ' aria-current="page"' : '') + '>' +
+      return '<li class="pn-slot"><a class="pn-item' + (n[0] === '#/camps' ? ' camp' : '') + '" href="' + n[0] + '" data-nav="' + i + '"' + (i === idx ? ' aria-current="page"' : '') + '>' +
         '<span class="pn-fill" aria-hidden="true"></span><span class="pn-face">' + lbl + '</span>' +
         '<span class="pn-face-alt" aria-hidden="true">' + lbl + '</span></a></li>';
     }).join('') + '</ul><span class="pn-dot" aria-hidden="true"></span></div></div>';
@@ -2208,6 +2220,216 @@
     statsSend({ path: 'contests/calendar/' + c.id, title: 'Конкурсы — в календарь: ' + tr(c.name, 'ru'), event: true });
   }
 
+  // ---------- лагеря ----------
+  // Летние поездки за границу от партнёров. Данные — camps.json: организаторы
+  // (логотип, Instagram) и программы с фото. Фото меняются правкой одного файла.
+  // Это платный раздел, поэтому «Реклама» стоит на каждой карточке и странице.
+  // Программа сама пропадает после даты окончания.
+  var CAMPS = null, campsLoading = null, campFlip = false;
+  function loadCamps() {
+    if (campsLoading) return campsLoading;
+    campsLoading = fetch('camps.json', { cache: 'no-cache' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) { CAMPS = data && Array.isArray(data.programs) ? data : { updated: '', providers: [], programs: [] }; })
+      .catch(function () { CAMPS = { updated: '', providers: [], programs: [] }; });
+    return campsLoading;
+  }
+  function campList() {
+    if (!CAMPS) return [];
+    return CAMPS.programs.filter(function (p) { return !p.end || daysTo(p.end) >= 0; })
+      .sort(function (a, b) { return (a.start || '').localeCompare(b.start || ''); });
+  }
+  function campBy(slug) { return campList().filter(function (p) { return p.slug === slug; })[0] || null; }
+  function campProv(p) { return (CAMPS && CAMPS.providers.filter(function (x) { return x.id === p.provider; })[0]) || { name: '', ig: '' }; }
+  // Лето, о котором речь: с сентября — уже следующее.
+  function campYear() {
+    var p = campList()[0];
+    if (p && p.start) return p.start.slice(0, 4);
+    var d = new Date();
+    return String(d.getMonth() >= 8 ? d.getFullYear() + 1 : d.getFullYear());
+  }
+  // Шрифт с засечками нужен только здесь — грузим его при первом заходе в раздел.
+  var serifOn = false;
+  function loadSerif() {
+    if (serifOn) return;
+    serifOn = true;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap';
+    document.head.appendChild(l);
+  }
+  function campTileHTML() {
+    var T = STR[state.lang];
+    loadSerif();
+    return '<a class="cat camp" href="#/camps" style="--h:85">' +
+      '<span class="cat-art" aria-hidden="true">' + icon('plane', 64) + '</span>' +
+      '<span class="gi" aria-hidden="true"><span class="gi-plate"></span><span class="gi-glass"></span><span class="gi-face">' + icon('plane', 26) + '</span></span>' +
+      '<span class="cat-txt"><span class="cat-serif">' + esc(T.cx_tile_k.replace('{y}', campYear())) + '</span><b>' + esc(T.cx_tile_b) + '</b><small>' + esc(T.cx_tile_s) + '</small></span></a>';
+  }
+  function igLink(h) { return 'https://instagram.com/' + encodeURIComponent(h); }
+  function waLink(p, L) {
+    var T = STR[L];
+    return 'https://wa.me/' + String(p.wa || '').replace(/\D/g, '') + '?text=' + encodeURIComponent(T.cx_greet.replace('{t}', tr(p.title, L)).replace('{w}', p.wa_word || ''));
+  }
+  // Небо за заголовком: тонкие пунктирные маршруты, по ним медленно летят огоньки.
+  function campSky() {
+    var arcs = ['M-40 300 Q 360 40 760 210', 'M380 470 Q 820 120 1480 260', 'M-60 120 Q 520 230 980 40', 'M700 520 Q 1050 300 1500 420'];
+    var dur = [16, 21, 18, 24];
+    return '<svg class="cx-sky-svg" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
+      '<defs><radialGradient id="cxg"><stop offset="0" stop-color="#FFE38A"/><stop offset=".35" stop-color="#FFD23F" stop-opacity=".55"/><stop offset="1" stop-color="#FFD23F" stop-opacity="0"/></radialGradient></defs>' +
+      arcs.map(function (d, i) {
+        return '<path id="cxa' + i + '" d="' + d + '" fill="none" stroke="#fff" stroke-opacity=".13" stroke-width="1.3" stroke-dasharray="2 9" stroke-linecap="round"/>' +
+          '<circle r="9" fill="url(#cxg)"><animateMotion dur="' + dur[i] + 's" begin="-' + (i * 4 + 2) + 's" repeatCount="indefinite"><mpath href="#cxa' + i + '"/></animateMotion></circle>';
+      }).join('') +
+      [[180, 90], [520, 60], [880, 140], [1180, 80], [1320, 200], [260, 380], [1040, 420]].map(function (s, i) {
+        return '<circle cx="' + s[0] + '" cy="' + s[1] + '" r="1.6" fill="#fff"><animate attributeName="opacity" values=".15;.7;.15" dur="' + (3 + i % 3) + 's" begin="-' + i + 's" repeatCount="indefinite"/></circle>';
+      }).join('') + '</svg>';
+  }
+  function campCardHTML(p, L, T) {
+    var prov = campProv(p);
+    var shots = [{ src: p.cover, pos: p.cover_pos }].concat((p.photos || []).filter(function (x) { return x.src !== p.cover; }).slice(0, 3));
+    var tag = tr(p.tag, L) + (p.age ? ' · ' + T.cx_age.replace('{a}', p.age) : '');
+    return '<a class="cc" href="#/camps/' + esc(p.slug) + '" data-action="camp-open" data-id="' + esc(p.slug) + '" data-n="' + shots.length + '" aria-label="' + esc(T.cx_open + ': ' + tr(p.title, L)) + '">' +
+      '<span class="cc-ph">' + shots.map(function (s, i) {
+        return '<img ' + (i ? 'data-src' : 'src') + '="' + esc(s.src) + '" alt="" decoding="async"' + (s.pos ? ' style="object-position:' + esc(s.pos) + '"' : '') + (i ? '' : ' class="on"') + '>';
+      }).join('') + '</span>' +
+      '<span class="cc-bars" aria-hidden="true">' + shots.map(function (s, i) { return '<i' + (i ? '' : ' class="run"') + '></i>'; }).join('') + '</span>' +
+      '<span class="cc-top">' + (prov.ig ? '<span class="cc-ig">' + icon('ig', 15) + '@' + esc(prov.ig) + '</span>' : '<span></span>') + '<span class="cc-ad">' + esc(T.cx_ad) + '</span></span>' +
+      '<span class="cc-txt">' + (p.new ? '<span class="cc-new">' + esc(T.cx_new) + '</span>' : '') +
+      '<span class="cc-eb">' + esc(tag) + '</span><span class="cc-t">' + esc(tr(p.title, L)) + '</span>' +
+      '<span class="cc-meta">' + esc(tr(p.dates, L) + ' · ' + tr(p.len, L)) + '</span>' +
+      '<span class="cc-row"><span class="cc-price">' + esc(p.price) + '<small>' + esc(tr(p.price_note, L)) + '</small></span><span class="cc-go">' + icon('arrow', 20) + '</span></span></span></a>';
+  }
+  function campsView() {
+    var L = state.lang, T = STR[L];
+    loadSerif();
+    if (!CAMPS) loadCamps().then(function () { if (route().screen === 'camps') render({ keepScroll: true }); });
+    var list = campList(), body;
+    if (!CAMPS) body = '<div class="ct-wait" role="status">' + esc(T.cx_loading) + '</div>';
+    else if (!list.length) body = '<div class="ct-wait">' + esc(T.cx_none) + '</div>';
+    else {
+      // Карточки собраны по организаторам: у каждого свой логотип и Instagram.
+      var order = [];
+      list.forEach(function (p) { if (order.indexOf(p.provider) < 0) order.push(p.provider); });
+      body = '<div class="cx-head" data-kids><p class="cx-eb">' + esc(T.cx_sec_k) + '</p><h2 class="cx-h2">' + esc(T.cx_sec_h) + '</h2></div>' +
+        order.map(function (id) {
+          var prov = campProv({ provider: id }), items = list.filter(function (p) { return p.provider === id; });
+          return '<section class="cx-prov">' +
+            '<div class="cx-from" data-reveal><span>' + esc(T.cx_from) + '</span>' +
+            (prov.logo ? '<img src="' + esc(prov.logo) + '" alt="' + esc(prov.name) + '" height="38">' : '<b>' + esc(prov.name) + '</b>') +
+            (prov.ig ? '<a class="cx-ig" href="' + esc(igLink(prov.ig)) + '" target="_blank" rel="noopener" data-track="camp-ig">' + icon('ig', 17) + '@' + esc(prov.ig) + '</a>' : '') +
+            (prov.about ? '<small>' + esc(tr(prov.about, L)) + '</small>' : '') + '</div>' +
+            '<div class="cx-grid" data-items>' + items.map(function (p) { return campCardHTML(p, L, T); }).join('') + '</div>' +
+            '<p class="cx-note">' + esc(T.cx_note.replace('{p}', prov.name).replace('{d}', longDate(CAMPS.updated, L, true))) + '</p></section>';
+        }).join('');
+    }
+    return '<div class="cx">' +
+      '<div class="cx-sky" aria-hidden="true">' + campSky() + '</div>' +
+      '<section class="cx-top wrap" data-kids>' +
+      '<p class="cx-eb">' + esc(T.cx_kicker) + ' · <b>' + esc(T.cx_summer.replace('{y}', campYear())) + '</b></p>' +
+      '<h1 class="cx-h">' + esc(T.cx_h1a) + ' <em>' + esc(T.cx_h1b) + '</em></h1>' +
+      '<p class="cx-lead">' + esc(T.cx_lead) + '</p></section>' +
+      '<div class="wrap cx-body">' + body + '</div></div>';
+  }
+  function campView(slug) {
+    var L = state.lang, T = STR[L];
+    loadSerif();
+    if (!CAMPS) {
+      loadCamps().then(function () { if (route().screen === 'camp') render({ keepScroll: true }); });
+      return '<div class="cx"><div class="wrap cx-body"><div class="ct-wait" role="status">' + esc(T.cx_loading) + '</div></div></div>';
+    }
+    var p = campBy(slug);
+    if (!p) return campsView();
+    var prov = campProv(p), wa = waLink(p, L);
+    var gal = (p.photos || []).map(function (x, i) {
+      return '<figure class="dc-card"><img src="' + esc(x.src) + '" alt="' + esc(tr(x.cap, L)) + '" loading="' + (i < 3 ? 'eager' : 'lazy') + '" decoding="async"' + (x.pos ? ' style="object-position:' + esc(x.pos) + '"' : '') + ' draggable="false">' +
+        '<span class="dc-tint"></span>' + (x.cap ? '<figcaption>' + esc(tr(x.cap, L)) + '</figcaption>' : '') + '</figure>';
+    }).join('');
+    var dots = (p.photos || []).map(function (x, i) {
+      return '<button type="button" class="dc-dot" data-i="' + i + '" aria-label="' + esc(T.cx_photo.replace('{n}', i + 1)) + '"></button>';
+    }).join('');
+    var list = function (arr, cls) { return '<ul class="' + cls + '">' + (arr || []).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'; };
+    return '<div class="cd">' +
+      '<section class="cd-hero">' +
+      '<img class="cd-hero-img" src="' + esc(p.hero || p.cover) + '" alt=""' + (p.hero_pos ? ' style="object-position:' + esc(p.hero_pos) + '"' : '') + '>' +
+      '<div class="wrap cd-hero-in">' +
+      '<div class="cd-bar"><a class="cd-back" href="#/camps">' + icon('arrow', 16) + esc(T.cx_back) + '</a>' +
+      '<span class="cd-badge"><span>' + esc(T.cx_ad) + '</span>' + (prov.logo ? '<img src="' + esc(prov.logo) + '" alt="' + esc(prov.name) + '" height="34">' : '') + '</span></div>' +
+      '<div class="cd-txt" data-kids>' +
+      (p.new ? '<span class="cc-new">' + esc(T.cx_new) + '</span>' : '') +
+      '<p class="cx-eb">' + esc(tr(p.where, L)) + '</p>' +
+      '<h1 class="cd-h">' + esc(tr(p.title, L)) + '</h1>' +
+      '<p class="cd-lead">' + esc(tr(p.lead, L)) + '</p>' +
+      '<div class="cd-btns"><a class="cd-b1" href="' + esc(wa) + '" target="_blank" rel="noopener" data-track="camp-wa">' + icon('wa', 20) + esc(T.cx_wa) + '</a>' +
+      (prov.ig ? '<a class="cd-b2" href="' + esc(igLink(prov.ig)) + '" target="_blank" rel="noopener" data-track="camp-ig">' + icon('ig', 19) + '@' + esc(prov.ig) + '</a>' : '') +
+      '</div></div></div></section>' +
+      '<div class="cd-stats"><ul class="wrap" data-kids>' + (p.stats || []).map(function (s) {
+        return '<li><b>' + esc(tr(s.b, L)) + '</b><span>' + esc(tr(s.s, L)) + '</span></li>';
+      }).join('') + '</ul></div>' +
+      '<div class="wrap cd-body">' +
+      (gal ? '<section class="cd-sec"><div class="cd-sec-h" data-kids><div><p class="cx-eb">' + esc(T.cx_gal_k) + '</p><h2 class="cx-h2">' + esc(T.cx_gal_h) + '</h2></div><p class="cd-hint">' + esc(T.cx_gal_hint) + '</p></div>' +
+        '<div class="dc" data-depth data-reveal tabindex="0" role="group" aria-roledescription="carousel" aria-label="' + esc(T.cx_gal_h) + '">' +
+        '<div class="dc-stage">' + gal + '</div>' +
+        '<button type="button" class="dc-arr dc-prev" aria-label="' + esc(T.cx_prev) + '">' + icon('arrow', 20) + '</button>' +
+        '<button type="button" class="dc-arr dc-next" aria-label="' + esc(T.cx_next) + '">' + icon('arrow', 20) + '</button>' +
+        '<div class="dc-dots">' + dots + '</div></div></section>' : '') +
+      ((p.route || []).length ? '<section class="cd-sec" id="cd-route"><div class="cd-sec-h" data-kids><div><p class="cx-eb">' + esc(T.cx_route_k) + '</p><h2 class="cx-h2">' + esc(tr(p.route_h, L)) + '</h2></div></div>' +
+        '<ol class="cd-route" data-kids style="--n:' + p.route.length + '">' + p.route.map(function (r) {
+          return '<li><b>' + esc(tr(r.c, L)) + '</b><span>' + esc(tr(r.w, L)) + '</span></li>';
+        }).join('') + '</ol>' +
+        ((p.highlights || []).length ? '<div class="cd-hl" data-items>' + p.highlights.map(function (h) {
+          return '<figure><img src="' + esc(h.src) + '" alt="" loading="lazy" decoding="async"><figcaption><small>' + esc(tr(h.k, L)) + '</small><b>' + esc(tr(h.t, L)) + '</b></figcaption></figure>';
+        }).join('') + '</div>' : '') +
+        (p.credit ? '<p class="cd-credit">' + esc(tr(p.credit, L)) + '</p>' : '') + '</section>' : '') +
+      '<section class="cd-sec"><div class="cd-sec-h" data-kids><div><p class="cx-eb">' + esc(T.cx_price_k) + '</p><h2 class="cx-h2">' + esc(T.cx_price_h.replace('{p}', p.price)) + '</h2></div></div>' +
+      '<div class="cd-inc" data-kids><div><h3>' + esc(T.cx_inc) + '</h3>' + list(tr(p.inc, L), 'yes') + '</div>' +
+      '<div><h3>' + esc(T.cx_exc) + '</h3>' + list(tr(p.exc, L), 'no') +
+      (p.know ? '<div class="cd-know"><b>' + esc(T.cx_know) + '</b><p>' + esc(tr(p.know, L)) + '</p></div>' : '') + '</div></div></section>' +
+      '<section class="cd-cta" data-reveal><div><h2>' + esc(T.cx_cta_h) + '</h2><p>' + esc(T.cx_cta_p.replace('{w}', p.wa_word || '').replace('{p}', prov.name)) + '</p></div>' +
+      '<div class="cd-btns"><a class="cd-b1" href="' + esc(wa) + '" target="_blank" rel="noopener" data-track="camp-wa">' + icon('wa', 20) + esc(T.cx_wa) + '</a>' +
+      (prov.ig ? '<a class="cd-b2" href="' + esc(igLink(prov.ig)) + '" target="_blank" rel="noopener" data-track="camp-ig">' + icon('ig', 19) + '@' + esc(prov.ig) + '</a>' : '') + '</div></section>' +
+      '<p class="cx-note">' + esc(T.cx_note.replace('{p}', prov.name).replace('{d}', longDate(CAMPS.updated, L, true))) + '</p>' +
+      '</div></div>';
+  }
+  // Фото в карточках листаются сами, как сторис: раз в 4 с, пока карточка
+  // на экране и на неё не навели. Остальные фото грузятся, когда карточка видна.
+  var campTimer = null, campIO = null;
+  function stopCamps() {
+    if (campTimer) { clearInterval(campTimer); campTimer = null; }
+    if (campIO) { campIO.disconnect(); campIO = null; }
+  }
+  function mountCamps(app) {
+    stopCamps();
+    var cards = Array.prototype.slice.call(app.querySelectorAll('.cc[data-n]'));
+    if (!cards.length) return;
+    function wake(c) {
+      Array.prototype.forEach.call(c.querySelectorAll('img[data-src]'), function (im) { im.src = im.getAttribute('data-src'); im.removeAttribute('data-src'); });
+    }
+    function show(c, i) {
+      var ims = c.querySelectorAll('.cc-ph img'), bars = c.querySelectorAll('.cc-bars i');
+      c._i = i;
+      for (var k = 0; k < ims.length; k++) {
+        ims[k].classList.toggle('on', k === i);
+        bars[k].className = k < i ? 'done' : k === i ? 'run' : '';
+      }
+    }
+    if (FX && FX.reduced) { cards.forEach(function (c) { c.classList.add('still'); }); return; }
+    cards.forEach(function (c) { c._i = 0; c._vis = false; });
+    if ('IntersectionObserver' in window) {
+      campIO = new IntersectionObserver(function (es) {
+        es.forEach(function (en) { en.target._vis = en.isIntersecting; if (en.isIntersecting) wake(en.target); });
+      }, { threshold: 0.3 });
+      cards.forEach(function (c) { campIO.observe(c); });
+    } else cards.forEach(function (c) { c._vis = true; wake(c); });
+    campTimer = setInterval(function () {
+      cards.forEach(function (c) {
+        if (!c._vis || c.matches(':hover')) return;
+        var n = +c.getAttribute('data-n');
+        if (n > 1) show(c, (c._i + 1) % n);
+      });
+    }, 4000);
+  }
+
   // ---------- render ----------
   var lastKey = null;
   function render(opts) {
@@ -2218,6 +2440,7 @@
     if (changedPage) { state.pin = null; state.linkCopied = false; state.shown = PAGE; if (r.screen !== 'add') state.justSaved = null; }
 
     destroyMaps();
+    stopCamps();
     if (FX) FX.reset();
     if (changedPage) closeSheet(true); else updateSheet();
     renderChrome(r);
@@ -2234,6 +2457,8 @@
       : r.screen === 'add' ? addView()
       : r.screen === 'catalog' ? catalogView()
       : r.screen === 'contests' ? contestsView()
+      : r.screen === 'camps' ? campsView()
+      : r.screen === 'camp' ? campView(r.id)
       : homeView();
     if (changedPage) app.setAttribute('data-enter', ''); else app.removeAttribute('data-enter');
     app.innerHTML = html;
@@ -2245,6 +2470,10 @@
     if (r.screen === 'add') mountPickMap();
     if (r.screen === 'club') { var c = findClub(r.id); if (c) { renderQR(shareUrl(c)); mountMiniMap(c); } }
     reveal(app, !changedPage);
+    if (r.screen === 'camps') mountCamps(app);
+    // Открыли программу из карточки: страница доворачивается, как обратная сторона карточки.
+    if (r.screen === 'camp' && campFlip && changedPage) { var hero = app.querySelector('.cd-hero'); if (hero) hero.classList.add('flip-in'); }
+    if (changedPage) campFlip = false;
     if ((r.screen === 'home' || r.screen === 'catalog') && changedPage) countUp(app);
     mountFX(app, changedPage);
     watchBar(app);
@@ -2272,6 +2501,7 @@
       var how = tr.getAttribute('data-track');
       var r = route(), tc = r.screen === 'club' && findClub(r.id);
       if (tc) statsSend({ path: 'contact/' + how + '/' + tc.slug, title: tc.name.ru + ' — ' + how, event: true });
+      if (r.screen === 'camp' || r.screen === 'camps') statsSend({ path: 'contact/' + how + '/camps' + (r.id ? '-' + r.id : ''), title: 'Лагеря ' + (r.id || '') + ' — ' + how, event: true });
       // Instagram и Telegram не умеют открывать чат с готовым текстом — кладём его в буфер.
       if (how === 'instagram' || how === 'telegram') {
         var T2 = STR[state.lang];
@@ -2293,6 +2523,26 @@
     if (!el) return;
     var action = el.getAttribute('data-action'), id = el.getAttribute('data-id');
     switch (action) {
+      case 'camp-open': {
+        // Карточка поворачивается ребром и чуть растёт, а новая страница
+        // доворачивается с другой стороны. Пока крутится — грузим главное фото.
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) break;
+        e.preventDefault();
+        var href = el.getAttribute('href'), cp = campBy(id);
+        var goCamp = function () { if (window.location.hash !== href) window.location.hash = href; };
+        if (!cp || (FX && FX.reduced) || !el.animate) { goCamp(); break; }
+        campFlip = true;
+        var pre = new Image();
+        pre.src = cp.hero || cp.cover;
+        var spin = el.animate([
+          { transform: 'perspective(1100px) rotateY(0deg) scale(1)', opacity: 1 },
+          { transform: 'perspective(1100px) rotateY(-88deg) scale(1.1)', opacity: .4 }
+        ], { duration: 380, easing: 'cubic-bezier(.55, 0, .8, .4)', fill: 'forwards' });
+        var went = false, once = function () { if (!went) { went = true; goCamp(); } };
+        Promise.all([spin.finished, pre.decode ? pre.decode().catch(function () {}) : null]).then(once, once);
+        setTimeout(once, 900);
+        break;
+      }
       case 'to-own': {
         var own = document.getElementById('own');
         if (!own) { window.location.hash = '#/join'; break; }
@@ -2664,9 +2914,11 @@
   // иначе страница сначала появится пустой, а потом резко перерисуется.
   window.addEventListener('hashchange', function () {
     var go = function () { render({ focus: true }); };
-    if (route().screen === 'contests' && !CONTESTS) {
+    var rs = route().screen;
+    var wait = rs === 'contests' && !CONTESTS ? loadContests() : (rs === 'camps' || rs === 'camp') && !CAMPS ? loadCamps() : null;
+    if (wait) {
       var fired = false, once = function () { if (!fired) { fired = true; go(); } };
-      loadContests().then(once, once);
+      wait.then(once, once);
       setTimeout(once, 1200);
     } else go();
   });
@@ -2696,7 +2948,7 @@
   // The creator panel is for the admin, so it is not counted.
   function trackPage(r) {
     if (r.screen === 'add') return;
-    var path = r.screen === 'home' ? '/' : r.screen === 'club' ? '/club/' + r.id : '/' + r.screen;
+    var path = r.screen === 'home' ? '/' : r.screen === 'club' ? '/club/' + r.id : r.screen === 'camp' ? '/camps/' + r.id : '/' + r.screen;
     statsSend({ path: path, title: document.title });
   }
 
@@ -2736,13 +2988,18 @@
   function firstPaint() { if (!painted) { painted = true; render(); } }
   var boot = [loadCatalogue()];
   if (route().screen === 'contests') boot.push(loadContests());
+  if (route().screen === 'camps' || route().screen === 'camp') boot.push(loadCamps());
   Promise.all(boot).then(function () { if (painted) render({ keepScroll: true }); else firstPaint(); });
   setTimeout(firstPaint, 1500);
   setTimeout(loadContests, 700);
+  setTimeout(loadCamps, 900);
   // Навели на «Конкурсы» в меню — начинаем грузить список, если ещё нет.
   ['pnav-h', 'pnav-b'].forEach(function (id) {
     var nav = document.getElementById(id);
-    if (nav) nav.addEventListener('pointerover', function (e) { if (e.target.closest('[data-nav="2"]')) loadContests(); });
+    if (nav) nav.addEventListener('pointerover', function (e) {
+      if (e.target.closest('[data-nav="2"]')) loadContests();
+      if (e.target.closest('[data-nav="3"]')) { loadCamps(); loadSerif(); }
+    });
   });
 
   // Знак Qosyl в шапке делает оборот, когда на него наводишь мышку (как логотип в PillNav).
