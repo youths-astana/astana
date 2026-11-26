@@ -1195,9 +1195,9 @@
    "en": "Dance, sport and stagecraft for children and teens"
   },
   "about": {
-   "ru": "Обучаем детей и подростков танцам и некоторым видам спорта, а также сценическому мастерству. Академия работает 15-й сезон: ученики выступают на сцене и участвуют в чемпионатах.\n\nГруппы по возрастам: 4–5, 6–7, 8–11, 12–15 и 16+ лет. Опыт не нужен — можно прийти на пробный урок.\n\nДва филиала:\n— Istina Dance & Sport Academy — пр. Шакарима Кудайбердыулы, 26, 2 этаж;\n— Istina Maison D'Art — ул. Желтоксан, 22/4.",
-   "kz": "Балалар мен жасөспірімдерді биге, кейбір спорт түрлеріне және сахна шеберлігіне үйретеміз. Академия 15-ші маусымын өткізіп жатыр: оқушылар сахнада өнер көрсетіп, чемпионаттарға қатысады.\n\nЖас топтары: 4–5, 6–7, 8–11, 12–15 және 16+ жас. Тәжірибе қажет емес — сынақ сабағына келуге болады.\n\nЕкі филиал:\n— Istina Dance & Sport Academy — Шәкәрім Құдайбердіұлы даңғылы, 26, 2-қабат;\n— Istina Maison D'Art — Желтоқсан көшесі, 22/4.",
-   "en": "We teach children and teens dance, some sports and stagecraft. The academy is in its 15th season: students perform on stage and compete in championships.\n\nAge groups: 4–5, 6–7, 8–11, 12–15 and 16+. No experience needed — you can come to a trial lesson.\n\nTwo branches:\n— Istina Dance & Sport Academy — 26 Shakarim Kudaiberdyuly Ave, 2nd floor;\n— Istina Maison D'Art — 22/4 Zheltoksan St."
+   "ru": "Обучаем детей и подростков танцам и некоторым видам спорта, а также сценическому мастерству. Академия работает 15-й сезон: ученики выступают на сцене и участвуют в чемпионатах.\n\nГруппы по возрастам: 4–5, 6–7, 8–11, 12–15 и 16+ лет. Опыт не нужен — первое пробное занятие бесплатно.\n\nДва филиала:\n— Istina Dance & Sport Academy — пр. Шакарима Кудайбердыулы, 26, 2 этаж;\n— Istina Maison D'Art — ул. Желтоксан, 22/4.",
+   "kz": "Балалар мен жасөспірімдерді биге, кейбір спорт түрлеріне және сахна шеберлігіне үйретеміз. Академия 15-ші маусымын өткізіп жатыр: оқушылар сахнада өнер көрсетіп, чемпионаттарға қатысады.\n\nЖас топтары: 4–5, 6–7, 8–11, 12–15 және 16+ жас. Тәжірибе қажет емес — алғашқы сынақ сабағы тегін.\n\nЕкі филиал:\n— Istina Dance & Sport Academy — Шәкәрім Құдайбердіұлы даңғылы, 26, 2-қабат;\n— Istina Maison D'Art — Желтоқсан көшесі, 22/4.",
+   "en": "We teach children and teens dance, some sports and stagecraft. The academy is in its 15th season: students perform on stage and compete in championships.\n\nAge groups: 4–5, 6–7, 8–11, 12–15 and 16+. No experience needed — the first trial lesson is free.\n\nTwo branches:\n— Istina Dance & Sport Academy — 26 Shakarim Kudaiberdyuly Ave, 2nd floor;\n— Istina Maison D'Art — 22/4 Zheltoksan St."
   },
   "age": "4+",
   "cost": {
@@ -1228,6 +1228,10 @@
   "tg": "istina_kz",
   "photo": "photos/istina-dance-sport-academy.jpg",
   "kw": "Istina Истина танцы танцевальная академия хореография спорт сцена сценическое мастерство актёрское чемпионаты дети подростки пробный урок",
-  "fit": "cover"
+  "fit": "cover",
+  "media": [
+   "https://www.instagram.com/reel/DgAcfaBRwue/",
+   "https://www.instagram.com/p/Df7Lgl2DAfG/"
+  ]
  }
 ]
