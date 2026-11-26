@@ -590,7 +590,7 @@ Object.assign(STR.ru, {
   open_note_p: 'Эту карточку мы составили сами по официальным данным. Организатор её ещё не подтвердил — перед первым визитом уточните расписание и условия.',
   src_h: 'Откуда сведения',
   claim_b: 'Это ваше? Подтвердите карточку', remove_b: 'Попросить убрать карточку',
-  how_h: 'Как записаться', web_link: 'Официальный сайт',
+  how_h: 'Как записаться', web_link: 'Официальный сайт', web_short: 'Сайт',
   open_contact: 'Контакты для записи — на официальном сайте и в источниках выше. Телефоны появятся, когда организатор подтвердит карточку.',
   twogis_find: 'Найти в 2ГИС', collected: 'Сведения собраны',
   j_claim_p: 'Вы подтверждаете карточку «{name}», которую мы собрали из открытых источников. Исправьте неточности и оставьте рабочий контакт. Перед публикацией мы позвоним по номеру с официального сайта организации, чтобы убедиться, что карточку подтверждает её представитель.'
@@ -616,7 +616,7 @@ Object.assign(STR.kz, {
   open_note_p: 'Бұл карточканы біз ресми деректер бойынша өзіміз құрастырдық. Ұйымдастырушы оны әлі растаған жоқ — алғаш барар алдында кестесі мен шарттарын нақтылаңыз.',
   src_h: 'Мәліметтер қайдан алынды',
   claim_b: 'Бұл сіздікі ме? Карточканы растаңыз', remove_b: 'Карточканы алып тастауды сұрау',
-  how_h: 'Қалай жазылуға болады', web_link: 'Ресми сайт',
+  how_h: 'Қалай жазылуға болады', web_link: 'Ресми сайт', web_short: 'Сайт',
   open_contact: 'Жазылуға арналған байланыстар — ресми сайтта және жоғарыдағы дереккөздерде. Телефондар ұйымдастырушы карточканы растағанда пайда болады.',
   twogis_find: '2ГИС-тен табу', collected: 'Мәліметтер жиналды',
   j_claim_p: 'Сіз ашық дереккөздерден жиналған «{name}» карточкасын растап жатырсыз. Қателерді түзетіп, жұмыс байланысын қалдырыңыз. Жарияламас бұрын карточканы ұйым өкілі растап жатқанына көз жеткізу үшін ұйымның ресми сайтындағы нөмірге қоңырау шаламыз.'
@@ -642,7 +642,7 @@ Object.assign(STR.en, {
   open_note_p: 'We put this listing together ourselves from official data. The organiser has not confirmed it yet, so check the schedule and conditions before your first visit.',
   src_h: 'Where the information comes from',
   claim_b: 'Is this yours? Confirm the listing', remove_b: 'Ask us to remove it',
-  how_h: 'How to join', web_link: 'Official website',
+  how_h: 'How to join', web_link: 'Official website', web_short: 'Website',
   open_contact: 'Contacts for joining are on the official website and in the sources above. Phone numbers will appear once the organiser confirms the listing.',
   twogis_find: 'Find in 2GIS', collected: 'Information collected',
   j_claim_p: 'You are confirming “{name}”, which we compiled from open sources. Correct anything that is wrong and leave a work contact. Before publishing, we will call the number on the organisation’s official website to make sure the listing is confirmed by its representative.'

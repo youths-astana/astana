@@ -982,9 +982,10 @@
           '<div class="bubble"><span id="greet-text">' + esc(T.greet) + '</span><time aria-hidden="true">✓✓</time></div>' +
           '<button class="chat-copy" data-action="copy-greet">' + icon('copy', 16) + esc(T.greet_copy) + '</button></div>'
         : '<p class="join-note">' + esc(T.no_contact) + '</p>') +
-      ((c.ig || c.tg) ? '<div class="soc">' +
+      ((c.ig || c.tg || web) ? '<div class="soc">' +
         (c.ig ? '<a data-track="instagram" href="https://instagram.com/' + esc(encodeURIComponent(c.ig)) + '" target="_blank" rel="noopener">' + icon('ig', 19) + 'Instagram</a>' : '') +
         (c.tg ? '<a data-track="telegram" href="https://t.me/' + esc(encodeURIComponent(c.tg)) + '" target="_blank" rel="noopener">' + icon('tg', 19) + 'Telegram</a>' : '') +
+        (web ? '<a data-track="website" href="' + esc(web) + '" target="_blank" rel="noopener">' + icon('globe', 19) + esc(T.web_short) + '</a>' : '') +
         '</div>' : '') +
       (tel ? '<a class="tel" data-track="phone" href="tel:+' + tel + '">' + esc(c.tel) + '</a>' : '') +
       (c.beginner ? '<p class="join-note">' + icon('spark', 18) + esc(T.beg_note) + '</p>' : '') +
