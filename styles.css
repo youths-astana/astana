@@ -1226,6 +1226,8 @@ html[data-screen^="camp"] .pn-dot { opacity: 0 !important }
 .cc-bars i::after { content: ""; position: absolute; inset: 0; background: #fff; transform: scaleX(0); transform-origin: left }
 .cc-bars i.done::after { transform: scaleX(1) }
 .cc-bars i.run::after { animation: ccRun 4s linear forwards }
+.cc-bars i.run:first-child::after { animation-duration: 10s }
+.cc.paused .cc-bars i.run::after { animation-play-state: paused }
 .cc.still .cc-bars i:first-child::after { animation: none; transform: scaleX(1) }
 @keyframes ccRun { to { transform: scaleX(1) } }
 .cc-top { position: absolute; z-index: 2; left: 16px; right: 16px; top: 28px; display: flex; justify-content: space-between; align-items: center; gap: 8px }

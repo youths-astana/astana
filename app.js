@@ -2399,8 +2399,11 @@
       '<p class="cx-note">' + esc(T.cx_note.replace('{p}', prov.name).replace('{d}', longDate(CAMPS.updated, L, true))) + '</p>' +
       '</div></div>';
   }
-  // Фото в карточках листаются сами, как сторис: раз в 4 с, пока карточка
-  // на экране и на неё не навели. Остальные фото грузятся, когда карточка видна.
+  // Фото в карточках листаются сами, как сторис, пока карточка на экране и на
+  // неё не навели: первое (обложка) держится 10 с — в 2,5 раза дольше, остальные
+  // по 4 с. Полоска сверху на это время замирает. Остальные фото грузятся,
+  // когда карточка видна.
+  var CAMP_FIRST = 10000, CAMP_NEXT = 4000;
   var campTimer = null, campIO = null;
   function stopCamps() {
     if (campTimer) { clearInterval(campTimer); campTimer = null; }
@@ -2422,20 +2425,26 @@
       }
     }
     if (FX && FX.reduced) { cards.forEach(function (c) { c.classList.add('still'); }); return; }
-    cards.forEach(function (c) { c._i = 0; c._vis = false; });
+    cards.forEach(function (c) { c._i = 0; c._vis = false; c._t = 0; });
     if ('IntersectionObserver' in window) {
       campIO = new IntersectionObserver(function (es) {
         es.forEach(function (en) { en.target._vis = en.isIntersecting; if (en.isIntersecting) wake(en.target); });
       }, { threshold: 0.3 });
       cards.forEach(function (c) { campIO.observe(c); });
     } else cards.forEach(function (c) { c._vis = true; wake(c); });
+    var last = Date.now();
     campTimer = setInterval(function () {
+      var now = Date.now(), dt = Math.min(now - last, 1000);
+      last = now;
       cards.forEach(function (c) {
-        if (!c._vis || c.matches(':hover')) return;
+        var hold = !c._vis || c.matches(':hover');
+        c.classList.toggle('paused', hold);
         var n = +c.getAttribute('data-n');
-        if (n > 1) show(c, (c._i + 1) % n);
+        if (hold || n < 2) return;
+        c._t += dt;
+        if (c._t >= (c._i === 0 ? CAMP_FIRST : CAMP_NEXT)) { c._t = 0; show(c, (c._i + 1) % n); }
       });
-    }, 4000);
+    }, 200);
   }
 
   // ---------- render ----------
