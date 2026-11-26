@@ -800,10 +800,12 @@
   // Это украшение-дубль ряда направлений в каталоге, поэтому скрыто от дикторов.
   function heroRing(L, T, cnt) {
     var list = CATS.filter(function (c) { return cnt[c.id]; }).concat(CATS.filter(function (c) { return !cnt[c.id]; }));
+    // При загрузке впереди стоит «Спорт» — кольцо начинает крутиться с него.
+    list.sort(function (a, b) { return (b.id === 'sport') - (a.id === 'sport'); });
     var short = T.cat_short || {};
-    // Вторая плитка — жёлтые «Лагеря» с меткой «Новое!»: ведёт в раздел поездок.
+    // Вторая плитка — жёлтые «Лагеря»: ведёт в раздел поездок.
     var camp = '<span class="ring-card camp" data-action="go-camps" style="--h:85;--sd:0.9s" title="' + esc(T.cx_tile_b) + '">' +
-      '<span class="float-tile"><span class="n">' + esc(T.cx_newtag) + '</span>' + icon('plane', 48) + '<b>' + esc(T.nav_camps) + '</b></span>' +
+      '<span class="float-tile">' + icon('plane', 48) + '<b>' + esc(T.nav_camps) + '</b></span>' +
       '<span class="ring-back"></span></span>';
     return '<div class="hero-ring" data-ring aria-hidden="true"><div class="ring-stage"><div class="ring-cam"><div class="ring-spin">' +
       list.map(function (c, i) {
