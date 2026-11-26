@@ -250,11 +250,10 @@
   "id": "open-dvorets-shkolnikov-utemisova",
   "cat": "art",
   "slug": "dvorets-shkolnikov-utemisova",
-  "verified": false,
-  "open": true,
+  "verified": true,
   "beginner": true,
   "featured": false,
-  "checked": "2026-11-04",
+  "checked": "2026-11-26",
   "name": {
    "ru": "Дворец школьников имени Махамбета Утемисова",
    "kz": "Махамбет Өтемісов атындағы Оқушылар сарайы",
@@ -287,14 +286,14 @@
    "en": "1 A. Mambetov St"
   },
   "langs": {
-   "ru": "Казахский, русский, английский",
-   "kz": "Қазақ, орыс, ағылшын",
-   "en": "Kazakh, Russian, English"
+   "ru": "Казахский, русский",
+   "kz": "Қазақ, орыс",
+   "en": "Kazakh, Russian"
   },
-  "tel": "",
-  "ig": "",
+  "tel": "+7 775 713 69 81",
+  "ig": "dvoretsshkolnikov",
   "tg": "",
-  "photo": "",
+  "photo": "photos/dvorets-shkolnikov-utemisova.jpg",
   "kw": "дворец школьников утемисова өтемісов оқушылар сарайы танцы балет вокал театр актерское домбыра гитара изо резьба английский китайский польский робототехника моделирование компьютерный дизайн видеография видео шахматы баскетбол волейбол каратэ плавание бассейн",
   "free": true,
   "also": [
@@ -315,7 +314,9 @@
     "n": "Акимат Астаны, gov.kz",
     "u": "https://www.gov.kz/memleket/entities/astana/press/news/details/532145?lang=ru"
    }
-  ]
+  ],
+  "web": "https://dvorets.edu.kz/ru/",
+  "fit": "cover"
  },
  {
   "id": "open-tsentr-tehnicheskogo-tvorchestva",
